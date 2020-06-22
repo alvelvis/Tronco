@@ -14,6 +14,7 @@ ubuntu run /home/elvis/.local/bin/pyinstaller utronco.spec; cd dist; zip -r ../.
 cd ../dist
 "C:\Program Files (x86)\Inno Setup 6\Compil32.exe" /cc Tronco-Windows.iss
 move Output\Tronco-Windows.exe Tronco-Windows.exe
+cd ..
 rem missing: apk
 rem change latest_release? change objects tronco_version? git add commit push?
 pause
