@@ -28,9 +28,10 @@
       <input class="form-control form-control-dark w-100" id="search" type="text" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Digite para procurar ou criar arquivo" aria-label="Search">
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link">
-            <span title="Voltar ao início (Ctrl+E)" id="troncoHome" onclick="window.location.href='/'"><!--img class="mb-2 d-none d-lg-block" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24"-->Tronco</span>
-            <span class="d-lg-none"> / {{filename}}</span>
+          <a title="Voltar ao início (Ctrl+E)" class="nav-link" href="/">
+            <span id="troncoHome"><!--onclick="window.location.href='/'"img class="mb-2 d-none d-lg-block" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24"-->Tronco</span>
+            <span> / <span class="name">{{name}}</span></span>
+            <span class="d-md-none"> / <span class="filename">{{filename}}</span></span>
           </a>
         </li>
       </ul>
