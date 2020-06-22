@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Tronco">
+    <meta name="author" content="Elvis de Souza">
+    <link rel="icon" href="{{url_for('static', filename='favicon.png')}}">
+
+    <title>Tronco</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{url_for('static', filename='bootstrap.css')}}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{url_for('static', filename='pricing.css')}}" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+      <h5 class="my-0 mr-md-auto font-weight-normal">Tronco</h5>
+      <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-dark">Download</a>
+        <a class="p-2 text-dark">Documentação</a>
+        <a class="p-2 text-dark">Código</a>
+      </nav>
+      <!--a class="btn btn-outline-primary">Sign up</a-->
+    </div>
+
+    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+      <h1 class="display-4">Vamos começar</h1>
+      <p class="lead">Tronco te ajuda a organizar coleções de texto. Escolha por onde começar.</p>
+    </div>
+
+    <div class="container">
+      <div class="card-deck mb-3 text-center">
+        <div class="card mb-4 box-shadow">
+          <div class="card-header">
+            <h4 class="my-0 font-weight-normal">Abrir coleção</h4>
+          </div>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title"><small class="text-muted">Retomar trabalho</small></h1>
+            <ul class="list-unstyled mt-3 mb-4">
+              {% if not corpora %}
+                <li>Crie uma nova coleção</li>
+                <li>Comece do zero</li>
+                <li>Domine o mundo</li>
+                <hr>
+              {% endif %}
+                <input class="form-control form-control" id="filterOpenCorpus" type="text" placeholder="Procurar ou criar nova coleção">
+                <hr>
+                <div id="openCorpus" style="overflow: auto; max-height:30vh">
+                </div>
+            </ul>
+            <!--button type="button" class="btn btn-lg btn-block btn-primary">Contact us</button-->
+          </div>
+        </div>
+        <div class="card mb-4 box-shadow">
+          <div class="card-header">
+            <h4 class="my-0 font-weight-normal">Carregar projeto</h4>
+          </div>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title"><small class="text-muted">Já tenho algo</small></h1>
+            <ul class="list-unstyled mt-3 mb-4">
+              <li>Carregue projeto já existente</li>
+              <li>Precisa estar no formato Tronco</li>
+              <li>Recupere todas as informações</li>
+            </ul>
+            <button type="button" class="btn btn-lg btn-block btn-primary">Quero carregar</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="pt-4 my-md-5 pt-md-5 border-top">
+        <div class="row">
+          <div class="col-12 col-md">
+            <img class="mb-2" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
+            <small class="d-block mb-3 text-muted">&copy; 2020 - Tronco é de código aberto. <a href="#">Colabore!</a></small>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{url_for('static', filename='jquery-3.5.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='popper.js')}}"></script>
+    <script src="{{url_for('static', filename='bootstrap.js')}}"></script>
+    <script src="{{url_for('static', filename='holder.js')}}"></script>
+    <script src="{{url_for('static', filename='tronco.js')}}"></script>
+    <script src="{{url_for('static', filename='index.js')}}"></script>
+    <script>
+      Holder.addTheme('thumb', {
+        bg: '#55595c',
+        fg: '#eceeef',
+        text: 'Thumbnail'
+      });
+    </script>
+
+  </body>
+</html>
