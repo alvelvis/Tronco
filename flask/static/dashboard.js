@@ -324,6 +324,10 @@ $(window).bind('keydown', function(event) {
             event.preventDefault()
             $('#search').focus().select()
             break
+        case 'h':
+            event.preventDefault()
+            $('#troncoHome').click()
+            break
         }
     }
 })

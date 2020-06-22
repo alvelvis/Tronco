@@ -19,16 +19,19 @@
   <body>
       
     <nav class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
-      <span class="navbar-brand col-sm-3 col-md-2 mr-0 name" style="color:white">
+      <span class="navbar-brand col-sm-3 col-md-2 mr-0 d-none d-lg-block" style="color:white">
         <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
             <span id="menu-svg" data-feather="menu"></span>
-            <span id="name" style="margin-left:5px">{{name}}</span>
-        </a>
+            <span id="name" class="name" style="margin-left:5px">{{name}}</span>
+        </a>   
       </span>
       <input class="form-control form-control-dark w-100" id="search" type="text" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Digite para procurar ou criar arquivo" aria-label="Search">
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="/" title="Voltar ao início"><img class="mb-2" src="{{url_for('static', filename='favicon.png')}}" alt="" width="20" height="20"></a>
+          <a class="nav-link">
+            <span title="Voltar ao início (Ctrl+H)" id="troncoHome" onclick="window.location.href='/'"><!--img class="mb-2 d-none d-lg-block" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24"-->Tronco</span>
+            <span class="d-lg-none"> / {{filename}}</span>
+          </a>
         </li>
       </ul>
     </nav>
