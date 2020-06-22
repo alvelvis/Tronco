@@ -13,18 +13,11 @@ import objects
 tronco_config = objects.TroncoConfig()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
-def has_permission(name, password, permission):
-    if password == tronco_config.corpora[name]['permissions']['password']:
-        return True
-    elif permission in tronco_config.corpora[name]['permissions']['disconnected']:
-        return True
-    return False
-
 @app.route("/api/togglePerm", methods=["POST"])
 def toggle_perm():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not has_permission(name, password, "configurar"): return None
+    if not tronco_config.has_permission(name, password, "configurar"): return None
 
     perm = request.values.get("perm")
     value = str(request.values.get("value")).lower()
@@ -41,7 +34,7 @@ def toggle_perm():
 def set_password():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not has_permission(name, password, "configurar"): return None
+    if not tronco_config.has_permission(name, password, "configurar"): return None
     new_password = request.values.get("new_password")
     tronco_config.corpora[name]['permissions']['password'] = new_password
     tronco_config.corpora[name]['permissions']['disconnected'].remove("configurar")
@@ -75,16 +68,16 @@ def validate_password():
 def find_or_create_file():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not has_permission(name, password, "visualizar"): return None
+    if not tronco_config.has_permission(name, password, "visualizar"): return None
     filename = request.values.get("filename")
 
-    return {'data': functions.find_or_create_file(name, filename, create=has_permission(name, password, "editar"))}
+    return {'data': functions.find_or_create_file(name, filename, create=tronco_config.has_permission(name, password, "editar"))}
 
 @app.route("/api/recentFiles", methods=["POST"])
 def recent_files():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not has_permission(name, password, "visualizar"): return None
+    if not tronco_config.has_permission(name, password, "visualizar"): return None
     key = request.values.get("key", "")
     data = [f'<li class="breadcrumb-item"><a class="recentFiles" href="#" file="{x}">{x}</a></li>' for x in functions.recent_files(name, key)]
     return {'data': data}
@@ -93,7 +86,7 @@ def recent_files():
 def rename_file():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not has_permission(name, password, "editar"): return None
+    if not tronco_config.has_permission(name, password, "editar"): return None
     filename = request.values.get("filename")
     new_filename = request.values.get("new_filename")
     result = functions.rename_file(name, filename, new_filename)
@@ -106,27 +99,16 @@ def rename_file():
 def find_or_create_corpus():
     name = request.values.get("name")
     result = functions.find_or_create_corpus(name)
-
     if not result in tronco_config.corpora:
-        tronco_config.corpora[result] = {
-            'permissions': {
-                'password': "default",
-                'disconnected': objects.all_permissions
-                },
-            'settings': {
-                'auto_wrap': "true",
-                'auto_save': "true",
-                }
-            }
+        tronco_config.add_corpus(result)
         tronco_config.save()
-
     return {'data': result}
 
 @app.route("/api/deleteCorpus", methods=["POST"])
 def delete_corpus():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not has_permission(name, password, "editar"): return None
+    if not tronco_config.has_permission(name, password, "editar"): return None
     functions.delete_corpus(name)
     del tronco_config.corpora[name]
     tronco_config.save()
@@ -136,7 +118,7 @@ def delete_corpus():
 def rename_corpus():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not has_permission(name, password, "editar"): return None
+    if not tronco_config.has_permission(name, password, "editar"): return None
     new_name = request.values.get("new_name")
     result = functions.rename_corpus(name, new_name)
     tronco_config.corpora.update({new_name: tronco_config.corpora[name]})
@@ -151,7 +133,7 @@ def rename_corpus():
 def new_file():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not has_permission(name, password, "editar"): return None
+    if not tronco_config.has_permission(name, password, "editar"): return None
     filename = request.values.get("filename")
     result = functions.create_new_file(name, filename)
     if result:
@@ -163,7 +145,7 @@ def new_file():
 def delete_files():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not has_permission(name, password, "editar"): return None
+    if not tronco_config.has_permission(name, password, "editar"): return None
     filename = request.values.get("filename")
     functions.delete_file(name, filename)
     return {'data': ''}
@@ -172,7 +154,7 @@ def delete_files():
 def update_files():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not has_permission(name, password, "visualizar"): return None
+    if not tronco_config.has_permission(name, password, "visualizar"): return None
 
     data = [f'''
     <li class="nav-item d-flex justify-content-between align-items-center">
@@ -195,7 +177,7 @@ def update_files():
 def change_tronco_config():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not has_permission(name, password, "editar"): return None
+    if not tronco_config.has_permission(name, password, "editar"): return None
     for value in request.values:
         if value not in ["name", "password"]:
             tronco_config.corpora[name]['settings'][value] = request.values.get(value)
@@ -206,7 +188,7 @@ def change_tronco_config():
 def save_file():
     name = request.values.get('name')
     password = request.values.get("password")
-    if not has_permission(name, password, "editar"): return None
+    if not tronco_config.has_permission(name, password, "editar"): return None
     filename = request.values.get('filename')
     text = request.values.get('text')
     functions.save_file(name, filename, text)
@@ -216,7 +198,7 @@ def save_file():
 def load_file():
     name = request.values.get('name')
     password = request.values.get("password")
-    if not has_permission(name, password, "visualizar"): return None
+    if not tronco_config.has_permission(name, password, "visualizar"): return None
     filename = request.values.get('filename')
     text = functions.load_file(name, filename)
     if text:
