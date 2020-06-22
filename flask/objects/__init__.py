@@ -4,7 +4,7 @@ import os
 import app
 import re
 
-tronco_version = 0.9
+tronco_version = 1.0
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 all_permissions = ["visualizar", "editar", "configurar"]
 
