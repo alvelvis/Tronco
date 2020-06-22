@@ -20,7 +20,7 @@ Para instalar o Tronco em um servidor próprio, veja [Como fazer deploy](#Como-f
 
 <img width="48" style="padding:10px" alt="Windows" src="https://toppng.com/uploads/preview/windows-logo-windows-10-icon-11562965900vhcwfeiee5.png"> <img style="padding:10px" width="48" alt="Ubuntu" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR2rSSpKVBohI4AXgBaUjFVYqO73ou2l9AOXw&usqp=CAU">
 
-Para rodar o Tronco em sua máquina local, você poderá fazê-lo a partir do [instalador para Windows](), ou baixando a distribuição zipada [para Windows]() ou [ou Linux]().
+Para rodar o Tronco em sua máquina local, você poderá fazê-lo a partir do [instalador para Windows](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco.exe), ou baixando a distribuição zipada para [Windows](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Windows.zip) ou [Linux](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Linux.zip).
 
 Em todos os casos, é necessário ter em sua máquina uma versão do navegador Chromium/Chrome instalada.
 
