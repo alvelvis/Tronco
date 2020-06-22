@@ -4,7 +4,7 @@
 
 Tronco te ajuda a organizar coleções de texto. Escrito em Python/Javascript (framework Flask).
 
-Acesse pelo endereço: [http://troncopy.herokuapp.com](http://troncopy.herokuapp.com)
+Acesse pelo endereço: [http://tronco.ga](http://tronco.ga)
 
 ### Dispositivos
 
@@ -12,9 +12,9 @@ Tronco pode ser utilizado em diferentes dispositivos, on-line ou off-line.
 
 #### On-line
 
-<img width="48" alt="Heroku" style="padding:10px" src="https://image.flaticon.com/icons/png/512/873/873120.png"> <img width="48" style="padding:10px" alt="Android" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/APK_format_icon.png/600px-APK_format_icon.png"> 
+<img width="48" alt="Chromium" style="padding:10px" src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Chromium_Material_Icon.png"> <img width="48" style="padding:10px" alt="Android" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/APK_format_icon.png/600px-APK_format_icon.png"> 
 
-O aplicativo Tronco está disponível no Heroku. Ele está sempre atualizado, e você pode acessá-lo de qualquer dispositivo a partir de um navegador pelo endereço [http://troncopy.herokuapp.com](http://troncopy.herokuapp.com), ou pelo [aplicativo para Android](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Android.apk), e suas coleções ficarão guardadas na nuvem. Não esqueça de adicionar senha nos arquivos importantes!
+O aplicativo Tronco está disponível em nossos servidores. Ele estará sempre em sua última versão, e você pode acessá-lo de qualquer dispositivo a partir de um navegador pelo endereço [http://tronco.ga](http://tronco.ga), ou pelo [aplicativo para Android](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Android.apk), e suas coleções ficarão guardadas na nuvem. Não esqueça de adicionar senha nos arquivos importantes!
 
 Para instalar o Tronco em um servidor próprio, veja [Como fazer deploy](#Como-fazer-deploy).
 
