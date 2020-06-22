@@ -4,31 +4,41 @@
 
 Tronco te ajuda a organizar coleções de texto. Escrito em Python/Javascript (framework Flask).
 
+Acesse pelo endereço: [http://troncopy.herokuapp.com](http://troncopy.herokuapp.com)
+
 ### Dispositivos
 
 Tronco pode ser utilizado em diferentes dispositivos, on-line ou off-line.
 
-### On-line
+#### On-line
 
 <img width="48" alt="Heroku" style="padding:10px" src="https://image.flaticon.com/icons/png/512/873/873120.png"> <img width="48" style="padding:10px" alt="Android" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/APK_format_icon.png/600px-APK_format_icon.png"> 
 
-O aplicativo Tronco está disponível no Heroku. Ele está sempre atualizado, e você pode acessá-lo de qualquer dispositivo a partir de um navegador pelo endereço [http://troncopy.herokuapp.com](http://troncopy.herokuapp.com), ou pelo [aplicativo para Android](), e suas coleções ficarão guardadas na nuvem. Não esqueça de adicionar senha nos arquivos importantes!
+O aplicativo Tronco está disponível no Heroku. Ele está sempre atualizado, e você pode acessá-lo de qualquer dispositivo a partir de um navegador pelo endereço [http://troncopy.herokuapp.com](http://troncopy.herokuapp.com), ou pelo [aplicativo para Android](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Android.apk), e suas coleções ficarão guardadas na nuvem. Não esqueça de adicionar senha nos arquivos importantes!
 
 Para instalar o Tronco em um servidor próprio, veja [Como fazer deploy](#Como-fazer-deploy).
 
-### Off-line
+#### Off-line
 
 <img width="48" style="padding:10px" alt="Windows" src="https://toppng.com/uploads/preview/windows-logo-windows-10-icon-11562965900vhcwfeiee5.png"> <img style="padding:10px" width="48" alt="Ubuntu" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR2rSSpKVBohI4AXgBaUjFVYqO73ou2l9AOXw&usqp=CAU">
 
-Para rodar o Tronco em sua máquina local, você poderá fazê-lo a partir do [instalador para Windows](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco.exe), ou baixando a distribuição zipada para [Windows](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Windows.zip) ou [Linux](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Linux.zip).
+Para rodar o Tronco em sua máquina local, você poderá fazê-lo a partir do [instalador para Windows](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Windows.exe), ou baixando a distribuição zipada para [Windows](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Windows.zip) ou [Ubuntu](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Ubuntu.zip). Desse jeito, você não precisará estar conectado à internet, e suas informações ficarão guardadas apenas no seu dispositivo.
 
 Em todos os casos, é necessário ter em sua máquina uma versão do navegador Chromium/Chrome instalada.
 
-Em um ambiente Linux, você poderá ainda [executar o framework Flask](#executar-o-framework-Flask) diretamente do terminal para realizar debugagem.
+Em um ambiente Linux, você poderá ainda [Executar o framework Flask](#Executar-o-framework-Flask) diretamente do terminal para realizar debugagem.
 
 ### Atalhos
 
-Ctrl+H: Tela inicial
-Ctrl+O: Novo arquivo
-Ctrl+S: Salvar arquivo
-Ctrl+P: Pesquisar
+- Ctrl+E: Tela inicial
+- Ctrl+O: Novo arquivo
+- Ctrl+S: Salvar arquivo
+- Ctrl+P: Pesquisar
+
+### Como fazer deploy
+
+### Executar o framework Flask
+
+### Contribuição
+
+Tronco é de código aberto. Indique um problema, deixe um comentário ou envie uma atualização para o repositório!

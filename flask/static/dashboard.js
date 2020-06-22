@@ -24,9 +24,9 @@ $('#setPermissions').click(function(){
 $('#setPassword').click(function(){
     name = $('#name').html()
     new_password = prompt("Insira uma nova senha para " + name + ":")
-    if (new_password.length) {
+    if (new_password && new_password.length) {
         new_password_twice = prompt("Insira novamente a senha, por favor:")
-        if (new_password_twice.length) {
+        if (new_password_twice && new_password_twice.length) {
             if (new_password == new_password_twice) {
                 $.ajax({
                     url: "/api/setPassword",
@@ -51,7 +51,7 @@ $('#setPassword').click(function(){
 $('#changePassword').click(function(){
     name = $('#name').html()
     password = prompt("Insira a senha para " + name + ":")
-    if (password.length){
+    if (password && password.length){
         storePassword(name, password)
         validatePassword(name)
     }
@@ -175,7 +175,7 @@ $('#deleteCorpus').click(function(){
 $('#renameCorpus').click(function(){
     name = $('#name').html()
     new_name = prompt("Dê um novo nome para " + name + ":", name)
-    if (new_name.length){
+    if (new_name && new_name.length){
         $.ajax({
             url: '/api/renameCorpus',
             method: 'POST',
@@ -250,7 +250,7 @@ function updateFiles(key = "", click = ""){
         $('.renameFile').click(function(){
             filename = $(this).attr('file')
             new_filename = prompt("Como " + filename + " deve passar a se chamar?", filename)
-            if (new_filename.length) {
+            if (new_filename && new_filename.length) {
                 $.ajax({
                     url: '/api/renameFile',
                     method: "POST",
@@ -286,7 +286,7 @@ function updateFiles(key = "", click = ""){
 
 $('#newFile').click(function(){
     filename = prompt("Como deve se chamar o novo arquivo:")
-    if (filename.length) {
+    if (filename && filename.length) {
         $.ajax({
             url: '/api/newFile',
             method: 'POST',
@@ -324,7 +324,7 @@ $(window).bind('keydown', function(event) {
             event.preventDefault()
             $('#search').focus().select()
             break
-        case 'h':
+        case 'e':
             event.preventDefault()
             $('#troncoHome').click()
             break

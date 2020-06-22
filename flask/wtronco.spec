@@ -27,7 +27,7 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           icon='static/favicon.ico',
-          console=False )
+          console=False, uac_admin=True)
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
@@ -35,4 +35,4 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='Tronco (Windows)')
+               name='Tronco-Windows')
