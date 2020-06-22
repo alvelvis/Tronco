@@ -4,13 +4,13 @@
 
 Tronco te ajuda a organizar coleções de texto. Escrito em Python/Javascript (framework Flask).
 
-## Dispositivos
+### Dispositivos
 
 Tronco pode ser utilizado em diferentes dispositivos, on-line ou off-line.
 
 ### On-line
 
-<img width="48" alt="Heroku" style="padding:10px" src="https://image.flaticon.com/icons/png/512/873/873120.png"> <img width="48" style="padding:10px" alt="Android" src="https://cdn4.iconfinder.com/data/icons/logos-3/228/android-512.png"> 
+<img width="48" alt="Heroku" style="padding:10px" src="https://image.flaticon.com/icons/png/512/873/873120.png"> <img width="48" style="padding:10px" alt="Android" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/APK_format_icon.png/600px-APK_format_icon.png"> 
 
 O aplicativo Tronco está disponível no Heroku. Ele está sempre atualizado, e você pode acessá-lo de qualquer dispositivo a partir de um navegador pelo endereço [http://troncopy.heroku.com](http://troncopy.heroku.com), ou pelo [aplicativo para Android](), e suas coleções ficarão guardadas na nuvem. Não esqueça de adicionar senha nos arquivos importantes!
 
@@ -26,7 +26,7 @@ Em todos os casos, é necessário ter em sua máquina uma versão do navegador C
 
 Em um ambiente Linux, você poderá ainda [executar o framework Flask](#executar-o-framework-Flask) diretamente do terminal para realizar debugagem.
 
-## Atalhos
+### Atalhos
 
 Ctrl+H: Tela inicial
 Ctrl+O: Novo arquivo
