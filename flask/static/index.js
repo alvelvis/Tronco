@@ -7,7 +7,7 @@ function loadCorpora(key = ""){
         }
     })
     .done(function(data){
-        $("#openCorpus").html(data.data.length ? data.data : "Nada encontrado. Criar este corpus?</a>")
+        $("#openCorpus").html(data.data.length ? data.data : "Nada encontrado. Que tal criar uma nova coleção?</a>")
         $('#filterOpenCorpus').toggleClass("is-invalid", data.data.length ? false : true)
     })
 }

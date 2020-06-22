@@ -157,7 +157,7 @@ function recentFiles(key = ""){
 
 $('#deleteCorpus').click(function(){
     name = $('#name').html()
-    if (confirm("Tem certeza de que deseja excluir o corpus " + name + "?")) {
+    if (confirm("Tem certeza de que deseja excluir a coleção " + name + "?")) {
         $.ajax({
             url: '/api/deleteCorpus',
             method: 'POST',
@@ -191,7 +191,7 @@ $('#renameCorpus').click(function(){
                 revokePassword(name)
                 window.location.href = "/corpus/" + data.data
             } else {
-                alert("Corpus " + new_name + " já existe!")
+                alert("Coleção " + new_name + " já existe!")
             }
         })
     }

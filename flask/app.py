@@ -1,4 +1,5 @@
 import os, sys
+import requests
 from flask import Flask, redirect, render_template, request
 #from pyfladesk import init_gui
 from flaskwebgui import FlaskUI
@@ -49,19 +50,7 @@ def set_password():
 
 @app.route("/api/loadConfig", methods=["POST"])
 def load_config():
-    name = request.values.get("name")
-    if not name in tronco_config.corpora:
-        tronco_config.corpora[name] = {
-            'permissions': {
-                'password': "default",
-                'disconnected': objects.all_permissions
-                },
-            'settings': {
-                'auto_wrap': "true",
-                'auto_save': "true",
-                }
-            }
-    tronco_config.save()
+    name = request.values.get("name")     
     return {
         'auto_save': tronco_config.corpora[name]['settings']['auto_save'],
         'auto_wrap': tronco_config.corpora[name]['settings']['auto_wrap'],
@@ -116,7 +105,22 @@ def rename_file():
 @app.route("/api/findOrCreateCorpus", methods=["POST"])
 def find_or_create_corpus():
     name = request.values.get("name")
-    return {'data': functions.find_or_create_corpus(name)}
+    result = functions.find_or_create_corpus(name)
+
+    if not name in tronco_config.corpora:
+        tronco_config.corpora[name] = {
+                                        'permissions': {
+                                            'password': "default",
+                                            'disconnected': objects.all_permissions
+                                            },
+                                        'settings': {
+                                            'auto_wrap': "true",
+                                            'auto_save': "true",
+                                            }
+                                        }
+        tronco_config.save()
+
+    return {'data': result}
 
 @app.route("/api/deleteCorpus", methods=["POST"])
 def delete_corpus():
@@ -242,7 +246,15 @@ def load_corpora():
 
 @app.route('/')
 def home():
-    return render_template('index.html', corpora=functions.load_corpora())
+    r = requests.get("https://raw.githubusercontent.com/alvelvis/Tronco/master/latest_version")
+    if r:
+        r = float(r)
+    return render_template(
+        'index.html', 
+        corpora=functions.load_corpora(),
+        version=objects.tronco_version,
+        latest_version=r if r else objects.tronco_version
+        )
 
 if __name__ == "__main__":
     #init_gui(app,)
