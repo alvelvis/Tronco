@@ -18,7 +18,7 @@ Para instalar o Tronco em um servidor próprio, veja [Como fazer deploy](#Como-f
 
 ### Off-line
 
-<img width="48" style="padding:10px" alt="Windows" src="https://toppng.com/uploads/preview/windows-logo-windows-10-icon-11562965900vhcwfeiee5.png"> <img style="padding:10px" width="48" alt="Ubuntu" src="https://i2.wp.com/elias.praciano.com/wp-content/uploads/2016/12/ubuntu-logo-icon-1071.png?fit=512%2C512&ssl=1">
+<img width="48" style="padding:10px" alt="Windows" src="https://toppng.com/uploads/preview/windows-logo-windows-10-icon-11562965900vhcwfeiee5.png"> <img style="padding:10px" width="48" alt="Ubuntu" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR2rSSpKVBohI4AXgBaUjFVYqO73ou2l9AOXw&usqp=CAU">
 
 Para rodar o Tronco em sua máquina local, você poderá fazê-lo a partir do [instalador para Windows](), ou baixando a distribuição zipada [para Windows]() ou [ou Linux]().
 
