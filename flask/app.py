@@ -107,17 +107,17 @@ def find_or_create_corpus():
     name = request.values.get("name")
     result = functions.find_or_create_corpus(name)
 
-    if not name in tronco_config.corpora:
-        tronco_config.corpora[name] = {
-                                        'permissions': {
-                                            'password': "default",
-                                            'disconnected': objects.all_permissions
-                                            },
-                                        'settings': {
-                                            'auto_wrap': "true",
-                                            'auto_save': "true",
-                                            }
-                                        }
+    if not result in tronco_config.corpora:
+        tronco_config.corpora[result] = {
+            'permissions': {
+                'password': "default",
+                'disconnected': objects.all_permissions
+                },
+            'settings': {
+                'auto_wrap': "true",
+                'auto_save': "true",
+                }
+            }
         tronco_config.save()
 
     return {'data': result}
