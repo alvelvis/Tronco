@@ -3,9 +3,11 @@ import requests
 from flask import Flask, redirect, render_template, request
 #from pyfladesk import init_gui
 from flaskwebgui import FlaskUI
+from flask_pwa import PWA
 import functions
 
 app = Flask(__name__)
+PWA(app)
 ui = FlaskUI(app, port=5240, maximized=True)# window_title="Tronco", icon="static/favicon.png"
 root_path = app.root_path
 
