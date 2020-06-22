@@ -12,7 +12,7 @@ Tronco pode ser utilizado em diferentes dispositivos, on-line ou off-line.
 
 <img width="48" alt="Heroku" style="padding:10px" src="https://image.flaticon.com/icons/png/512/873/873120.png"> <img width="48" style="padding:10px" alt="Android" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/APK_format_icon.png/600px-APK_format_icon.png"> 
 
-O aplicativo Tronco está disponível no Heroku. Ele está sempre atualizado, e você pode acessá-lo de qualquer dispositivo a partir de um navegador pelo endereço [http://troncopy.heroku.com](http://troncopy.heroku.com), ou pelo [aplicativo para Android](), e suas coleções ficarão guardadas na nuvem. Não esqueça de adicionar senha nos arquivos importantes!
+O aplicativo Tronco está disponível no Heroku. Ele está sempre atualizado, e você pode acessá-lo de qualquer dispositivo a partir de um navegador pelo endereço [http://troncopy.herokuapp.com](http://troncopy.herokuapp.com), ou pelo [aplicativo para Android](), e suas coleções ficarão guardadas na nuvem. Não esqueça de adicionar senha nos arquivos importantes!
 
 Para instalar o Tronco em um servidor próprio, veja [Como fazer deploy](#Como-fazer-deploy).
 
