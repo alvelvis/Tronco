@@ -22,18 +22,20 @@
       <h5 class="my-0 mr-md-auto font-weight-normal">Tronco v{{version}}</h5>
       <nav class="my-2 my-md-0 mr-md-3">
         <a href="https://github.com/alvelvis/Tronco#Dispositivos" target="_blank" class="p-2 text-dark">Baixe em vários dispositivos</a>
+        <a href="#" target="_blank" class="p-2 text-dark">Carregar projeto</a>
         <a href="https://github.com/alvelvis/Tronco" target="_blank" class="p-2 text-dark">Código-fonte</a>
       </nav>
       <!--a class="btn btn-outline-primary">Sign up</a-->
     </div>
 
-    {% if latest_version and latest_version > version %}
-    <div class="alert alert-warning" role="alert">
-      Há uma nova versão do Tronco disponível! <a href="" target="_blank">Baixe aqui</a> a versão {{new_version}}.
-    </div>
-    {% endif %}
 
     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+      {% if latest_version and latest_version > version %}
+      <div class="alert alert-warning" role="alert">
+        Há uma nova versão do Tronco disponível! <a href="https://github.com/alvelvis/Tronco#Dispositivos" target="_blank">Baixe aqui a versão {{latest_version}}</a>.
+      </div>
+      <br>
+      {% endif %}
       <h1 class="display-4">Bem-vindo ao Tronco</h1>
       <p class="lead">Tronco te ajuda a organizar coleções de texto. Vamos começar?</p>
     </div>

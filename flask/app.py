@@ -247,13 +247,11 @@ def load_corpora():
 @app.route('/')
 def home():
     r = requests.get("https://raw.githubusercontent.com/alvelvis/Tronco/master/latest_version")
-    if r:
-        r = float(r)
     return render_template(
         'index.html', 
         corpora=functions.load_corpora(),
         version=objects.tronco_version,
-        latest_version=r if r else objects.tronco_version
+        latest_version=float(r.text) if r else objects.tronco_version
         )
 
 if __name__ == "__main__":
