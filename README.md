@@ -1,6 +1,6 @@
-# Tronco
-
 <img width="96" alt="Tronco" src="https://github.com/alvelvis/Tronco/raw/master/flask/static/favicon.png">
+
+# Tronco
 
 O Tronco te ajuda a organizar coleções de texto. Eles ficam salvos na nuvem, podendo ser acessados de qualquer dispositivo ou apenas em sua máquina.
 
