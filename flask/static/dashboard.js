@@ -118,24 +118,21 @@ function validatePassword (name){
     })
     .done(function(data){
         permissions = data.permissions.split("|")
-        if (permissions.indexOf("visualizar") == -1){
-            window.location.href = "/"
-        } else {
-            permEdit = permissions.indexOf("editar") >= 0
-            permSetup = permissions.indexOf("configurar") >= 0
-            if (permSetup) { permEdit = true }
-            if (!permEdit) { permSetup = false }
-            $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Você é visitante"))
-            $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
-            $('#corpusSettings').toggle(permSetup)
-            $('#mainText').prop('readonly', !permEdit)
-            $('#saveModifications').attr('disabled', !permEdit)
-            $('#menu-svg').toggle(permSetup)
-            $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
-            $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
-            $('#permissions').html("Permissões: " + permissions.join(" / "))
-            loadConfig()
-        }
+        
+        permEdit = permissions.indexOf("editar") >= 0
+        permSetup = permissions.indexOf("configurar") >= 0
+        if (permSetup) { permEdit = true }
+        if (!permEdit) { permSetup = false }
+        $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Você é visitante"))
+        $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
+        $('#corpusSettings').toggle(permSetup)
+        $('#mainText').prop('readonly', !permEdit)
+        $('#saveModifications').attr('disabled', !permEdit)
+        $('#menu-svg').toggle(permSetup)
+        $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
+        $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
+        $('#permissions').html("Permissões: " + permissions.join(" / "))
+        loadConfig()
     })
 }
 
@@ -453,6 +450,10 @@ function textModified(state){
 function loadFile(filename){
     if (filename != "README") {
         $('#recentFiles').toggle(false)
+        if (permissions.indexOf("visualizar") == -1){
+            alert("Você não tem permissão para visualizar esta coleção")
+            window.location.href = "/"
+        }
     }
     name = $('#name').html()
     window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);

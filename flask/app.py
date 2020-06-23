@@ -72,7 +72,7 @@ def validate_password():
 def find_or_create_file():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not tronco_config.has_permission(name, password, "visualizar"): return None
+    #if not tronco_config.has_permission(name, password, "visualizar"): return None
     filename = request.values.get("filename")
 
     return {'data': functions.find_or_create_file(name, filename, create=tronco_config.has_permission(name, password, "editar"))}
@@ -81,7 +81,7 @@ def find_or_create_file():
 def recent_files():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not tronco_config.has_permission(name, password, "visualizar"): return None
+    #if not tronco_config.has_permission(name, password, "visualizar"): return None
     key = request.values.get("key", "")
     data = [f'<li class="breadcrumb-item"><a class="recentFiles" href="#" file="{x}">{x}</a></li>' for x in functions.recent_files(name, key)]
     return {'data': data}
@@ -158,7 +158,7 @@ def delete_files():
 def update_files():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not tronco_config.has_permission(name, password, "visualizar"): return None
+    #if not tronco_config.has_permission(name, password, "visualizar"): return None
 
     data = [f'''
     <li class="nav-item d-flex justify-content-between align-items-center">
@@ -202,8 +202,8 @@ def save_file():
 def load_file():
     name = request.values.get('name')
     password = request.values.get("password")
-    if not tronco_config.has_permission(name, password, "visualizar"): return None
     filename = request.values.get('filename')
+    if filename != "README" and not tronco_config.has_permission(name, password, "visualizar"): return None
     text = functions.load_file(name, filename)
     if text:
         return {'data': text}
