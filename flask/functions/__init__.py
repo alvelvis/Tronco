@@ -17,22 +17,22 @@ def find_or_create_file(name, filename, create):
     else:
         return None
 
-def recent_files(name, key="", max_results=10):
+def recent_files(name, key="", max_results=50):
     name_dir = os.path.join(app.root_path, "corpora", name)
     files = {}
     for item in os.listdir(name_dir):
-        if item != "README":
-            files[item] = {
-                'stats': [0, 0],
-                'text': ""
-            }
-            item_dir = os.path.join(app.root_path, "corpora", name, item)
-            with open(item_dir) as f:
-                text = f.read()
-            files[item]['text'] = text
-            if all(x in text for x in ["# times_seen = ", "# last_seen = "]):
-                files[item]['stats'][0] = float(text.split("# last_seen = ")[1].split("\n")[0])
-                files[item]['stats'][1] = int(text.split("# times_seen = ")[1].split("\n")[0])
+        #if item != "README":
+        files[item] = {
+            'stats': [0, 0],
+            'text': ""
+        }
+        item_dir = os.path.join(app.root_path, "corpora", name, item)
+        with open(item_dir) as f:
+            text = f.read()
+        files[item]['text'] = text
+        if all(x in text for x in ["# times_seen = ", "# last_seen = "]):
+            files[item]['stats'][0] = float(text.split("# last_seen = ")[1].split("\n")[0])
+            files[item]['stats'][1] = int(text.split("# times_seen = ")[1].split("\n")[0])
 
     return [x for x in sorted(files, key=lambda y: -files[y]['stats'][0]) if not key or (key and all((k.lower() in x.lower() or k.lower() in files[x]['text'].lower()) for k in key.split()))][:max_results]
 
@@ -153,23 +153,14 @@ def create_new_file(name, filename, text=""):
             text = f'''# times_seen = 0
 # last_seen = 0
 # first_seen = {time.time()}
-{name}
-{"="*len(name)}
-
-Utilize este arquivo para escrever uma introdução sobre a sua coleção de texto :)
-
-Dica:
-- Os metadados deste arquivo README são aplicáveis a todos os novos arquivos do corpus
-- Você pode configurar uma senha para apenas você conseguir editar ou visualizar esta coleção
-- A primeira senha configurada para uma coleção não poderá ser recuperada posteriormente. Pense bem!
-'''
+{name}'''
         with open(filename_dir, "w") as f:
             f.write(text)
         return filename
     else:
         return False
 
-def load_corpora(key=""):
+def load_corpora(key="", max_results=10):
     corpora_dir = os.path.join(app.root_path, "corpora")
     if not os.path.isdir(corpora_dir):
         os.mkdir(corpora_dir)
@@ -190,4 +181,4 @@ def load_corpora(key=""):
         if os.path.isdir(item_dir):
             corpora[item] = {'files': len([x for x in os.listdir(item_dir) if x != "README"]), 'stats': stats}
 
-    return sorted([{**{'name': x}, **corpora[x]} for x in corpora if not key.strip() or (key.strip() and all(k in x.lower() for k in key.lower().split()))], key=lambda y: -y['stats'][0])
+    return sorted([{**{'name': x}, **corpora[x]} for x in corpora if not key.strip() or (key.strip() and all(k in x.lower() for k in key.lower().split()))], key=lambda y: -y['stats'][0])[:max_results]

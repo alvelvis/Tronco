@@ -1,3 +1,8 @@
+$('#search').on('focus', function(){
+    window.scrollTo(0, 0)
+    $('#recentFiles').toggle(true)
+})
+
 $('.togglePerm').on('change', function(){
     name = $('#name').html()
     perm = $(this).attr('perm')
@@ -79,7 +84,6 @@ function validatePassword (name){
             if (!permEdit) { permSetup = false }
             $('#conected').html(permSetup ? "Conectado" : "Não conectado")
             $('#mainText').prop('readonly', !permEdit)
-            $('.toggleSettings').css('pointer-events', permEdit ? "auto" : "none")
             $('#saveModifications').attr('disabled', !permEdit)
             $('#menu-svg').toggle(permEdit)
             $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
@@ -148,7 +152,7 @@ function recentFiles(key = ""){
         }
     })
     .done(function(data){
-        $('#recentFiles').html(data.data.length ? data.data : 'Criar novo arquivo?')
+        $('#recentFiles').html(data.data.length ? data.data : 'Nenhum arquivo encontrado. Criar um novo?')
         $('.recentFiles').click(function(){
             $('[file="' + $(this).attr('file') + '"].files').click()
         })
@@ -198,7 +202,14 @@ $('#renameCorpus').click(function(){
 })
 
 $('.toggleSettings').click(function(){
-    $("#" + $(this).attr('settings')).toggle()
+    if ($('#menu-svg:visible') && $('#menu-svg:visible').length) {
+        $("#" + $(this).attr('settings')).toggle()
+    }
+    if (isMobile){
+        $('#sidebar').toggleClass("d-none")
+        $('#search').toggle()
+        $('#after-search').toggle()
+    }
 })
 
 function updateFiles(key = "", click = ""){
@@ -314,7 +325,9 @@ $(window).bind('keydown', function(event) {
         switch (String.fromCharCode(event.which).toLowerCase()) {
         case 'o':
             event.preventDefault()
-            $('#newFile').click()
+            if ($('#newFile').css('visibility') != "hidden") {
+                $('#newFile').click()
+            }
             break
         case 's':
             event.preventDefault()
@@ -366,6 +379,7 @@ function textModified(state){
 }
 
 function loadFile(filename){
+    $('#recentFiles').toggle(false)
     name = $('#name').html()
     window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
     $.ajax({
@@ -451,7 +465,12 @@ function loadConfig(){
     })
 }
 
+var isMobile = false
+
 $(document).ready(function(){
+    if ($('#sidebar:hidden').length) {
+        isMobile = true
+    }
     filename = $('#filename').html()
     loadConfig()
     updateFiles("", filename)

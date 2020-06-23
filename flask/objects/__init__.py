@@ -7,6 +7,21 @@ import re
 tronco_version = 1.0
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 all_permissions = ["visualizar", "editar", "configurar"]
+startup_tips = [
+    "Você pode sempre acessar a barra de buscas apertando Ctrl+P",
+    "Caiu a luz? Não perca seu texto, ative o salvamento automático",
+    "Está sem internet? Você pode sempre utilizar a versão off-line do Tronco",
+    "Está na rua e precisa tomar nota? Experimente nosso aplicativo",
+    "Buscar coleções ou textos que não existem é uma maneira rápida de criá-los",
+    "Você pode sempre configurar se outras pessoas terão acesso aos seus arquivos",
+    "Os metadados do arquivo README são aplicados a todos os arquivos da coleção",
+    "Depois de criar uma senha para uma coleção, ela não poderá mais ser recuperada!",
+    "Você sabia que pode utilizar o Tronco com apenas poucos comandos do teclado?",
+    "Quer selecionar outra coleção de textos? Ctrl+E",
+    "Precisa criar um novo arquivo rapidamente? Ctrl+O",
+    "O README será sempre exibido ao abrir uma coleção",
+    "Utilize o README para escrever uma introdução para a coleção!"
+]
 
 _filename_ascii_strip_re = re.compile(r"[^ A-Za-z0-9_.-]")
 

@@ -1,5 +1,6 @@
 import os, sys
 import requests
+import random
 from flask import Flask, redirect, render_template, request
 #from pyfladesk import init_gui
 from flaskwebgui import FlaskUI
@@ -40,6 +41,7 @@ def set_password():
     new_password = request.values.get("new_password")
     tronco_config.corpora[name]['permissions']['password'] = new_password
     tronco_config.corpora[name]['permissions']['disconnected'].remove("configurar")
+    tronco_config.corpora[name]['permissions']['disconnected'].remove("editar")
     tronco_config.save()
     return {'data': ''}
 
@@ -235,7 +237,8 @@ def home():
         'index.html', 
         corpora=functions.load_corpora(),
         version=objects.tronco_version,
-        latest_version=float(r.text) if r else objects.tronco_version
+        latest_version=float(r.text) if r else objects.tronco_version,
+        random_tip="Dica: " + random.choice(objects.startup_tips)
         )
 
 if __name__ == "__main__":

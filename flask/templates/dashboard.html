@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Tronco">
+    <meta name="description" content="O Tronco te ajuda a organizar coleções de texto.">
     <meta name="author" content="Elvis de Souza">
     <link rel="icon" href="{{url_for('static', filename='favicon.png')}}">
 
@@ -19,14 +19,14 @@
   <body>
       
     <nav class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
-      <span class="navbar-brand col-sm-3 col-md-2 mr-0 d-none d-lg-block" style="color:white">
+      <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white">
         <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
             <span id="menu-svg" data-feather="menu"></span>
             <span id="name" class="name" style="margin-left:5px">{{name}}</span>
         </a>   
       </span>
       <input class="form-control form-control-dark w-100" id="search" type="text" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Digite para procurar ou criar arquivo" aria-label="Search">
-      <ul class="navbar-nav px-3">
+      <ul id="after-search" class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
           <a title="Voltar ao início (Ctrl+E)" class="nav-link" href="/">
             <span id="troncoHome"><!--onclick="window.location.href='/'"img class="mb-2 d-none d-lg-block" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24"-->Tronco</span>
@@ -36,10 +36,11 @@
         </li>
       </ul>
     </nav>
+    
 
     <div class="container-fluid">
       <div class="row">
-        <nav style="min-width:200px" class="col-md-2 d-none d-md-block bg-light sidebar pt-5">
+        <nav style="min-width:200px" id="sidebar" class="col-md-2 d-none d-md-block bg-light sidebar pt-5">
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
 
@@ -157,11 +158,13 @@
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" style="padding-bottom:30px">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb" id="recentFiles">
-                    
-                </ol>
-            </nav>
+          
+          <nav aria-label="breadcrumb">
+            <ol style="display:none" class="breadcrumb" id="recentFiles">
+                
+            </ol>
+          </nav>
+
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
             <h1 class="h2 filename" id="filename">{{filename}}</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
