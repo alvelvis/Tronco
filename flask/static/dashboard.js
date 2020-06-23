@@ -567,5 +567,5 @@ $(document).ready(function(){
     loadConfig()
     updateFiles("", filename)
     $('#mainText').autosize()
-    $('#search').focus()
+    //$('#search').focus()
 })
