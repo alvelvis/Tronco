@@ -60,7 +60,7 @@
                     <br>
                   {% endif %}
                   <br>
-                  <div id="openCorpus" style="overflow: auto;">
+                  <div id="openCorpus" style="overflow:auto; margin-bottom:40px">
                   </div>
               </ul>
               
@@ -84,11 +84,14 @@
         </div>
       </div>
 
-      <footer class="px-5 my-md-4 pt-4 pt-md-5 fixed-bottom d-none d-lg-block">
+
+
+      
+
+      <footer class="fixed-bottom bg-light" style="padding: 0px 0px 30px 40px ">
         <div class="row">
-          <div class="col-12 col-md">
-            <img class="mb-2" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
-            <small class="d-block mb-3 text-muted">&copy; 2020 - Tronco é de código aberto. <a href="https://github.com/alvelvis/Tronco" target="_blank">Colabore!</a></small>
+          <div class="col-12 col-md ">
+            <img class="mb-2" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24"><small class="mb-3 px-2 text-muted ">&copy; 2020 - Tronco é de código aberto. <a href="https://github.com/alvelvis/Tronco" target="_blank">Colabore!</a></small>
           </div>
         </div>
       </footer>

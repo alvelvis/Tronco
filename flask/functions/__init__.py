@@ -17,7 +17,7 @@ def find_or_create_file(name, filename, create):
     else:
         return None
 
-def recent_files(name, key="", max_results=50):
+def recent_files(name, key="", max_results=30):
     name_dir = os.path.join(app.root_path, "corpora", name)
     files = {}
     for item in os.listdir(name_dir):
@@ -160,7 +160,7 @@ def create_new_file(name, filename, text=""):
     else:
         return False
 
-def load_corpora(key="", max_results=10):
+def load_corpora(key="", max_results=20):
     corpora_dir = os.path.join(app.root_path, "corpora")
     if not os.path.isdir(corpora_dir):
         os.mkdir(corpora_dir)

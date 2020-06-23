@@ -88,7 +88,7 @@ function validatePassword (name){
             $('#menu-svg').toggle(permEdit)
             $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
             $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
-            $('#permissions').html("Permissões: " + permissions.join("/"))
+            $('#permissions').html("Permissões: " + permissions.join(" / "))
             $('#permissionsSettings').toggle(permSetup)
             loadConfig()
         }
@@ -470,6 +470,9 @@ function loadConfig(){
 var isMobile = false
 
 $(document).ready(function(){
+    if ($('#sidebar').offset().top == 0){
+        $('#sidebar').toggleClass('pt-5')
+    }
     if ($('#sidebar:hidden').length) {
         isMobile = true
     }

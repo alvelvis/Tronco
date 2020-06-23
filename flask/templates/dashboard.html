@@ -40,10 +40,9 @@
 
     <div class="container-fluid">
       <div class="row">
-        <nav style="min-width:200px" id="sidebar" class="col-md-2 d-none d-md-block bg-light sidebar pt-4">
-          <div class="sidebar-sticky pt-4">
+        <nav style="min-width:200px" id="sidebar" class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky p-0">
             <ul class="nav flex-column">
-
                 <li class="nav-item settings form-control-dark bg-dark pb-2" id="corpusSettings" style="display:none;">
                     <a class="nav-link">
                         <div class="form-row align-items-left">
@@ -110,8 +109,8 @@
                     </div>
                 </li>
 
-                <div>
-                    <li class="nav-item">
+                <div id="corpusSidebar">
+                    <li class="nav-item pt-2">
                         <a class="nav-link" id="changePassword" title="Insira a senha da coleção">
                         <span data-feather="users"></span>
                         <span id="conected">Não conectado</span>
