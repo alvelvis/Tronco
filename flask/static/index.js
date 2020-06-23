@@ -12,6 +12,12 @@ function loadCorpora(key = ""){
     })
 }
 
+$('#filterOpenCorpus').on('click', function(){
+    if (isMobile) {
+        window.scrollTo(0, $('#filterOpenCorpus').offset().top-30)
+    }
+})
+
 $('#filterOpenCorpus').on('keyup', function(e){
     key = $(this).val()
     loadCorpora(key)
@@ -30,6 +36,9 @@ $('#filterOpenCorpus').on('keyup', function(e){
 })
 
 $(window).ready(function(){
+    if ($('#tronco:hidden').length) {
+        isMobile = true
+    }
     loadCorpora()
     $('#filterOpenCorpus').focus()
 })
