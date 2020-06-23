@@ -562,6 +562,8 @@ $(document).ready(function(){
         isMobile = true
         $('#search').css('background-color', "white")
         $('#troncoHome').append("<span class='bg-dark p-0 m-0 form-control-dark'>Tronco</span>")
+    } else {
+        $('#main').css('margin-left', '260px')
     }
     filename = $('#filename').html()
     loadConfig()

@@ -164,7 +164,7 @@ def update_files():
     <li class="nav-item d-flex justify-content-between align-items-center">
         <a class="nav-link files d-flex align-items-center" style="width:100%;" file="{ x }">
             <span data-feather="file-text"></span>
-            <span style="max-width: 100px; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{ x }</span>
+            <span style="max-width: 130px; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{ x }</span>
         </a>
         <div class="d-flex align-items-center fileSettings">
             <a class="d-flex align-items-center renameFile" style="padding-right:10px" title="Renomear arquivo" file="{ x }">

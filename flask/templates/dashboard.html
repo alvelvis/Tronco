@@ -22,7 +22,7 @@
     <nav id="mainHeadbar" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
       <a id="troncoHome" onclick="window.location.href='/'" class="align-text-middle mt-2" title="Voltar para coleções (Ctrl+E)"><img class="mx-3 mb-1" src="{{url_for('static', filename='favicon.png')}}" alt="" width="20" height="20"></a>
       <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white">
-        <a class="toggleSettings" style="width:100%;  display:block" settings="corpusSettings" title="Configurações da coleção">
+        <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
             <span id="menu-svg" data-feather="menu"></span>
             <span id="name" class="name" style="margin-left:5px">{{name}}</span>
         </a>   
@@ -43,7 +43,7 @@
 
     <div class="container-fluid">
       <div class="row">
-        <nav style="min-width:200px" id="sidebar" class="col-md-2 d-none d-md-block bg-light sidebar">
+        <nav style="min-width:260px; max-width:260px" id="sidebar" class="col-md-2 d-none d-md-block bg-light sidebar">
           <div id="sidebar-scroll" class="sidebar-sticky p-0">
             <ul class="nav flex-column">
                 <li class="nav-item settings form-control-dark bg-dark pb-2" id="corpusSettings" style="display:none;">
@@ -159,7 +159,7 @@
           </div>
         </nav>
 
-        <main id="main" role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" style="padding-bottom:30px">
+        <main id="main" role="main" class="pt-3 px-4" style="padding-bottom:30px;">
           
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb alert-light" id="recentFiles">
