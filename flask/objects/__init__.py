@@ -20,7 +20,7 @@ startup_tips = [
     "Quer selecionar outra coleção de textos? Ctrl+E",
     "Precisa criar um novo arquivo rapidamente? Ctrl+O",
     "O README será sempre exibido ao abrir uma coleção",
-    "Utilize o README para escrever uma introdução para a coleção!"
+    "Utilize o README para escrever uma introdução para a coleção!",
     "Você pode compartilhar qualquer texto, mas fique atento às permissões de visitante"
 ]
 

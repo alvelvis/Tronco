@@ -418,6 +418,14 @@ $('#mainText').on('keyup', function(event){
     }
 })
 
+$('#mainText').on('change', function(){
+    if ($('#autoSaveCheckbox').prop('checked')){
+        saveFile($('#filename').html(), $('#mainText').val())
+    } else {
+        textModified(true)
+    }
+})
+
 function textModified(state){
     $('#saveModifications').toggleClass('btn-success', state)
     $('#saveModifications').toggleClass('btn-outline-secondary', !state)
@@ -552,7 +560,7 @@ $(document).ready(function(){
     }
     if ($('#sidebar:hidden').length) {
         isMobile = true
-        $('#troncoHome').append("<span class='bg-dark form-control-dark'>Tronco</span>")
+        $('#troncoHome').append("<span class='bg-dark p-0 m-0 form-control-dark'>Tronco</span>")
     }
     filename = $('#filename').html()
     loadConfig()
