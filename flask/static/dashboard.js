@@ -16,6 +16,7 @@ $('#shareText').click(function(){
 $('#mainText').on("focus", function(){
     if (isMobile) {
         $('#mainHeadbar').toggle(false)
+        $('#search').toggle(false)
         $('#sidebar').toggleClass("d-none", true)
     }
 })
@@ -23,6 +24,7 @@ $('#mainText').on("focus", function(){
 $('#mainText').on("blur", function(){
     if (isMobile) {
         $('#mainHeadbar').toggle(true)
+        $('#search').toggle(true)
     }
 })
 
