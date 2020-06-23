@@ -2,7 +2,7 @@
 
 # Tronco
 
-O Tronco te ajuda a organizar coleções de texto. Elas ficam salvos na nuvem, podendo ser acessadas de qualquer dispositivo ou apenas em sua máquina.
+O Tronco te ajuda a organizar coleções de texto. Elas ficam salvas na nuvem, podendo ser acessadas de qualquer dispositivo ou apenas em sua máquina.
 
 <!--Diversas ferramentas de processamento de linguagem natural compõem o arsenal do Tronco. Veja X.-->
 
