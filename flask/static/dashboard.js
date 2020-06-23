@@ -560,6 +560,7 @@ $(document).ready(function(){
     }
     if ($('#sidebar:hidden').length) {
         isMobile = true
+        $('#search').css('background-color', "white")
         $('#troncoHome').append("<span class='bg-dark p-0 m-0 form-control-dark'>Tronco</span>")
     }
     filename = $('#filename').html()
@@ -567,5 +568,4 @@ $(document).ready(function(){
     updateFiles("", filename)
     $('#mainText').autosize()
     $('#search').focus()
-
 })
