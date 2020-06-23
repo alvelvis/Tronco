@@ -97,7 +97,7 @@ function validatePassword (name){
             $('#conected').html(permSetup ? "Conectado" : "Não conectado")
             $('#mainText').prop('readonly', !permEdit)
             $('#saveModifications').attr('disabled', !permEdit)
-            $('#menu-svg').toggle(permEdit)
+            $('#menu-svg').toggle(permSetup)
             $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
             $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
             $('#permissions').html("Permissões: " + permissions.join(" / "))
