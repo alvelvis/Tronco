@@ -6,7 +6,7 @@
     <meta name="description" content="O Tronco te ajuda a organizar coleções de texto.">
     <link rel="icon" href="{{url_for('static', filename='favicon.png')}}">
 
-    <title>{{filename if filename else name}} - Tronco</title>
+    <title>{{filename if filename != "README" else name}} - Tronco</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{{url_for('static', filename='bootstrap.css')}}" rel="stylesheet">
