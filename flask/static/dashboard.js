@@ -5,7 +5,7 @@ $('#main').click(function(){
 })
 
 $('#shareText').click(function(){
-    $('#shareLink').val(window.location.href.match(/^.*\//) + $('#name').html() + "?file=" + $('#filename').html())
+    $('#shareLink').val(window.location.href.match(/^.*\//) + $('#name').html().replaceAll(" ", "%20") + "?file=" + $('#filename').html().replaceAll(" ", "%20"))
     $('#shareLink').show()
     $('#shareLink').select()
     document.execCommand('copy')
@@ -577,8 +577,9 @@ $(document).on('touchend', function(){
 
 $(window).on('resize', function(){
     if (!isMobile) {
-        $('#main').css('margin-left', $('#sidebar:visible').length ? '260px' : '')
+        $('#main').css('margin-left', $('#sidebar:visible').length ? '260px' : '0px')
     }
+    $('#troncoHome').css("width", isMobile ? "100%" : "")
 })
 
 $(document).ready(function(){
@@ -588,7 +589,11 @@ $(document).ready(function(){
     if ($('#sidebar:hidden').length) {
         isMobile = true
         $('#search').css('background-color', "white")
-        $('#troncoHome').append("<span class='bg-dark  form-control-dark'>Tronco</span>")
+        $('#troncoHomeLabel').html("Tronco")
+    } else {
+        isMobile = false
+        $('#troncoHomeLabel').html("")
+        $('#search').css('background-color', "")
     }
     $(window).trigger('resize')
     filename = $('#filename').html()
