@@ -14,7 +14,9 @@ function loadCorpora(key = ""){
 
 $('#filterOpenCorpus').on('click', function(){
     if (isMobile) {
-        window.scrollTo(0, $('#filterOpenCorpus').offset().top-30)
+        setTimeout(function(){
+            window.scrollTo(0, $('#filterOpenCorpus').offset().top-30)
+        }, 500)
     }
 })
 
