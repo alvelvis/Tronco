@@ -16,7 +16,7 @@ $('#filterOpenCorpus').on('click', function(){
     if (isMobile) {
         setTimeout(function(){
             window.scrollTo(0, $('#filterOpenCorpus').offset().top-30)
-        }, 200)
+        }, 300)
     }
 })
 

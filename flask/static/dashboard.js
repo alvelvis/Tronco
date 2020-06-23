@@ -1,3 +1,18 @@
+$('#shareText').click(function(){
+    $('#shareLink').val(window.location.href.match(/^.*\//) + $('#name').html() + "?file=" + $('#filename').html())
+    $('#shareLink').show()
+    $('#shareLink').select()
+    document.execCommand('copy')
+    $('#shareLink').val("Copiado!")
+    $('#shareText').toggleClass("btn-success", true)
+    $('#shareText').toggleClass("btn-outline-secondary", false)
+    setTimeout(function(){
+        $('#shareLink').hide()
+        $('#shareText').toggleClass("btn-success", false)
+        $('#shareText').toggleClass("btn-outline-secondary", true)
+    }, 2000)
+})
+
 $('#mainText').on("focus", function(){
     if (isMobile) {
         $('#mainHeadbar').toggle(false)
@@ -67,22 +82,27 @@ $('#setPassword').click(function(){
 
 $('#changePassword').click(function(){
     name = $('#name').html()
-    password = prompt("Insira a senha para " + name + ":")
-    if (password && password.length){
-        storePassword(name, password)
-        validatePassword(name)
+    if (!permSetup || getPassword(name) != "default") {
+        password = prompt("Insira a senha para " + name + ":")
+        if (password && password.length){
+            storePassword(name, password)
+            validatePassword(name)
+        }
+    } else {
+        $('#setPassword').click()
     }
 })
 
 var expirationDate = '2038-01-19, 03:14:08 UTC'
 
 function validatePassword (name){
+    password = getPassword(name)
     $.ajax({
         url: '/api/validatePassword',
         method: 'POST',
         data: {
             'name': name,
-            'password': getPassword(name)
+            'password': password
         }
     })
     .done(function(data){
@@ -94,15 +114,15 @@ function validatePassword (name){
             permSetup = permissions.indexOf("configurar") >= 0
             if (permSetup) { permEdit = true }
             if (!permEdit) { permSetup = false }
-            $('#conected').html(permSetup ? "Conectado" : "Não conectado")
+            $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Visitante"))            
             $('#mainText').prop('readonly', !permEdit)
             $('#saveModifications').attr('disabled', !permEdit)
             $('#menu-svg').toggle(permSetup)
             $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
             $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
             $('#permissions').html("Permissões: " + permissions.join(" / "))
-            //$('#permissionsSettings').toggle(permSetup)
-            $('#corpusSettings').toggle(permSetup)
+            $('#corpusSettings').toggle(false)
+            $('#permissionsSettings').toggle(password === "default" ? false : true)
             loadConfig()
         }
     })
@@ -174,7 +194,8 @@ function recentFiles(key = ""){
 
 $('#deleteCorpus').click(function(){
     name = $('#name').html()
-    if (confirm("Tem certeza de que deseja excluir a coleção " + name + "?")) {
+    confirmName = prompt("Digite o nome da coleção (" + name + ") para confirmar que deseja excluí-lo:")
+    if (confirmName && confirmName.length && confirmName == name) {
         $.ajax({
             url: '/api/deleteCorpus',
             method: 'POST',
@@ -186,6 +207,8 @@ $('#deleteCorpus').click(function(){
         .done(function(){
             window.location.href = "/"
         })
+    } else {
+        alert("Nome da coleção não confere.")
     }
 })
 
@@ -216,6 +239,7 @@ $('#renameCorpus').click(function(){
 
 $('.toggleSettings').click(function(){
     if (isMobile){
+        $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         $('#search').toggle()
         $('#after-search').toggle()
@@ -248,6 +272,7 @@ function updateFiles(key = "", click = ""){
             $('.files').toggleClass('active', false)
             $(this).toggleClass('active', true)
             loadFile($(this).attr('file'))
+            this.scrollIntoView();
             if ($(this).attr('file') != "README") {
                 $('title').html($(this).attr('file') + " - Tronco")
             } else {

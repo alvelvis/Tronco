@@ -21,6 +21,7 @@ startup_tips = [
     "Precisa criar um novo arquivo rapidamente? Ctrl+O",
     "O README será sempre exibido ao abrir uma coleção",
     "Utilize o README para escrever uma introdução para a coleção!"
+    "Você pode compartilhar qualquer texto, mas fique atento às permissões de visitante"
 ]
 
 _filename_ascii_strip_re = re.compile(r"[^ A-Za-z0-9_.-]")
@@ -65,7 +66,7 @@ class TroncoConfig:
             self.corpora[name] = {
                 'permissions': {
                     'password': "default",
-                    'disconnected': all_permissions
+                    'disconnected': ["visualizar"]
                     },
                 'settings': {
                     'auto_wrap': "true",

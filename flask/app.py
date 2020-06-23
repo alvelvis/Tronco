@@ -40,8 +40,8 @@ def set_password():
     if not tronco_config.has_permission(name, password, "configurar"): return None
     new_password = request.values.get("new_password")
     tronco_config.corpora[name]['permissions']['password'] = new_password
-    tronco_config.corpora[name]['permissions']['disconnected'].remove("configurar")
-    tronco_config.corpora[name]['permissions']['disconnected'].remove("editar")
+    #tronco_config.corpora[name]['permissions']['disconnected'].remove("configurar")
+    #tronco_config.corpora[name]['permissions']['disconnected'].remove("editar")
     tronco_config.save()
     return {'data': ''}
 
@@ -112,7 +112,7 @@ def find_or_create_corpus():
 def delete_corpus():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not tronco_config.has_permission(name, password, "editar"): return None
+    if not tronco_config.has_permission(name, password, "configurar"): return None
     functions.delete_corpus(name)
     del tronco_config.corpora[name]
     tronco_config.save()
@@ -122,7 +122,7 @@ def delete_corpus():
 def rename_corpus():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not tronco_config.has_permission(name, password, "editar"): return None
+    if not tronco_config.has_permission(name, password, "configurar"): return None
     new_name = request.values.get("new_name")
     result = functions.rename_corpus(name, new_name)
     tronco_config.corpora.update({new_name: tronco_config.corpora[name]})
@@ -181,7 +181,7 @@ def update_files():
 def change_tronco_config():
     name = request.values.get("name")
     password = request.values.get("password")
-    if not tronco_config.has_permission(name, password, "editar"): return None
+    if not tronco_config.has_permission(name, password, "configurar"): return None
     for value in request.values:
         if value not in ["name", "password"]:
             tronco_config.corpora[name]['settings'][value] = request.values.get(value)

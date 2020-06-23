@@ -2,7 +2,7 @@
 
 # Tronco
 
-Tronco te ajuda a organizar coleções de texto. Escrito em Python/Javascript (framework Flask).
+O Tronco te ajuda a organizar coleções de texto. Escrito em Python/Javascript (framework Flask).
 
 Acesse pelo endereço: [http://tronco.ga](http://tronco.ga)
 
