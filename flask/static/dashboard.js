@@ -234,6 +234,9 @@ function updateFiles(key = "", click = ""){
             } else {
                 $('title').html(name + " - Tronco")
             }
+            if (isMobile && $('#sidebar:visible').length) {
+                $('.toggleSettings').click()
+            }
         })
 
         $('.deleteFile').click(function(){
@@ -398,7 +401,6 @@ function loadFile(filename){
         $('.filename').html(filename)
         $('#mainText').val(data.data.text)
         $('#mainText').trigger('input')
-        $('#mainText').focus()
         recentFiles()
     })
 }
@@ -480,4 +482,5 @@ $(document).ready(function(){
     loadConfig()
     updateFiles("", filename)
     $('#mainText').autosize()
+    $('#search').focus()
 })
