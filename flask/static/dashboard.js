@@ -125,7 +125,8 @@ function validatePassword (name){
             permSetup = permissions.indexOf("configurar") >= 0
             if (permSetup) { permEdit = true }
             if (!permEdit) { permSetup = false }
-            $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Visitante"))            
+            $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Visitante"))
+            $('#permissionsSettings').toggle(password == "default" && permSetup ? true : (permSetup ? true : false))
             $('#mainText').prop('readonly', !permEdit)
             $('#saveModifications').attr('disabled', !permEdit)
             $('#menu-svg').toggle(permSetup)
@@ -133,7 +134,6 @@ function validatePassword (name){
             $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
             $('#permissions').html("Permissões: " + permissions.join(" / "))
             $('#corpusSettings').toggle(false)
-            $('#permissionsSettings').toggle(password === "default" ? false : true)
             loadConfig()
         }
     })
