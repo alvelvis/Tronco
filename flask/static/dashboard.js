@@ -218,7 +218,7 @@ $('#deleteCorpus').click(function(){
             window.location.href = "/"
         })
     } else {
-        if (confirmName && confirName.length) {
+        if (confirmName && confirmName.length) {
             alert("Nome da coleção não confere.")
         }
     }
@@ -456,6 +456,8 @@ function loadFile(filename){
             alert("Você não tem permissão para visualizar esta coleção")
             window.location.href = "/"
         }
+    } else {
+        $('#recentFiles').toggle(true)
     }
     name = $('#name').html()
     window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
@@ -586,7 +588,7 @@ $(document).ready(function(){
     if ($('#sidebar:hidden').length) {
         isMobile = true
         $('#search').css('background-color', "white")
-        $('#troncoHome').append("<span class='bg-dark p-0 m-0 form-control-dark'>Tronco</span>")
+        $('#troncoHome').append("<span class='bg-dark  form-control-dark'>Tronco</span>")
     }
     $(window).trigger('resize')
     filename = $('#filename').html()

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="O Tronco te ajuda a organizar coleções de texto.">
+    <meta name="description" content="Tronco te ajuda a organizar coleções de texto.">
     <link rel="icon" href="{{url_for('static', filename='favicon.png')}}">
 
     <title>{{filename if filename != "README" else name}} - Tronco</title>
@@ -20,7 +20,7 @@
   <body>
       
     <nav id="mainHeadbar" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
-      <a id="troncoHome" onclick="window.location.href='/'" class="align-text-middle mt-2" title="Voltar para coleções (Ctrl+E)"><img class="mx-3 mb-1" src="{{url_for('static', filename='favicon.png')}}" alt="" width="20" height="20"></a>
+      <a id="troncoHome" onclick="window.location.href='/'" class="align-text-middle py-1 mt-2" title="Voltar para coleções (Ctrl+E)"><img class="mx-3 mb-1" src="{{url_for('static', filename='favicon.png')}}" alt="" width="20" height="20"></a>
       <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white">
         <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
             <span id="menu-svg" data-feather="menu"></span>
