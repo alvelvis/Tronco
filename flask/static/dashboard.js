@@ -569,7 +569,9 @@ $(document).on('touchend', function(){
 })
 
 $(window).on('resize', function(){
-    $('#main').css('margin-left', $('#sidebar:visible').length ? '260px' : '')
+    if (!isMobile) {
+        $('#main').css('margin-left', $('#sidebar:visible').length ? '260px' : '')
+    }
 })
 
 $(document).ready(function(){
