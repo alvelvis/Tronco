@@ -123,7 +123,7 @@ function validatePassword (name){
         permSetup = permissions.indexOf("configurar") >= 0
         if (permSetup) { permEdit = true }
         if (!permEdit) { permSetup = false }
-        $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Você é visitante"))
+        $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Conectar"))
         $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
