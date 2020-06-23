@@ -125,7 +125,7 @@ function validatePassword (name){
             permSetup = permissions.indexOf("configurar") >= 0
             if (permSetup) { permEdit = true }
             if (!permEdit) { permSetup = false }
-            $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Visitante"))
+            $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Você é visitante"))
             $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
             $('#corpusSettings').toggle(permSetup)
             $('#mainText').prop('readonly', !permEdit)
@@ -219,7 +219,9 @@ $('#deleteCorpus').click(function(){
             window.location.href = "/"
         })
     } else {
-        alert("Nome da coleção não confere.")
+        if (confirmName && confirName.length) {
+            alert("Nome da coleção não confere.")
+        }
     }
 })
 
