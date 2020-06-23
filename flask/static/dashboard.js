@@ -17,6 +17,7 @@ $('#mainText').on("focus", function(){
     if (isMobile) {
         $('#mainHeadbar').toggle(false)
         $('#search').toggle(false)
+        $('#troncoHome').toggle(false)
         $('#sidebar').toggleClass("d-none", true)
     }
 })
@@ -25,6 +26,7 @@ $('#mainText').on("blur", function(){
     if (isMobile) {
         $('#mainHeadbar').toggle(true)
         $('#search').toggle(true)
+        $('#troncoHome').toggle(true)
     }
 })
 
