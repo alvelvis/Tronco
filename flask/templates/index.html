@@ -29,57 +29,59 @@
     </div>
 
 
-    <div class="pricing-header px-3 pt-md-5 mx-auto text-center">
-      {% if latest_version and latest_version > version %}
-      <div class="alert alert-warning" role="alert">
-        Há uma nova versão do Tronco disponível! <a href="https://github.com/alvelvis/Tronco#Dispositivos" target="_blank">Baixe aqui a versão {{latest_version}}</a>.
+    <div style="margin-top:auto">
+      <div class="pricing-header px-3 pt-md-5 mx-auto text-center">
+        {% if latest_version and latest_version > version %}
+        <div class="alert alert-warning" role="alert">
+          Há uma nova versão do Tronco disponível! <a href="https://github.com/alvelvis/Tronco#Dispositivos" target="_blank">Baixe aqui a versão {{latest_version}}</a>.
+        </div>
+        <br>
+        {% endif %}
+        <h1 class="display-4">Bem-vindo ao Tronco</h1>
+        <p class="lead">O Tronco te ajuda a organizar coleções de texto. Vamos começar?</p>
       </div>
-      <br>
-      {% endif %}
-      <h1 class="display-4">Bem-vindo ao Tronco</h1>
-      <p class="lead">O Tronco te ajuda a organizar coleções de texto. Vamos começar?</p>
-    </div>
 
-    <div class="container">
-      <div class="card-deck mb-3 text-center">
-        <!--div class="card mb-4 box-shadow"-->
-          <div class="card-body">
-            <!--h1 class="card-title pricing-card-title"><small class="text-muted">Hoje eu quero...</small></h1-->
-            <ul class="list-unstyled mt-3 mb-4">
-              {% if not corpora %}
-                <li>Crie uma nova coleção</li>
-                <li>Comece aos poucos</li>
-                <li>Domine o mundo</li>                
-                <br>
-              {% endif %}
-                <input class="p-2 form-control" id="filterOpenCorpus" type="text" placeholder="Procurar ou criar nova coleção">
-                <br>
-                {% if corpora %}
-                  <span class="text-muted">{{ random_tip }}</span>
+      <div class="container">
+        <div class="card-deck mb-3 text-center">
+          <!--div class="card mb-4 box-shadow"-->
+            <div class="card-body">
+              <!--h1 class="card-title pricing-card-title"><small class="text-muted">Hoje eu quero...</small></h1-->
+              <ul class="list-unstyled mt-3 mb-4">
+                {% if not corpora %}
+                  <li>Crie uma nova coleção</li>
+                  <li>Comece aos poucos</li>
+                  <li>Domine o mundo</li>                
                   <br>
                 {% endif %}
-                <br>
-                <div id="openCorpus" style="overflow: auto;">
-                </div>
-            </ul>
-            
-            <!--button type="button" class="btn btn-lg btn-block btn-primary">Contact us</button-->
-          </div>
-        <!--/div-->
-        <!--div class="card mb-4 box-shadow">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Carregar projeto</h4>
-          </div>
-          <div class="card-body">
-            <h1 class="card-title pricing-card-title"><small class="text-muted">Já tenho algo</small></h1>
-            <ul class="list-unstyled mt-3 mb-4">
-              <li>Carregue projeto já existente</li>
-              <li>Precisa estar no formato Tronco</li>
-              <li>Recupere todas as informações</li>
-            </ul>
-            <button type="button" class="btn btn-lg btn-block btn-primary">Quero carregar</button>
-          </div>
-        </div-->
+                  <input class="p-2 form-control" id="filterOpenCorpus" type="text" placeholder="Procurar ou criar nova coleção">
+                  <br>
+                  {% if corpora %}
+                    <span class="text-muted">{{ random_tip }}</span>
+                    <br>
+                  {% endif %}
+                  <br>
+                  <div id="openCorpus" style="overflow: auto;">
+                  </div>
+              </ul>
+              
+              <!--button type="button" class="btn btn-lg btn-block btn-primary">Contact us</button-->
+            </div>
+          <!--/div-->
+          <!--div class="card mb-4 box-shadow">
+            <div class="card-header">
+              <h4 class="my-0 font-weight-normal">Carregar projeto</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title"><small class="text-muted">Já tenho algo</small></h1>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>Carregue projeto já existente</li>
+                <li>Precisa estar no formato Tronco</li>
+                <li>Recupere todas as informações</li>
+              </ul>
+              <button type="button" class="btn btn-lg btn-block btn-primary">Quero carregar</button>
+            </div>
+          </div-->
+        </div>
       </div>
 
       <footer class="px-5 my-md-4 pt-4 pt-md-5 fixed-bottom d-none d-lg-block">

@@ -379,7 +379,9 @@ function textModified(state){
 }
 
 function loadFile(filename){
-    $('#recentFiles').toggle(false)
+    if (filename != "README") {
+        $('#recentFiles').toggle(false)
+    }
     name = $('#name').html()
     window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
     $.ajax({

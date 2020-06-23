@@ -40,11 +40,11 @@
 
     <div class="container-fluid">
       <div class="row">
-        <nav style="min-width:200px" id="sidebar" class="col-md-2 d-none d-md-block bg-light sidebar pt-5">
-          <div class="sidebar-sticky">
+        <nav style="min-width:200px" id="sidebar" class="col-md-2 d-none d-md-block bg-light sidebar pt-4">
+          <div class="sidebar-sticky pt-4">
             <ul class="nav flex-column">
 
-                <li class="nav-item settings" id="corpusSettings" style="display:none;">
+                <li class="nav-item settings form-control-dark bg-dark pb-2" id="corpusSettings" style="display:none;">
                     <a class="nav-link">
                         <div class="form-row align-items-left">
                             <div class="col-auto my-1">
@@ -108,10 +108,9 @@
                             </div>
                         </a>
                     </div>
-                    <hr>
                 </li>
 
-                <div style="margin-top:10px">
+                <div>
                     <li class="nav-item">
                         <a class="nav-link" id="changePassword" title="Insira a senha da coleção">
                         <span data-feather="users"></span>
@@ -160,7 +159,7 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" style="padding-bottom:30px">
           
           <nav aria-label="breadcrumb">
-            <ol style="display:none" class="breadcrumb" id="recentFiles">
+            <ol class="breadcrumb alert-light" id="recentFiles">
                 
             </ol>
           </nav>

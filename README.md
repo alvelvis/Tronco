@@ -14,7 +14,7 @@ Tronco pode ser utilizado em diferentes dispositivos, on-line ou off-line.
 
 <a href="http://tronco.ga"><img width="48" alt="Chromium" style="padding:10px" src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Chromium_Material_Icon.png"></a> <a href="https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Android.apk"><img width="48" style="padding:10px" alt="Android" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/APK_format_icon.png/600px-APK_format_icon.png"></a>
 
-O aplicativo Tronco está disponível em nossos servidores. Ele estará sempre em sua última versão, e você pode acessá-lo de qualquer dispositivo a partir de um navegador pelo endereço [http://tronco.ga](http://tronco.ga), ou pelo [aplicativo para Android](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Android.apk), e suas coleções ficarão guardadas na nuvem. Não esqueça de adicionar senha nos arquivos importantes!
+Nosso site contará sempre com a última versão do Tronco, e você pode acessá-lo de qualquer dispositivo a partir de um navegador pelo endereço [http://tronco.ga](http://tronco.ga), ou pelo [aplicativo para Android](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Android.apk). No site, suas coleções ficarão guardadas na nuvem. Não esqueça de adicionar senha nos arquivos importantes!
 
 Para instalar o Tronco em um servidor próprio, veja [Como fazer deploy](#Como-fazer-deploy).
 
@@ -22,9 +22,9 @@ Para instalar o Tronco em um servidor próprio, veja [Como fazer deploy](#Como-f
 
 <a href="https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Windows.exe"><img width="48" style="padding:10px" alt="Windows" src="https://toppng.com/uploads/preview/windows-logo-windows-10-icon-11562965900vhcwfeiee5.png"></a> <a href="https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Ubuntu.zip"><img style="padding:10px" width="48" alt="Ubuntu" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR2rSSpKVBohI4AXgBaUjFVYqO73ou2l9AOXw&usqp=CAU"></a>
 
-Para rodar o Tronco em sua máquina local, você poderá fazê-lo a partir do [instalador para Windows](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Windows.exe), ou baixando a distribuição zipada para [Windows](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Windows.zip) ou [Ubuntu](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Ubuntu.zip). Desse jeito, você não precisará estar conectado à internet, e suas informações ficarão guardadas apenas no seu dispositivo.
+Para rodar o Tronco em sua própria máquina, você poderá fazê-lo a partir do [instalador para Windows](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Windows.exe), ou baixando a distribuição zipada para [Windows](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Windows.zip) ou [Ubuntu](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Ubuntu.zip). Desse jeito, você não precisará estar conectado à internet, e suas informações ficarão guardadas apenas no seu dispositivo.
 
-Em todos os casos, é necessário ter em sua máquina uma versão do navegador Chromium/Chrome instalada.
+O Tronco off-line requer uma versão do navegador Chromium/Chrome instalada em sua máquina.
 
 Em um ambiente Linux, você poderá ainda [Executar o framework Flask](#Executar-o-framework-Flask) diretamente do terminal para realizar debugagem.
 
@@ -37,7 +37,11 @@ Em um ambiente Linux, você poderá ainda [Executar o framework Flask](#Executar
 
 ### Como fazer deploy
 
+Em breve.
+
 ### Executar o framework Flask
+
+Em breve.
 
 ### Contribuição
 
