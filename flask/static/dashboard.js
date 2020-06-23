@@ -244,6 +244,7 @@ $('#renameCorpus').click(function(){
 
 $('.toggleSettings').click(function(){
     if (isMobile){
+        $('#mainText').blur()
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         $('#search').toggle($('#sidebar').hasClass("d-none"))
