@@ -101,7 +101,8 @@ function validatePassword (name){
             $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
             $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
             $('#permissions').html("Permissões: " + permissions.join(" / "))
-            $('#permissionsSettings').toggle(permSetup)
+            //$('#permissionsSettings').toggle(permSetup)
+            $('#corpusSettings').toggle(permSetup)
             loadConfig()
         }
     })
@@ -214,13 +215,19 @@ $('#renameCorpus').click(function(){
 })
 
 $('.toggleSettings').click(function(){
-    if ($('#menu-svg:visible') && $('#menu-svg:visible').length) {
-        $("#" + $(this).attr('settings')).toggle()
-    }
     if (isMobile){
         $('#sidebar').toggleClass("d-none")
         $('#search').toggle()
         $('#after-search').toggle()
+        if ($('#menu-svg:visible') && $('#menu-svg:visible').length) {
+            $("#" + $(this).attr('settings')).css('display', $('#sidebar').css('display'))
+        } else {
+            $("#" + $(this).attr('settings')).css('display', 'none')
+        }
+    } else {
+        if ($('#menu-svg:visible') && $('#menu-svg:visible').length) {
+            $("#" + $(this).attr('settings')).toggle()
+        }
     }
 })
 
