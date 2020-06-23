@@ -1,3 +1,9 @@
+$('#main').click(function(){
+    if (isMobile && !$('#sidebar').hasClass('d-none')){
+        $('.toggleSettings').click()
+    }
+})
+
 $('#shareText').click(function(){
     $('#shareLink').val(window.location.href.match(/^.*\//) + $('#name').html() + "?file=" + $('#filename').html())
     $('#shareLink').show()
