@@ -1,16 +1,18 @@
-<img width="96" alt="Tronco" src="https://github.com/alvelvis/Tronco/raw/master/flask/static/favicon.png">
-
 # Tronco
 
-O Tronco te ajuda a organizar coleções de texto. Escrito em Python/Javascript (framework Flask).
+<img width="96" alt="Tronco" src="https://github.com/alvelvis/Tronco/raw/master/flask/static/favicon.png">
+
+O Tronco te ajuda a organizar coleções de texto. Eles ficam salvos na nuvem, podendo ser acessados de qualquer dispositivo ou apenas em sua máquina.
+
+Diversas ferramentas de processamento de linguagem natural compõem o arsenal do Tronco.
+
+Tronco é desenvolvido em Python/Javascript (framework Flask).
 
 Acesse pelo endereço: [http://tronco.ga](http://tronco.ga)
 
 ### Dispositivos
 
-Tronco pode ser utilizado em diferentes dispositivos, on-line ou off-line.
-
-#### On-line
+#### Conectado à nuvem (on-line)
 
 <a href="http://tronco.ga"><img width="48" alt="Chromium" style="padding:10px" src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Chromium_Material_Icon.png"></a> <a href="https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Android.apk"><img width="48" style="padding:10px" alt="Android" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/APK_format_icon.png/600px-APK_format_icon.png"></a>
 
@@ -18,7 +20,7 @@ Nosso site contará sempre com a última versão do Tronco, e você pode acessá
 
 Para instalar o Tronco em um servidor próprio, veja [Como fazer deploy](#Como-fazer-deploy).
 
-#### Off-line
+#### Local (off-line)
 
 <a href="https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Windows.exe"><img width="48" style="padding:10px" alt="Windows" src="https://toppng.com/uploads/preview/windows-logo-windows-10-icon-11562965900vhcwfeiee5.png"></a> <a href="https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Ubuntu.zip"><img style="padding:10px" width="48" alt="Ubuntu" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR2rSSpKVBohI4AXgBaUjFVYqO73ou2l9AOXw&usqp=CAU"></a>
 
