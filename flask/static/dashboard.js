@@ -554,6 +554,10 @@ $(document).on('touchend', function(){
     closingPanel = false
 })
 
+$(window).on('resize', function(){
+    $('#main').css('margin-left', $('#sidebar:visible').length ? '260px' : '')
+})
+
 $(document).ready(function(){
     if ($('#sidebar').offset().top == 0){
         $('#sidebar').toggleClass('pt-5')
@@ -562,9 +566,8 @@ $(document).ready(function(){
         isMobile = true
         $('#search').css('background-color', "white")
         $('#troncoHome').append("<span class='bg-dark p-0 m-0 form-control-dark'>Tronco</span>")
-    } else {
-        $('#main').css('margin-left', '260px')
     }
+    $(window).trigger('resize')
     filename = $('#filename').html()
     loadConfig()
     updateFiles("", filename)
