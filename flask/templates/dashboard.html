@@ -20,22 +20,24 @@
   <body>
       
     <nav id="mainHeadbar" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
+      <a id="troncoHome" onclick="window.location.href='/'" class="align-text-middle" class="mt-2" title="Voltar para coleções (Ctrl+E)"><img class="mx-3 my-2" src="{{url_for('static', filename='favicon.png')}}" alt="" width="20" height="20"></a>
       <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white">
-        <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
+        <a class="toggleSettings" style="width:100%;  display:block" settings="corpusSettings" title="Configurações da coleção">
             <span id="menu-svg" data-feather="menu"></span>
             <span id="name" class="name" style="margin-left:5px">{{name}}</span>
         </a>   
       </span>
       <input class="form-control form-control-dark w-100" id="search" type="text" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Digite para procurar ou criar arquivo" aria-label="Search">
-      <ul id="after-search" class="navbar-nav px-3">
+      <a class="d-none d-md-block col-md-2"></a>
+      <!--ul id="after-search" class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
           <a title="Voltar ao início (Ctrl+E)" class="nav-link" href="/">
-            <span id="troncoHome"><!--onclick="window.location.href='/'"img class="mb-2 d-none d-lg-block" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24"-->Tronco</span>
+            <span id="troncoHome">Tronco</span>
             <span> / <span class="name">{{name}}</span></span>
             <span class="d-md-none"> / <span class="filename">{{filename}}</span></span>
           </a>
         </li>
-      </ul>
+      </ul-->
     </nav>
     
 

@@ -242,7 +242,7 @@ $('.toggleSettings').click(function(){
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         $('#search').toggle()
-        $('#after-search').toggle()
+        $('#troncoHome').toggle()
         if ($('#menu-svg:visible') && $('#menu-svg:visible').length) {
             $("#" + $(this).attr('settings')).css('display', $('#sidebar').css('display'))
         } else {
@@ -253,6 +253,7 @@ $('.toggleSettings').click(function(){
             $("#" + $(this).attr('settings')).toggle()
         }
     }
+    corpusSettings.scrollIntoView()
 })
 
 function updateFiles(key = "", click = ""){
@@ -551,6 +552,7 @@ $(document).ready(function(){
     }
     if ($('#sidebar:hidden').length) {
         isMobile = true
+        $('#troncoHome').append("<span class='bg-dark form-control-dark'>Tronco</span>")
     }
     filename = $('#filename').html()
     loadConfig()
