@@ -16,7 +16,7 @@ $('#shareText').click(function(){
 $('#mainText').on("focus", function(){
     if (isMobile) {
         $('#mainHeadbar').toggle(false)
-        $('#sidebar').toggle(false)
+        $('#sidebar').toggleClass("d-none", true)
     }
 })
 
