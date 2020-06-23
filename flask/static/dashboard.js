@@ -125,7 +125,9 @@ function validatePassword (name){
         if (!permEdit) { permSetup = false }
         $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Você é visitante"))
         $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
-        $('#corpusSettings').toggle(permSetup)
+        if (isMobile) {
+            $('#corpusSettings').toggle(permSetup)
+        }
         $('#mainText').prop('readonly', !permEdit)
         $('#saveModifications').attr('disabled', !permEdit)
         $('#menu-svg').toggle(permSetup)
