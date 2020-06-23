@@ -485,27 +485,30 @@ var isMobile = false
 var openingPanel = false
 var closingPanel = false
 
-$(document).on('mousedown', function(e){
-    if (isMobile && e.offsetX < 5) {
+$(document).on('touchstart', function(e){
+    if (isMobile && e.originalEvent.touches[0].pageX < 30 && !$('#sidebar:visible').length) {
         openingPanel = true
     }
-    if (isMobile && e.offsetX > $(window).width()-15){
+    if (isMobile && e.originalEvent.touches[0].pageX > $(window).width()-30 && $('#sidebar:visible').length){
         closingPanel = true
     }
 })
 
-$(document).on('mousemove', function(e){
-    if(openingPanel && e.offsetX > $(window).width()/2){
+$(document).on('touchmove', function(e){
+    if (openingPanel || closingPanel) {
+        e.preventDefault()
+    }
+    if(openingPanel && e.originalEvent.touches[0].pageX > $(window).width()/3){
         $('.toggleSettings').click()
         openingPanel = false
     }
-    if(closingPanel && e.offsetX < $(window).width()/2){
+    if(closingPanel && e.originalEvent.touches[0].pageX < $(window).width()-($(window).width()/3)){
         $('.toggleSettings').click()
         closingPanel = false
     }
 })
 
-$(document).on('mouseup', function(){
+$(document).on('touchend', function(){
     openingPanel = false
     closingPanel = false
 })
