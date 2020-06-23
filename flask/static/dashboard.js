@@ -246,8 +246,8 @@ $('.toggleSettings').click(function(){
     if (isMobile){
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
-        $('#search').toggle()
-        $('#troncoHome').toggle()
+        $('#search').toggle($('#sidebar').hasClass("d-none"))
+        $('#troncoHome').toggle($('#sidebar').hasClass("d-none"))
         if ($('#menu-svg:visible') && $('#menu-svg:visible').length) {
             $("#" + $(this).attr('settings')).css('display', $('#sidebar').css('display'))
         } else {
