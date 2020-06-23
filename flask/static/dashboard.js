@@ -127,13 +127,13 @@ function validatePassword (name){
             if (!permEdit) { permSetup = false }
             $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Visitante"))
             $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
+            $('#corpusSettings').toggle(permSetup)
             $('#mainText').prop('readonly', !permEdit)
             $('#saveModifications').attr('disabled', !permEdit)
             $('#menu-svg').toggle(permSetup)
             $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
             $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
             $('#permissions').html("Permissões: " + permissions.join(" / "))
-            $('#corpusSettings').toggle(false)
             loadConfig()
         }
     })
