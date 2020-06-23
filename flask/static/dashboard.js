@@ -1,3 +1,15 @@
+$('#mainText').on("focus", function(){
+    if (isMobile) {
+        $('#mainHeadbar').toggle(false)
+    }
+})
+
+$('#mainText').on("blur", function(){
+    if (isMobile) {
+        $('#mainHeadbar').toggle(true)
+    }
+})
+
 $('#search').on('focus', function(){
     window.scrollTo(0, 0)
     $('#recentFiles').toggle(true)
@@ -470,6 +482,33 @@ function loadConfig(){
 }
 
 var isMobile = false
+var openingPanel = false
+var closingPanel = false
+
+$(document).on('mousedown', function(e){
+    if (isMobile && e.offsetX < 5) {
+        openingPanel = true
+    }
+    if (isMobile && e.offsetX > $(window).width()-15){
+        closingPanel = true
+    }
+})
+
+$(document).on('mousemove', function(e){
+    if(openingPanel && e.offsetX > $(window).width()/2){
+        $('.toggleSettings').click()
+        openingPanel = false
+    }
+    if(closingPanel && e.offsetX < $(window).width()/2){
+        $('.toggleSettings').click()
+        closingPanel = false
+    }
+})
+
+$(document).on('mouseup', function(){
+    openingPanel = false
+    closingPanel = false
+})
 
 $(document).ready(function(){
     if ($('#sidebar').offset().top == 0){
@@ -483,4 +522,5 @@ $(document).ready(function(){
     updateFiles("", filename)
     $('#mainText').autosize()
     $('#search').focus()
+
 })

@@ -14,11 +14,13 @@
 
     <!-- Custom styles for this template -->
     <link href="{{url_for('static', filename='dashboard.css')}}" rel="stylesheet">
+    
+
   </head>
 
   <body>
       
-    <nav class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
+    <nav id="mainHeadbar" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
       <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white">
         <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
             <span id="menu-svg" data-feather="menu"></span>
@@ -155,7 +157,7 @@
           </div>
         </nav>
 
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" style="padding-bottom:30px">
+        <main id="main" role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" style="padding-bottom:30px">
           
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb alert-light" id="recentFiles">
@@ -314,10 +316,11 @@
     <script src="{{url_for('static', filename='bootstrap.js')}}"></script>
     <script src="{{url_for('static', filename='tronco.js')}}"></script>
     <script src="{{url_for('static', filename='dashboard.js')}}"></script>
-
+    
     <!-- Icons -->
     <script src="{{url_for('static', filename='feather.js')}}"></script>
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
+  
     <script>
       feather.replace()
     </script>  

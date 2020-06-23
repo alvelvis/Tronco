@@ -44,6 +44,7 @@ class TroncoConfig:
     def has_permission(self, name, password, permission):
         if not name in self.corpora:
             self.add_corpus(name)
+            self.save()
         if password == self.corpora[name]['permissions']['password']:
             return True
         elif permission in self.corpora[name]['permissions']['disconnected']:
