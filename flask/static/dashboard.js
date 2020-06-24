@@ -10,7 +10,7 @@ $('#reloadPage').click(function(){
 })
 
 $('#shareText').click(function(){
-    $('#shareLink').val(window.location.href.match(/^.*\//)[0] + $('#name').html().replaceAll(" ", "%20") + "?file=" + $('#filename').attr('file').replaceAll(" ", "%20"))
+    $('#shareLink').val(window.location.href.match(/^.*\//)[0] + $('#name').html().replace(/\s/g, "%20") + "?file=" + $('#filename').attr('file').replace(/\s/g, "%20"))
     $('#shareLink').show()
     $('#shareLink').select()
     document.execCommand('copy')
@@ -208,11 +208,13 @@ function recentFiles(key = "", typing = ""){
             new_data = ""
         }
         for (x of data.data.split("|")){
-            if (x.toLowerCase()!=typing.toLowerCase()){
+            if (x !== "README"){
+            //if (x.toLowerCase()!=typing.toLowerCase()){
                 new_data = new_data + '<li class="breadcrumb-item"><a class="recentFiles" href="#" file="' + x + '">' + (x == "README" ? "Introdução" : x) + '</a></li>'
+            //}
             }
         }
-        $('#recentFiles').html(data.data.length ? new_data : 'Nenhum arquivo encontrado. Criar ' + typing + "?")
+        $('#recentFiles').html(data.data.length ? new_data : new_data + 'Nenhum arquivo encontrado.')
         $('.recentFiles').click(function(){
             $('[file="' + $(this).attr('file') + '"].files').click()
         })
@@ -639,7 +641,8 @@ $(document).ready(function(){
         isMobile = true
         //$('#main').prepend("<hr>")
         //$('#main').prepend($('#search').detach())
-        $('#troncoHomeLabel').html('<span class="mr-1" data-feather="menu"></span> ' + "Tronco / " + name)
+        $('#troncoHomeLabel').html("<span class='mr-2' style='margin-bottom:5px' data-feather='menu'></span><span class='mt-3 mb-0' style='max-width:60vw; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis'>Tronco / " + name + "</span>")
+        $('#troncoLogo').toggleClass("mb-3")
         //$('#troncoHomeLabel').toggleClass('toggleSettings', true)
         //$('#search').css('background-color', "white")
         //$('#search').css('color', "black")
@@ -648,9 +651,9 @@ $(document).ready(function(){
         isMobile = false
         $('#troncoHomeLabel').html("")   
     }
-    $('#troncoHomeBar').toggleClass("mt-2", isMobile)
-    $('#sidebar').css('margin-top', $('#sidebar').offset().top == 0 ? (isMobile ? "40px" : '54px') : '10px')//toggleClass('pt-5')
-    $('#troncoLogo').css('margin-bottom', isMobile ? "5px" : "4px")
+    $('#troncoHomeBar').toggleClass("mt-0", isMobile)
+    $('#sidebar').css('margin-top', $('#sidebar').offset().top == 0 ? (isMobile ? "40px" : '54px') : '10px')
+    $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")
     $(window).trigger('resize')
     validatePassword(name)
     $('#mainText').autosize()
