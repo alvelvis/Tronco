@@ -656,7 +656,7 @@ $(document).ready(function(){
     $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")
     $(window).trigger('resize')
     validatePassword(name)
-    updateFiles()
+    updateFiles("", $('#filename').attr('file'))
     $('#mainText').autosize()
     //$('#search').focus()
 })
