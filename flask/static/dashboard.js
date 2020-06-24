@@ -331,7 +331,7 @@ function updateFiles(key = "", click = ""){
                 $('title').html(name + " - Tronco")
             }
             if (isMobile && $('#sidebar:visible').length) {
-                $('.toggleSettings').click()
+                $('.toggleSettings')[0].click()
             }
         })
 
