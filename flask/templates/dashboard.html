@@ -6,7 +6,7 @@
     <meta name="description" content="Tronco te ajuda a organizar coleções de texto.">
     <link rel="icon" href="{{url_for('static', filename='favicon.png')}}">
 
-    <title>{% if filename != "README" %}{{filename}}{% else %}{{name}}{% endif %} - Tronco</title>
+    <title>Tronco</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{{url_for('static', filename='bootstrap.css')}}" rel="stylesheet">
@@ -20,17 +20,17 @@
   <body>
       
     <nav id="mainHeadbar" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
-      <a id="troncoHome" onclick="window.location.href='/'" class="align-text-middle py-1 mt-2" title="Voltar para coleções (Ctrl+E)">
-        <img class="mx-3 mb-1" src="{{url_for('static', filename='favicon.png')}}" alt="" width="20" height="20">
-        <span id="troncoHomeLabel" class='bg-dark form-control-dark'></span>
+      <a id="troncoHome" onclick="window.location.href='/'" class="align-text-middle py-2 mt-2" title="Voltar para coleções (Ctrl+E)">
+        <img class="mx-3" id="troncoLogo" style="margin-bottom:10px" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
+        <span id="troncoHomeLabel" style="margin-bottom:0px" class='bg-dark form-control-dark'></span>
       </a>
       <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white">
         <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
-            <span id="menu-svg" data-feather="menu"></span>
-            <span id="name" class="name" style="margin-left:5px">{{name}}</span>
+            <span id="menu-svg" style="margin-bottom:5px" data-feather="menu"></span>
+            <span id="name" class="name" style="margin-left:5px; max-width:95%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{{name}}</span>
         </a>   
       </span>
-      <input class="form-control form-control-dark w-100" id="search" type="text" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Digite para procurar ou criar arquivo" aria-label="Search">
+      <input class="form-control form-control-dark w-100" id="search" type="text" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Digite aqui para procurar ou criar arquivo" aria-label="Search">
       <a class="d-none d-md-block col-md-2"></a>
       <!--ul id="after-search" class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
@@ -83,7 +83,7 @@
                             Mudar senha
                         </a>
                     
-                        <a id="setPermissions" title="Escolha as permissões de um visitante" class="nav-link">
+                        <a id="setPermissions" title="Configure as permissões de um visitante" class="nav-link">
                             <span data-feather="user-check"></span>
                             Permissões de visitante
                         </a>
@@ -132,7 +132,7 @@
                     <li class="nav-item" style="margin-top:10px">
                         <a class="nav-link files" file="README">
                             <span data-feather="file"></span>
-                            README
+                            Introdução
                         </a>
                     </li>
                 </div>
@@ -171,7 +171,7 @@
           </nav>
 
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-            <h1 class="h2 filename" id="filename">{{filename}}</h1>
+            <h1 class="h2 filename" file="{{filename}}" id="filename"></h1>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group mr-2">
                 <input style="display:none; border:none; text-align:right; padding-right:10px" id="shareLink" readonly>

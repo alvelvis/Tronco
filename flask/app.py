@@ -83,7 +83,7 @@ def recent_files():
     password = request.values.get("password")
     #if not tronco_config.has_permission(name, password, "visualizar"): return None
     key = request.values.get("key", "")
-    data = [f'<li class="breadcrumb-item"><a class="recentFiles" href="#" file="{x}">{x}</a></li>' for x in functions.recent_files(name, key)]
+    data = [f'<li class="breadcrumb-item"><a class="recentFiles" href="#" file="{x}">{x if x != "README" else "Introdução"}</a></li>' for x in functions.recent_files(name, key)]
     return {'data': data}
 
 @app.route("/api/renameFile", methods=["POST"])
@@ -161,7 +161,7 @@ def update_files():
     #if not tronco_config.has_permission(name, password, "visualizar"): return None
 
     data = [f'''
-    <li class="nav-item d-flex justify-content-between align-items-center">
+    <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
         <a class="nav-link files d-flex align-items-center" style="width:100%;" file="{ x }">
             <span data-feather="file-text"></span>
             <span style="max-width: 130px; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{ x }</span>
@@ -228,7 +228,7 @@ def load_corpus(name):
 def load_corpora():
     key = request.values.get('key')
     corpora = functions.load_corpora(key=key)
-    return {'data': "".join(["<li><a href='/corpus/{}?file=README'>".format(x['name']) + x['name'] + " ({})</a></li>".format(x['files']) for x in corpora])}
+    return {'data': "".join(["<li><a class='openCorpus' corpus='{0}' href='/corpus/{0}?file=README'>".format(x['name']) + x['name'] + "</a></li>" for x in corpora])}# "({})".format(x['files'])
 
 @app.route('/')
 def home():

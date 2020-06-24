@@ -1,3 +1,26 @@
+var expirationDate = 'Fri, 31 Dec 9999 23:59:59 GMT'
+
+function getRecent (){
+    if (document.cookie.indexOf("tr=") == -1){
+        document.cookie = 'tr={"recent": ""}; expires=' + expirationDate
+    }
+    cookie = JSON.parse(document.cookie.split("tr=")[1].split("; ")[0])
+    return cookie
+}
+
+function addRecent (newName){
+    recent = getRecent()
+    newRecent = []
+    for (name of recent.recent.split("|")){
+        if (name.length && name.toLowerCase() != newName.toLowerCase()){
+            newRecent.push(name)
+        }
+    }
+    newRecent.push(newName)
+    recent.recent = newRecent.join("|")
+    document.cookie = "tr=" + JSON.stringify(recent) +'; expires=' + expirationDate
+}
+
 function loadCorpora(key = ""){
     $.ajax({
         url: "/api/loadCorpora/",
@@ -7,8 +30,21 @@ function loadCorpora(key = ""){
         }
     })
     .done(function(data){
-        $("#openCorpus").html(data.data.length ? data.data : "Nada encontrado. Que tal criar uma nova coleção?</a>")
+        if (key.length) {
+            $("#openCorpus").html(data.data.length ? data.data : "Nada encontrado. Que tal criar uma nova coleção?")
+        } else {
+            recent = getRecent().recent
+            $('#openCorpus').html("")
+            for (name of getRecent().recent.split("|").reverse()){
+                $('#openCorpus').append("<li><a corpus='" + name + "' class='openCorpus' href='/corpus/" + name + "?file=README'>" + name + "</a></li>")
+            }
+            $("#openCorpus").append(data.data)
+        }
         $('#filterOpenCorpus').toggleClass("is-invalid", data.data.length ? false : true)
+        $('.openCorpus').click(function(e){
+            //e.preventDefault()
+            addRecent($(this).attr('corpus'))
+        })
     })
 }
 
@@ -32,6 +68,7 @@ $('#filterOpenCorpus').on('keyup', function(e){
             }
         })
         .done(function(data){
+            addRecent(data.data)
             window.location.href = "/corpus/" + data.data + "?file=README"
         })
     }
@@ -40,6 +77,8 @@ $('#filterOpenCorpus').on('keyup', function(e){
 $(window).ready(function(){
     if ($('#tronco:hidden').length) {
         isMobile = true
+    } else {
+        isMobile = false
     }
     loadCorpora()
     $('#filterOpenCorpus').focus()

@@ -1,15 +1,9 @@
-$('#main').click(function(){
-    if (isMobile && !$('#sidebar').hasClass('d-none')){
-        $('.toggleSettings').click()
-    }
-})
-
 $('#shareText').click(function(){
-    $('#shareLink').val(window.location.href.match(/^.*\//) + $('#name').html().replaceAll(" ", "%20") + "?file=" + $('#filename').html().replaceAll(" ", "%20"))
+    $('#shareLink').val(window.location.href.match(/^.*\//)[0] + $('#name').html().replaceAll(" ", "%20") + "?file=" + $('#filename').attr('file').replaceAll(" ", "%20"))
     $('#shareLink').show()
     $('#shareLink').select()
     document.execCommand('copy')
-    $('#shareLink').val("Copiado!")
+    $('#shareLink').val("Link copiado!")
     $('#shareText').toggleClass("btn-success", true)
     $('#shareText').toggleClass("btn-outline-secondary", false)
     setTimeout(function(){
@@ -104,7 +98,8 @@ $('#changePassword').click(function(){
     }
 })
 
-var expirationDate = '2038-01-19, 03:14:08 UTC'
+var expirationDate = 'Fri, 31 Dec 9999 23:59:59 GMT'
+var permissions = []
 
 function validatePassword (name){
     password = getPassword(name)
@@ -133,22 +128,23 @@ function validatePassword (name){
         $('#menu-svg').toggle(permSetup)
         $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
         $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
-        $('#permissions').html("Permissões: " + permissions.join(" / "))
+        $('#permissions').html("Suas permissões:<br>- " + permissions.join("<br>- "))
         loadConfig()
+        updateFiles("", $('#filename').attr('file'))
     })
 }
 
 function storePassword (name, pass){
-    troncoPasswords = JSON.parse(document.cookie.split("<troncoPasswords>")[1].split("</troncoPasswords>")[0])
+    troncoPasswords = JSON.parse(document.cookie.split("tp=")[1].split("; ")[0])
     troncoPasswords[name] = pass
-    document.cookie = document.cookie.replace(/<troncoPasswords>.*<\/troncoPasswords>/, "<troncoPasswords>" + JSON.stringify(troncoPasswords) +'</troncoPasswords>;expires=' + expirationDate)
+    document.cookie = "tp=" + JSON.stringify(troncoPasswords) +'; expires=' + expirationDate
 }
 
 function getPassword (name){
-    if (document.cookie.indexOf("<troncoPasswords>") == -1){
-        document.cookie = "tp=<troncoPasswords>{}</troncoPasswords>;expires=" + expirationDate
+    if (document.cookie.indexOf("tp=") == -1 || document.cookie.indexOf("<troncoPasswords>") >= 0){
+        document.cookie = "tp={}; expires=" + expirationDate
     }
-    troncoPasswords = JSON.parse(document.cookie.split("<troncoPasswords>")[1].split("</troncoPasswords>")[0])
+    troncoPasswords = JSON.parse(document.cookie.split("tp=")[1].split("; ")[0])
     if (name in troncoPasswords){
         return troncoPasswords[name]
     } else {
@@ -157,9 +153,9 @@ function getPassword (name){
 }
 
 function revokePassword (name){
-    troncoPasswords = JSON.parse(document.cookie.split("<troncoPasswords>")[1].split("</troncoPasswords>")[0])
+    troncoPasswords = JSON.parse(document.cookie.split("tp=")[1].split("; ")[0])
     delete troncoPasswords[name]
-    document.cookie = document.cookie.replace(/<troncoPasswords>.*<\/troncoPasswords>/, "<troncoPasswords>" + JSON.stringify(troncoPasswords) +'</troncoPasswords>;expires=' + expirationDate)
+    document.cookie = "tp=" + JSON.stringify(troncoPasswords) +'; expires=' + expirationDate
 }
 
 $('#search').on('keyup', function(e){
@@ -283,7 +279,6 @@ function updateFiles(key = "", click = ""){
     })
     .done(function(data){
         $('#files').html(data.data)
-        validatePassword(name)
         $('.files').click(function(){
             $('.files').toggleClass('active', false)
             $(this).toggleClass('active', true)
@@ -312,7 +307,7 @@ function updateFiles(key = "", click = ""){
                     }
                 })
                 .done(function(){
-                    if ($('#filename').html() == filename) {
+                    if ($('#filename').attr('file') == filename) {
                         updateFiles("", "README")
                     } else {
                         updateFiles()
@@ -337,7 +332,7 @@ function updateFiles(key = "", click = ""){
                 })
                 .done(function(data){
                     if (data.data != "false") {
-                        if ($('#filename').html() == filename) {
+                        if ($('#filename').attr('file') == filename) {
                             updateFiles("", data.data)
                         } else {
                             updateFiles()
@@ -353,7 +348,7 @@ function updateFiles(key = "", click = ""){
         if (click.length) {
             $('[file="' + click + '"].files').toggleClass('active', true).click()
         } else {
-            $('[file="' + $('#filename').html() + '"].files').toggleClass('active')
+            $('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active')
         }
     })
 }
@@ -394,7 +389,7 @@ $(window).bind('keydown', function(event) {
             break
         case 's':
             event.preventDefault()
-            saveFile($('#filename').html(), $('#mainText').val()) 
+            saveFile($('#filename').attr('file'), $('#mainText').val()) 
             break
         case 'p':
             event.preventDefault()
@@ -408,6 +403,8 @@ $(window).bind('keydown', function(event) {
     }
 })
 
+var failedSave = false
+
 function saveFile(filename ,text){
     name = $('#name').html()
     $.ajax({
@@ -420,13 +417,19 @@ function saveFile(filename ,text){
             "password": getPassword(name)
         }
     })
+    .fail(function(){
+        if (!failedSave) {
+            failedSave = true
+            alert("Falha na sincronização. Por favor, para não perder quaisquer modificações que você realizou no arquivo, copie o texto e recarregue a página.")
+        }
+    })
     textModified(false)
 }
 
 $('#mainText').on('keyup', function(event){
     if ((!event.ctrlKey && !event.metaKey && event.which != 17) || (event.ctrlKey && String.fromCharCode(event.which).toLowerCase() == "v")) {
         if ($('#autoSaveCheckbox').prop('checked')){
-            saveFile($('#filename').html(), $('#mainText').val())
+            saveFile($('#filename').attr('file'), $('#mainText').val())
         } else {
             textModified(true)
         }
@@ -435,7 +438,7 @@ $('#mainText').on('keyup', function(event){
 
 $('#mainText').on('change', function(){
     if ($('#autoSaveCheckbox').prop('checked')){
-        saveFile($('#filename').html(), $('#mainText').val())
+        saveFile($('#filename').attr('file'), $('#mainText').val())
     } else {
         textModified(true)
     }
@@ -455,6 +458,7 @@ function loadFile(filename){
         if (permissions.indexOf("visualizar") == -1){
             alert("Você não tem permissão para visualizar esta coleção")
             window.location.href = "/"
+            return false
         }
     } else {
         $('#recentFiles').toggle(true)
@@ -471,11 +475,16 @@ function loadFile(filename){
     })
     .done(function(data){
         textModified(false)
-        $('#filename').html(filename)
-        $('.filename').html(filename)
+        $('#search').val('')
+        $('#filename').html(filename == "README" ? "Introdução" : filename)
+        $('.filename').html(filename == "README" ? "Introdução" : filename)
+        $('#filename').attr('file', filename)
         $('#mainText').val(data.data.text)
         $('#mainText').trigger('input')
         recentFiles()
+    })
+    .fail(function(){
+        window.location.href = "/corpus/" + $('#name').html () + "?file=" + $('#filename').attr('file')
     })
 }
 
@@ -483,7 +492,7 @@ $('#autoSaveCheckbox').on('change', function(){
     name = $('#name').html()
     autoSave = $(this).prop('checked')
     if (autoSave){
-        saveFile($('#filename').html(), $('#mainText').val())
+        saveFile($('#filename').attr('file'), $('#mainText').val())
     }
     $.ajax({
         url: '/api/changeTroncoConfig',
@@ -548,6 +557,10 @@ var openingPanel = false
 var closingPanel = false
 
 $(document).on('touchstart', function(e){
+    if (isMobile && !$('#sidebar').hasClass('d-none') && e.originalEvent.touches[0].pageX > $('#sidebar').width()){
+        $('.toggleSettings').click()
+        return true
+    }
     if (isMobile && e.originalEvent.touches[0].pageX < 30 && !$('#sidebar:visible').length) {
         openingPanel = true
     }
@@ -579,7 +592,6 @@ $(window).on('resize', function(){
     if (!isMobile) {
         $('#main').css('margin-left', $('#sidebar:visible').length ? '260px' : '0px')
     }
-    $('#troncoHome').css("width", isMobile ? "100%" : "")
 })
 
 $(document).ready(function(){
@@ -588,17 +600,19 @@ $(document).ready(function(){
     }
     if ($('#sidebar:hidden').length) {
         isMobile = true
-        $('#search').css('background-color', "white")
+        $('#main').prepend("<hr>")
+        $('#main').prepend($('#search').detach())
         $('#troncoHomeLabel').html("Tronco")
+        $('#search').css('background-color', "white")
+        $('#search').css('color', "black")
     } else {
         isMobile = false
-        $('#troncoHomeLabel').html("")
-        $('#search').css('background-color', "")
+        $('#troncoHomeLabel').html("")   
     }
+    $('#troncoHome').css("width", isMobile ? "100%" : "")
+    $('#troncoLogo').css('margin-bottom', isMobile ? "2px" : "10px")
     $(window).trigger('resize')
-    filename = $('#filename').html()
-    loadConfig()
-    updateFiles("", filename)
+    validatePassword($('#name').html())
     $('#mainText').autosize()
     //$('#search').focus()
 })
