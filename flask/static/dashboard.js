@@ -588,7 +588,7 @@ function loadFile(filename){
             $('.filename').html(filename == "README" ? "Introdução" : filename)
             $('#filename').attr('file', filename)
             $('#mainText').val(data.data.text)
-            //$('#mainText').trigger('input')//? por que eu escrevi isso?
+            $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
             if (!isMobile) {
                 $('#mainText').focus()
