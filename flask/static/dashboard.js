@@ -141,7 +141,7 @@ function validatePassword (name){
         //$('#newFile').css('visibility', permEdit ? "visible" : "hidden")
         //$('#permissions').html("Suas permissões:<br>- " + permissions.join("<br>- "))
         loadConfig()
-        updateFiles("", $('#filename').attr('file'))
+        //updateFiles("", $('#filename').attr('file'))
     })
 }
 
@@ -656,6 +656,7 @@ $(document).ready(function(){
     $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")
     $(window).trigger('resize')
     validatePassword(name)
+    updateFiles()
     $('#mainText').autosize()
     //$('#search').focus()
 })
