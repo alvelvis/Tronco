@@ -641,7 +641,7 @@ $(document).ready(function(){
         isMobile = true
         //$('#main').prepend("<hr>")
         //$('#main').prepend($('#search').detach())
-        $('#troncoHomeLabel').html("<span class='mr-2' style='margin-bottom:5px' data-feather='menu'></span><span class='mt-3 mb-0' style='max-width:60vw; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis'>Tronco / " + name + "</span>")
+        $('#troncoHomeLabel').html("<span class='mr-2' style='margin-bottom:6px' data-feather='menu'></span><span class='mt-3 mb-0' style='max-width:80vw; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis'>Tronco / " + name + "</span>")
         $('#troncoLogo').toggleClass("mb-3")
         //$('#troncoHomeLabel').toggleClass('toggleSettings', true)
         //$('#search').css('background-color', "white")
