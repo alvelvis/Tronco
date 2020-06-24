@@ -1,12 +1,12 @@
 window.onbeforeunload = function(){
-    revokeToken()
+    revokeToken($('#filename').attr('file'), false)
 }
 
-function revokeToken(filename=$('#filename').attr('file')) {
+function revokeToken(filename=$('#filename').attr('file'), async=true) {
     $.ajax({
         url: "/api/revokeToken",
         method: "POST",
-        async: false,
+        async: async,
         data: {
             "name": $('#name').html(),
             "filename": filename,
