@@ -27,10 +27,10 @@
       <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white">
         <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
             <span id="menu-svg" style="margin-bottom:6px" data-feather="menu"></span>
-            <span id="name" class="name" style="margin-left:5px; margin-top:4px; max-width:95%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{{name}}</span>
+            <span id="name" class="name" style="margin-left:5px;  max-width:95%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{{name}}</span>
         </a>   
       </span>
-      <input class="form-control form-control-dark w-100" id="search" type="text" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Digite aqui para procurar ou criar arquivo" aria-label="Search">
+      <input class="form-control form-control-dark w-100" id="search" type="text" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Procure ou crie novos textos" aria-label="Search">
       <a class="d-none d-md-block col-md-2"></a>
       <!--ul id="after-search" class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
@@ -104,14 +104,14 @@
                                     </div>
                                 </div>                        
                             </div>
-                            <div class="form-row align-items-left">
+                            <!--div class="form-row align-items-left">
                                 <div class="col-auto my-1">
                                     <div class="custom-control custom-checkbox mr-sm-2">
                                     <input type="checkbox" checked="true" class="custom-control-input togglePerm" perm="configurar" id="setupPermission">
                                     <label class="custom-control-label" style="cursor:pointer" title="Qualquer um poderá configurar as permissões desta coleção" for="setupPermission">Configurar</label>
                                     </div>
                                 </div>                        
-                            </div>
+                            </div-->
                         </a>
                     </div>
                 </li>
@@ -124,10 +124,10 @@
                         </a>
                     </li>
 
-                    <li class="nav-item" style="margin-left:10px">
+                    <!--li class="nav-item" style="margin-left:10px">
                         <span class="nav-link" id="permissions">
                         </span>
-                    </li>
+                    </li-->
 
                     <li class="nav-item" style="margin-top:10px">
                         <a class="nav-link files" file="README">
@@ -152,9 +152,9 @@
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
               <span>Textos na coleção</span>
-              <a class="d-flex align-items-center text-muted" id="newFile" title="Criar novo arquivo (Ctrl+O)">
+              <!--a class="d-flex align-items-center text-muted" id="newFile" title="Criar novo arquivo (Ctrl+O)">
                 <span data-feather="plus-circle"></span>
-              </a>
+              </a-->
             </h6>
             <ul id="files" class="nav flex-column mb-2">
 
@@ -178,11 +178,13 @@
                 <button id="shareText" class="btn btn-sm btn-outline-secondary" title="Compartilhe o link deste texto">
                   <span data-feather="share-2"></span>
                 </button>
-              </div>
-              <div class="btn-group mr-2">
                 <button id="saveModifications" class="btn btn-sm btn-outline-secondary" title="Salvar modificações (Ctrl+S)">
                   <span data-feather="save"></span>
                   <!--Salvar modificações-->
+                </button>
+                <button id="reloadPage" style="display:none" class="btn btn-sm btn-danger" title="Recarregar página">
+                  <span class="mr-1" data-feather="refresh-cw"></span>
+                  Recarregar página
                 </button>
               </div>
             </div>

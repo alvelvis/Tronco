@@ -1,3 +1,7 @@
+$('#reloadPage').click(function(){
+    window.location.reload()
+})
+
 $('#shareText').click(function(){
     $('#shareLink').val(window.location.href.match(/^.*\//)[0] + $('#name').html().replaceAll(" ", "%20") + "?file=" + $('#filename').attr('file').replaceAll(" ", "%20"))
     $('#shareLink').show()
@@ -113,12 +117,12 @@ function validatePassword (name){
     })
     .done(function(data){
         permissions = data.permissions.split("|")
-        
+        permView = permissions.indexOf("visualizar") >= 0
         permEdit = permissions.indexOf("editar") >= 0
         permSetup = permissions.indexOf("configurar") >= 0
         if (permSetup) { permEdit = true }
         if (!permEdit) { permSetup = false }
-        $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : "Conectar"))
+        $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não tem permissão"))))
         $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
@@ -126,9 +130,8 @@ function validatePassword (name){
         $('#mainText').prop('readonly', !permEdit)
         $('#saveModifications').attr('disabled', !permEdit)
         $('#menu-svg').toggle(permSetup)
-        $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
-        $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
-        $('#permissions').html("Suas permissões:<br>- " + permissions.join("<br>- "))
+        //$('#newFile').css('visibility', permEdit ? "visible" : "hidden")
+        //$('#permissions').html("Suas permissões:<br>- " + permissions.join("<br>- "))
         loadConfig()
         updateFiles("", $('#filename').attr('file'))
     })
@@ -344,6 +347,7 @@ function updateFiles(key = "", click = ""){
             }
         })
 
+        $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
         feather.replace()
         if (click.length) {
             $('[file="' + click + '"].files').toggleClass('active', true).click()
@@ -381,12 +385,6 @@ $(window).bind('keydown', function(event) {
     }
     if (event.ctrlKey || event.metaKey) {
         switch (String.fromCharCode(event.which).toLowerCase()) {
-        case 'o':
-            event.preventDefault()
-            if ($('#newFile').css('visibility') != "hidden") {
-                $('#newFile').click()
-            }
-            break
         case 's':
             event.preventDefault()
             saveFile($('#filename').attr('file'), $('#mainText').val()) 
@@ -420,6 +418,8 @@ function saveFile(filename ,text){
     .fail(function(){
         if (!failedSave) {
             failedSave = true
+            $('#mainText').prop("readOnly", true)
+            $('#reloadPage').show()
             alert("Falha na sincronização. Por favor, para não perder quaisquer modificações que você realizou no arquivo, copie o texto e recarregue a página.")
         }
     })
@@ -547,8 +547,8 @@ function loadConfig(){
         $('#wrapTextCheckbox').prop('checked', auto_wrap)
         $('#viewPermission').prop('checked', view_perm)
         $('#editPermission').prop('checked', edit_perm)
-        $('#setupPermission').prop('checked', setup_perm)
-        loadConfigFromCheckboxes()        
+        //$('#setupPermission').prop('checked', setup_perm)
+        loadConfigFromCheckboxes()
     })
 }
 

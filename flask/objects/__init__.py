@@ -7,6 +7,13 @@ import re
 tronco_version = 1.0
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 all_permissions = ["visualizar", "editar", "configurar"]
+startup_salutations = [
+    "Saudações,",
+    "Olá,",
+    "Bem-vindo,",
+    "Oi,",
+    "Bom te ver,"
+]
 startup_tips = [
     "Você pode sempre acessar a barra de buscas apertando Ctrl+P",
     "Está sem internet? Você pode sempre utilizar a versão off-line do Tronco",
@@ -17,9 +24,10 @@ startup_tips = [
     "Depois de criar uma senha para uma coleção, ela não poderá mais ser recuperada!",
     "Você sabia que pode utilizar o Tronco com apenas poucos comandos do teclado?",
     "Quer selecionar outra coleção de textos? Ctrl+E",
-    "Precisa criar um novo arquivo rapidamente? Ctrl+O",
+    "Precisa criar um novo arquivo rapidamente? Ctrl+P",
     "O arquivo de introdução será sempre exibido ao abrir uma coleção",
-    "Você pode compartilhar qualquer texto, mas fique atento às permissões de visitante"
+    "Você pode compartilhar qualquer texto, mas fique atento às permissões de visitante",
+    "Utilize as setas do teclado para navegar pelas coleções na tela inicial"
 ]
 
 _filename_ascii_strip_re = re.compile(r"[^ A-Za-z0-9_.-]")

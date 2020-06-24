@@ -227,18 +227,24 @@ def load_corpus(name):
 @app.route('/api/loadCorpora/', methods=["POST"])
 def load_corpora():
     key = request.values.get('key')
-    corpora = functions.load_corpora(key=key)
+    recent = request.values.get("recent")
+    corpora = functions.load_corpora(key=key, recent=recent)
     return {'data': "".join(["<li><a class='openCorpus' corpus='{0}' href='/corpus/{0}?file=README'>".format(x['name']) + x['name'] + "</a></li>" for x in corpora])}# "({})".format(x['files'])
 
 @app.route('/')
 def home():
-    r = requests.get("https://raw.githubusercontent.com/alvelvis/Tronco/master/latest_version")
+    r = 0
+    try:
+        r = requests.get("https://raw.githubusercontent.com/alvelvis/Tronco/master/latest_version")
+    except:
+        sys.stderr.write("Can't connect to the server to get the latest version.")
     return render_template(
         'index.html', 
         corpora=functions.load_corpora(),
         version=objects.tronco_version,
         latest_version=float(r.text) if r else objects.tronco_version,
-        random_tip="Dica: " + random.choice(objects.startup_tips)
+        random_tip="Dica: " + random.choice(objects.startup_tips),
+        random_salutation=random.choice(objects.startup_salutations)
         )
 
 if __name__ == "__main__":

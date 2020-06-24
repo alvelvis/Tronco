@@ -160,25 +160,25 @@ def create_new_file(name, filename, text=""):
     else:
         return False
 
-def load_corpora(key="", max_results=20):
+def load_corpora(key="", max_results=20, recent=""):
     corpora_dir = os.path.join(app.root_path, "corpora")
     if not os.path.isdir(corpora_dir):
         os.mkdir(corpora_dir)
     corpora = {}
+    recent = recent.lower().split("|")
 
     for item in os.listdir(corpora_dir):
-        
-        item_dir = os.path.join(app.root_path, "corpora", item)
+        if item.lower() not in recent:        
+            item_dir = os.path.join(app.root_path, "corpora", item)
+            readme_dir = os.path.join(app.root_path, "corpora", item, "README")
+            stats = (0, 0)
+            if os.path.isfile(readme_dir):
+                with open(readme_dir) as f:
+                    README = f.read()
+                if all(x in README for x in ["# last_seen = ", "# times_seen = "]):
+                    stats = (float(README.split("# last_seen = ")[1].split("\n")[0]), int(README.split("# times_seen = ")[1].split("\n")[0]))
 
-        readme_dir = os.path.join(app.root_path, "corpora", item, "README")
-        stats = (0, 0)
-        if os.path.isfile(readme_dir):
-            with open(readme_dir) as f:
-                README = f.read()
-            if all(x in README for x in ["# last_seen = ", "# times_seen = "]):
-                stats = (float(README.split("# last_seen = ")[1].split("\n")[0]), int(README.split("# times_seen = ")[1].split("\n")[0]))
-
-        if os.path.isdir(item_dir):
-            corpora[item] = {'files': len([x for x in os.listdir(item_dir) if x != "README"]), 'stats': stats}
+            if os.path.isdir(item_dir):
+                corpora[item] = {'files': len([x for x in os.listdir(item_dir) if x != "README"]), 'stats': stats}
 
     return sorted([{**{'name': x}, **corpora[x]} for x in corpora if not key.strip() or (key.strip() and all(k in x.lower() for k in key.lower().split()))], key=lambda y: -y['stats'][0])[:max_results]
