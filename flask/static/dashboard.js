@@ -277,7 +277,7 @@ $('.toggleSettings').click(function(){
         $('#sidebar').toggleClass("d-none")
         $('#search').toggle($('#sidebar').hasClass("d-none"))
         //$('#troncoHome').toggle($('#sidebar').hasClass("d-none"))
-        if ($('#menu-svg:visible') && $('#menu-svg:visible').length) {
+        if (permSetup) {
             $("#" + $(this).attr('settings')).css('display', $('#sidebar').css('display'))
         } else {
             $("#" + $(this).attr('settings')).css('display', 'none')
