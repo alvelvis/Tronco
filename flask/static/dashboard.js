@@ -610,7 +610,8 @@ $(document).ready(function(){
         $('#troncoHomeLabel').html("")   
     }
     $('#troncoHome').css("width", isMobile ? "100%" : "")
-    $('#troncoLogo').css('margin-bottom', isMobile ? "2px" : "10px")
+    $('#troncoHome').toggleClass("mt-2", isMobile)
+    $('#troncoLogo').css('margin-bottom', isMobile ? "2px" : "4px")
     $(window).trigger('resize')
     validatePassword($('#name').html())
     $('#mainText').autosize()
