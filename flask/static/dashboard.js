@@ -598,7 +598,7 @@ var openingPanel = false
 var closingPanel = false
 
 $(document).on('touchstart', function(e){
-    if (isMobile && !$('#sidebar').hasClass('d-none') && e.originalEvent.touches[0].pageX > $('#sidebar').width()){
+    if (isMobile && !$('#sidebar').hasClass('d-none') && e.originalEvent.touches[0].pageX > $('#sidebar').width() && e.originalEvent.touches[0].pageY > $('#troncoHomeBar').height()){
         $('.toggleSettings')[0].click()
         return true
     }

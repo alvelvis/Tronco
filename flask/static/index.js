@@ -34,7 +34,8 @@ $(window).bind("keyup", function(){
         }
     }
     if (event.which == 13 && selectedCorpus > -1){
-        window.location.href = $($('.openCorpus')[selectedCorpus]).attr('href')
+        //window.location.href = 
+        $('.openCorpus')[selectedCorpus].click()//.attr('href')
     }
 })
 
