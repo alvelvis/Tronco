@@ -105,6 +105,7 @@ $('#filterOpenCorpus').on('focus', function(){
 })
 
 $('#filterOpenCorpus').on('keyup', function(e){
+    $('#randomTip').hide()
     key = $(this).val()
     if (e.key != "ArrowUp" && e.key != "ArrowDown") {
         loadCorpora(key)
