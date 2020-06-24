@@ -480,8 +480,11 @@ function loadFile(filename){
         $('.filename').html(filename == "README" ? "Introdução" : filename)
         $('#filename').attr('file', filename)
         $('#mainText').val(data.data.text)
-        $('#mainText').trigger('input')
+        $('#mainText').trigger('input')//? por que
         recentFiles()
+        if (!isMobile) {
+            $('#mainText').focus()
+        }
     })
     .fail(function(){
         window.location.href = "/corpus/" + $('#name').html () + "?file=" + $('#filename').attr('file')
