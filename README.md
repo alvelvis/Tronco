@@ -33,8 +33,7 @@ Em um ambiente Linux, você poderá ainda [Executar o framework Flask](#Executar
 ### Atalhos
 
 - Ctrl+E: Tela inicial
-- Ctrl+S: Salvar arquivo
-- Ctrl+P: Pesquisar
+- Ctrl+P: Criar/pesquisar coleção/arquivo
 
 ### Como fazer deploy
 

@@ -27,7 +27,8 @@ startup_tips = [
     "Precisa criar um novo arquivo rapidamente? Ctrl+P",
     "O arquivo de introdução será sempre exibido ao abrir uma coleção",
     "Você pode compartilhar qualquer texto, mas fique atento às permissões de visitante",
-    "Utilize as setas do teclado para navegar pelas coleções na tela inicial"
+    "Utilize as setas do teclado para navegar pelas coleções na tela inicial",
+    "Com a barra de buscas você pode tanto pesquisar quanto criar novos arquivos ou coleções",
 ]
 
 _filename_ascii_strip_re = re.compile(r"[^ A-Za-z0-9_.-]")

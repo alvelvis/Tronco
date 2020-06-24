@@ -1,3 +1,10 @@
+$('.toolbarButton').click(function(){
+    $("#toolbar").toggle(false)
+    if ($("[toolbar='" + $(this).attr('id') + "']") && $("[toolbar='" + $(this).attr('id') + "']").length) {
+        $("[toolbar='" + $(this).attr('id') + "']").toggle(true)
+    }
+})
+
 $('#reloadPage').click(function(){
     window.location.reload()
 })
@@ -7,13 +14,14 @@ $('#shareText').click(function(){
     $('#shareLink').show()
     $('#shareLink').select()
     document.execCommand('copy')
-    $('#shareLink').val("Link copiado!")
+    $('#shareLink').hide()
+    $('#shareLinkLabel').html("Link copiado!")
     $('#shareText').toggleClass("btn-success", true)
     $('#shareText').toggleClass("btn-outline-secondary", false)
     setTimeout(function(){
-        $('#shareLink').hide()
         $('#shareText').toggleClass("btn-success", false)
         $('#shareText').toggleClass("btn-outline-secondary", true)
+        $('#shareLinkLabel').html("Compartilhar")
     }, 2000)
 })
 
@@ -163,7 +171,7 @@ function revokePassword (name){
 
 $('#search').on('keyup', function(e){
     filename = $(this).val()
-    recentFiles(filename)
+    recentFiles(filename, filename)
     if (e.which == 13){
         $.ajax({
             url: '/api/findOrCreateFile',
@@ -175,14 +183,14 @@ $('#search').on('keyup', function(e){
             }
         })
         .done(function(data){
-            recentFiles()
+            //recentFiles("", filename)
             updateFiles("", data.data)
             $('#search').val('')
         })
     }
 })
 
-function recentFiles(key = ""){
+function recentFiles(key = "", typing = ""){
     $('#search').val(key)
     $.ajax({
         url: '/api/recentFiles',
@@ -194,7 +202,17 @@ function recentFiles(key = ""){
         }
     })
     .done(function(data){
-        $('#recentFiles').html(data.data.length ? data.data : 'Nenhum arquivo encontrado. Criar um novo?')
+        if (typing.length) {
+            new_data = '<li class="breadcrumb-item">' + (data.data.toLowerCase().split("|").indexOf(typing.toLowerCase()) >= 0 ? 'Abrir ' + typing + '?' : 'Criar ' + typing + '?') + "</li>"
+        } else {
+            new_data = ""
+        }
+        for (x of data.data.split("|")){
+            if (x.toLowerCase()!=typing.toLowerCase()){
+                new_data = new_data + '<li class="breadcrumb-item"><a class="recentFiles" href="#" file="' + x + '">' + (x == "README" ? "Introdução" : x) + '</a></li>'
+            }
+        }
+        $('#recentFiles').html(data.data.length ? new_data : 'Nenhum arquivo encontrado. Criar ' + typing + "?")
         $('.recentFiles').click(function(){
             $('[file="' + $(this).attr('file') + '"].files').click()
         })
@@ -256,7 +274,7 @@ $('.toggleSettings').click(function(){
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         $('#search').toggle($('#sidebar').hasClass("d-none"))
-        $('#troncoHome').toggle($('#sidebar').hasClass("d-none"))
+        //$('#troncoHome').toggle($('#sidebar').hasClass("d-none"))
         if ($('#menu-svg:visible') && $('#menu-svg:visible').length) {
             $("#" + $(this).attr('settings')).css('display', $('#sidebar').css('display'))
         } else {
@@ -281,7 +299,25 @@ function updateFiles(key = "", click = ""){
         }
     })
     .done(function(data){
-        $('#files').html(data.data)
+        $('#files').html(" ")
+        for (x of data.data.split("|")){
+            $('#files').append(`
+            <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
+                <a class="nav-link files d-flex align-items-center" style="width:100%;" file="` + x + `">
+                    <span data-feather="file-text"></span>
+                    <span style="max-width: 130px; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">` + x + `</span>
+                </a>
+                <div class="d-flex align-items-center fileSettings">
+                    <a class="d-flex align-items-center renameFile" style="padding-right:10px" title="Renomear arquivo" file="` + x + `">
+                        <span data-feather="delete"></span>
+                    </a>
+                    <a class="d-flex align-items-center deleteFile" style="padding-right:16px" title="Deletar arquivo" file="` + x + `">
+                        <span data-feather="trash"></span>
+                    </a>
+                </div>
+            </li>`)
+        }
+
         $('.files').click(function(){
             $('.files').toggleClass('active', false)
             $(this).toggleClass('active', true)
@@ -561,7 +597,7 @@ var closingPanel = false
 
 $(document).on('touchstart', function(e){
     if (isMobile && !$('#sidebar').hasClass('d-none') && e.originalEvent.touches[0].pageX > $('#sidebar').width()){
-        $('.toggleSettings').click()
+        $('.toggleSettings')[0].click()
         return true
     }
     if (isMobile && e.originalEvent.touches[0].pageX < 30 && !$('#sidebar:visible').length) {
@@ -577,11 +613,11 @@ $(document).on('touchmove', function(e){
         e.preventDefault()
     }
     if(openingPanel && e.originalEvent.touches[0].pageX > $(window).width()/3){
-        $('.toggleSettings').click()
+        $('.toggleSettings')[0].click()
         openingPanel = false
     }
     if(closingPanel && e.originalEvent.touches[0].pageX < $(window).width()-($(window).width()/3)){
-        $('.toggleSettings').click()
+        $('.toggleSettings')[0].click()
         closingPanel = false
     }
 })
@@ -598,23 +634,25 @@ $(window).on('resize', function(){
 })
 
 $(document).ready(function(){
-    $('#sidebar').css('margin-top', $('#sidebar').offset().top == 0 ? '54px' : '10px' )//toggleClass('pt-5')
+    name = $('#name').html()
     if ($('#sidebar:hidden').length) {
         isMobile = true
-        $('#main').prepend("<hr>")
-        $('#main').prepend($('#search').detach())
-        $('#troncoHomeLabel').html("Tronco")
-        $('#search').css('background-color', "white")
-        $('#search').css('color', "black")
+        //$('#main').prepend("<hr>")
+        //$('#main').prepend($('#search').detach())
+        $('#troncoHomeLabel').html('<span class="mr-1" data-feather="menu"></span> ' + "Tronco / " + name)
+        //$('#troncoHomeLabel').toggleClass('toggleSettings', true)
+        //$('#search').css('background-color', "white")
+        //$('#search').css('color', "black")
+        $('.navbar-brand').hide()
     } else {
         isMobile = false
         $('#troncoHomeLabel').html("")   
     }
-    $('#troncoHome').css("width", isMobile ? "100%" : "")
-    $('#troncoHome').toggleClass("mt-2", isMobile)
-    $('#troncoLogo').css('margin-bottom', isMobile ? "2px" : "4px")
+    $('#troncoHomeBar').toggleClass("mt-2", isMobile)
+    $('#sidebar').css('margin-top', $('#sidebar').offset().top == 0 ? (isMobile ? "40px" : '54px') : '10px')//toggleClass('pt-5')
+    $('#troncoLogo').css('margin-bottom', isMobile ? "5px" : "4px")
     $(window).trigger('resize')
-    validatePassword($('#name').html())
+    validatePassword(name)
     $('#mainText').autosize()
     //$('#search').focus()
 })

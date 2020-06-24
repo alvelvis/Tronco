@@ -72,15 +72,19 @@ function loadCorpora(key = ""){
         }
     })
     .done(function(data){
+        new_data = ""
+        for (x of data.data.split("|")) {
+            new_data = new_data + "<li><a class='openCorpus' corpus='" + x + "' href='/corpus/" + x + "?file=README'>" + x + "</a></li>"
+        }
         if (key.length) {
-            $("#openCorpus").html(data.data.length ? data.data : "Nada encontrado. Que tal criar uma nova coleção?")
+            $("#openCorpus").html(data.data.length ? new_data : "Nada encontrado. Que tal criar uma nova coleção?")
         } else {
             recent = getRecent().recent
             $('#openCorpus').html("")
             for (name of getRecent().recent.split("|").reverse()){
                 $('#openCorpus').append("<li><a corpus='" + name + "' class='openCorpus' href='/corpus/" + name + "?file=README'>" + name + "</a></li>")
             }
-            $("#openCorpus").append(data.data)
+            $("#openCorpus").append(new_data)
         }
         $('#filterOpenCorpus').toggleClass("is-invalid", data.data.length ? false : true)
         $('.openCorpus').click(function(e){

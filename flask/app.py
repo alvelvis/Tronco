@@ -83,8 +83,7 @@ def recent_files():
     password = request.values.get("password")
     #if not tronco_config.has_permission(name, password, "visualizar"): return None
     key = request.values.get("key", "")
-    data = [f'<li class="breadcrumb-item"><a class="recentFiles" href="#" file="{x}">{x if x != "README" else "Introdução"}</a></li>' for x in functions.recent_files(name, key)]
-    return {'data': data}
+    return {'data': "|".join(functions.recent_files(name, key))}
 
 @app.route("/api/renameFile", methods=["POST"])
 def rename_file():
@@ -159,23 +158,7 @@ def update_files():
     name = request.values.get("name")
     password = request.values.get("password")
     #if not tronco_config.has_permission(name, password, "visualizar"): return None
-
-    data = [f'''
-    <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
-        <a class="nav-link files d-flex align-items-center" style="width:100%;" file="{ x }">
-            <span data-feather="file-text"></span>
-            <span style="max-width: 130px; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{ x }</span>
-        </a>
-        <div class="d-flex align-items-center fileSettings">
-            <a class="d-flex align-items-center renameFile" style="padding-right:10px" title="Renomear arquivo" file="{ x }">
-                <span data-feather="delete"></span>
-            </a>
-            <a class="d-flex align-items-center deleteFile" style="padding-right:16px" title="Deletar arquivo" file="{ x }">
-                <span data-feather="trash"></span>
-            </a>
-        </div>
-    </li>''' for x in functions.update_files(name)]
-    return {'data': "\n".join(data)}
+    return {'data': "|".join(functions.update_files(name))}
 
 @app.route('/api/changeTroncoConfig', methods=["POST"])
 def change_tronco_config():
@@ -229,7 +212,7 @@ def load_corpora():
     key = request.values.get('key')
     recent = request.values.get("recent")
     corpora = functions.load_corpora(key=key, recent=recent)
-    return {'data': "".join(["<li><a class='openCorpus' corpus='{0}' href='/corpus/{0}?file=README'>".format(x['name']) + x['name'] + "</a></li>" for x in corpora])}# "({})".format(x['files'])
+    return {'data': "|".join([x['name'] for x in corpora])}
 
 @app.route('/')
 def home():

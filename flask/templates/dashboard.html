@@ -20,14 +20,16 @@
   <body>
       
     <nav id="mainHeadbar" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
-      <a id="troncoHome" onclick="window.location.href='/'" class="align-text-middle py-2" title="Voltar para coleções (Ctrl+E)">
-        <img class="mx-3" id="troncoLogo" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
-        <span id="troncoHomeLabel" class='bg-dark form-control-dark'></span>
+      <a id="troncoHomeBar" class="align-text-middle py-2" >
+        <span title="Voltar para coleções (Ctrl+E)" onclick="window.location.href='/'" id="troncoHome">
+          <img class="ml-3 mr-2" id="troncoLogo" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
+        </span>
+        <span id="troncoHomeLabel" class='toggleSettings bg-dark form-control-dark'></span>
       </a>
       <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white">
         <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
             <span id="menu-svg" style="margin-bottom:6px" data-feather="menu"></span>
-            <span id="name" class="name" style="margin-left:5px;  max-width:95%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{{name}}</span>
+            <span id="name" class="name" style="margin-left:5px; max-width:95%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{{name}}</span>
         </a>   
       </span>
       <input class="form-control form-control-dark w-100" id="search" type="text" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Procure ou crie novos textos" aria-label="Search">
@@ -51,14 +53,15 @@
             <ul class="nav flex-column">
                 <li class="nav-item settings form-control-dark bg-dark pb-2" id="corpusSettings" style="display:none;">
                     <a class="nav-link">
-                        <div class="form-row align-items-left">
+                        <!--div class="form-row align-items-left">
                             <div class="col-auto my-1">
                                 <div class="custom-control custom-checkbox mr-sm-2">
                                 <input type="checkbox" checked="true" class="custom-control-input" id="autoSaveCheckbox">
                                 <label class="custom-control-label" style="cursor:pointer" title="Modificações no arquivo e nos seus metadados serão salvas automaticamente" for="autoSaveCheckbox">Salvamento automático</label>
                                 </div>
                             </div>                        
-                        </div>
+                        </div-->
+                        <input type="checkbox" style="display:none" checked="true" class="custom-control-input" id="autoSaveCheckbox">
                         <div class="form-row align-items-left">
                             <div class="col-auto my-1">
                                 <div class="custom-control custom-checkbox mr-sm-2">
@@ -171,26 +174,33 @@
           </nav>
 
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-            <h1 class="h2 filename" file="{{filename}}" id="filename"></h1>
-            <div class="btn-toolbar mb-2 mb-md-0">
-              <div class="btn-group mr-2">
-                <input style="display:none; border:none; text-align:right; padding-right:10px" id="shareLink" readonly>
-                <button id="shareText" class="btn btn-sm btn-outline-secondary" title="Compartilhe o link deste texto">
-                  <span data-feather="share-2"></span>
-                </button>
-                <button id="saveModifications" class="btn btn-sm btn-outline-secondary" title="Salvar modificações (Ctrl+S)">
-                  <span data-feather="save"></span>
-                  <!--Salvar modificações-->
-                </button>
-                <button id="reloadPage" style="display:none" class="btn btn-sm btn-danger" title="Recarregar página">
-                  <span class="mr-1" data-feather="refresh-cw"></span>
-                  Recarregar página
-                </button>
-              </div>
-            </div>
+            <h1 class="h2 filename" style="max-width:100%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis" file="{{filename}}" id="filename"></h1>
           </div>
 
           <textarea class="form-control" style="resize:none; overflow:auto; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; height:100%; width:100%;" id="mainText"></textarea>
+
+          <div class="btn-toolbar mt-2">
+            <div class="btn-group">
+              <button id="shareText" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste texto">
+                <span class="mr-1" data-feather="share-2"></span>
+                <span id="shareLinkLabel">Compartilhar</span>
+              </button>
+              <button id="saveModifications" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Salvar modificações (Ctrl+S)">
+                <span data-feather="save"></span>
+                <!--Salvar modificações-->
+              </button>
+              <button id="reloadPage" style="display:none" class="toolbarButton btn btn-sm btn-danger" title="Recarregar página">
+                <span class="mr-1" data-feather="refresh-cw"></span>
+                Recarregar página
+              </button>
+            </div>
+          </div>
+
+          <div toolbar="shareText" id="toolbar" class="btn-toolbar mt-2">
+            <div class="btn-group">
+              <input style="display:none; border:none; padding-right:10px" id="shareLink" readonly>
+            </div>
+          </div>
 
           <!--h2>Section title</h2>
           <div class="table-responsive">
