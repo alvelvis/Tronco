@@ -595,9 +595,7 @@ $(window).on('resize', function(){
 })
 
 $(document).ready(function(){
-    if ($('#sidebar').offset().top == 0){
-        $('#sidebar').toggleClass('pt-5')
-    }
+    $('#sidebar').css('margin-top', $('#sidebar').offset().top == 0 ? '54px' : '10px' )//toggleClass('pt-5')
     if ($('#sidebar:hidden').length) {
         isMobile = true
         $('#main').prepend("<hr>")
