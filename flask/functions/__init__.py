@@ -52,7 +52,7 @@ def secure_filename(filename):
     if isinstance(filename, str):
         from unicodedata import normalize
 
-        filename = normalize("NFKD", filename).encode("ascii", "ignore").decode("ascii")
+        #filename = normalize("NFKD", filename)#.encode("ascii", "ignore").decode("ascii")
     for sep in os.path.sep, os.path.altsep:
         if sep:
             filename = filename.replace(sep, " ")

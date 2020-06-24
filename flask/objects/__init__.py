@@ -12,7 +12,15 @@ startup_salutations = [
     "Olá,",
     "Bem-vindo,",
     "Oi,",
-    "Bom te ver,"
+    "Bom te ver,",
+    "Ciao,",
+    "Hi,",
+    "Salut,",
+    "Hallo,",
+    "こんにちは,",
+    "Konnichiwa,",
+    "안녕,",
+    "Namastê,",
 ]
 startup_tips = [
     "Você pode sempre acessar a barra de buscas apertando Ctrl+P",
@@ -31,7 +39,7 @@ startup_tips = [
     "Com a barra de buscas você pode tanto pesquisar quanto criar novos arquivos ou coleções",
 ]
 
-_filename_ascii_strip_re = re.compile(r"[^ A-Za-z0-9_.-]")
+_filename_ascii_strip_re = re.compile(r"[^ a-zçáéíóúãõàèìòùâêîôû0-9_.-]", flags=re.IGNORECASE)
 
 _windows_device_files = (
     "CON",
@@ -46,6 +54,32 @@ _windows_device_files = (
     "PRN",
     "NUL",
 )
+
+class SessionTokens:
+
+    def __init__(self):
+        self.tokens = {}
+
+    def did_someone_else_edit(self, name, filename, token, timelimit=60.0):
+        key = name + "|" + filename
+        if not key in self.tokens:
+            return 0
+        if self.tokens[key]['token'] == token or self.tokens[key]['date'] - time.time() > timelimit:
+            return 0
+        else:
+            return 1
+
+    def just_edited(self, name, filename, token):
+        key = name + "|" + filename
+        self.tokens[key] = {
+            'token': token,
+            'date': time.time()
+        }
+
+    def stopped_editing(self, name, filename, token):
+        key = name + "|" + filename
+        if key in self.tokens and token == self.tokens[key]['token']:
+            del self.tokens[key]
 
 class TroncoConfig:
 

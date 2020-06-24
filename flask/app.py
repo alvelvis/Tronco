@@ -2,19 +2,39 @@ import os, sys
 import requests
 import random
 from flask import Flask, redirect, render_template, request
-#from pyfladesk import init_gui
 from flaskwebgui import FlaskUI
 from flask_pwa import PWA
+from uuid import uuid4
 import functions
 
 app = Flask(__name__)
 PWA(app)
-ui = FlaskUI(app, port=5240, maximized=True)# window_title="Tronco", icon="static/favicon.png"
+ui = FlaskUI(app, port=5240, maximized=True)
 root_path = app.root_path
 
 import objects
 tronco_config = objects.TroncoConfig()
+session_tokens = objects.SessionTokens()
 app.jinja_env.globals.update(tronco_config=tronco_config)
+
+@app.route("/api/claimAccess", methods=["POST"])
+def claimAccess():
+    name = request.values.get("name")
+    filename = request.values.get("filename")
+    token = request.values.get("token")
+    if session_tokens.did_someone_else_edit(name, filename, token):
+        return {'error': 1}
+    else:
+        session_tokens.just_edited(name, filename, token)
+        return {'error': 0}
+
+@app.route("/api/revokeToken", methods=["POST"])
+def revokeToken():
+    name = request.values.get("name")
+    filename = request.values.get("filename")
+    token = request.values.get("token")
+    session_tokens.stopped_editing(name, filename, token)
+    return {'error': 0}
 
 @app.route("/api/togglePerm", methods=["POST"])
 def toggle_perm():
@@ -40,8 +60,6 @@ def set_password():
     if not tronco_config.has_permission(name, password, "configurar"): return None
     new_password = request.values.get("new_password")
     tronco_config.corpora[name]['permissions']['password'] = new_password
-    #tronco_config.corpora[name]['permissions']['disconnected'].remove("configurar")
-    #tronco_config.corpora[name]['permissions']['disconnected'].remove("editar")
     tronco_config.save()
     return {'data': ''}
 
@@ -66,22 +84,22 @@ def validate_password():
     else:
         permissions = tronco_config.corpora[name]['permissions']['disconnected']
     
-    return {'permissions': "|".join(permissions)}
+    return {
+        'permissions': "|".join(permissions),
+        'token': str(uuid4())
+        }
 
 @app.route("/api/findOrCreateFile", methods=["POST"])
 def find_or_create_file():
     name = request.values.get("name")
     password = request.values.get("password")
-    #if not tronco_config.has_permission(name, password, "visualizar"): return None
     filename = request.values.get("filename")
-
     return {'data': functions.find_or_create_file(name, filename, create=tronco_config.has_permission(name, password, "editar"))}
 
 @app.route("/api/recentFiles", methods=["POST"])
 def recent_files():
     name = request.values.get("name")
     password = request.values.get("password")
-    #if not tronco_config.has_permission(name, password, "visualizar"): return None
     key = request.values.get("key", "")
     return {'data': "|".join(functions.recent_files(name, key))}
 
@@ -156,8 +174,6 @@ def delete_files():
 @app.route("/api/updateFiles")
 def update_files():
     name = request.values.get("name")
-    password = request.values.get("password")
-    #if not tronco_config.has_permission(name, password, "visualizar"): return None
     return {'data': "|".join(functions.update_files(name))}
 
 @app.route('/api/changeTroncoConfig', methods=["POST"])
@@ -178,20 +194,27 @@ def save_file():
     if not tronco_config.has_permission(name, password, "editar"): return None
     filename = request.values.get('filename')
     text = request.values.get('text')
+    token = request.values.get("token")
+    if session_tokens.did_someone_else_edit(name, filename, token):
+        return {'error': 1}
+    else:
+        session_tokens.just_edited(name, filename, token)
     functions.save_file(name, filename, text)
-    return {'data': ''}
+    return {'error': 0}
 
 @app.route('/api/loadFile')
 def load_file():
     name = request.values.get('name')
     password = request.values.get("password")
     filename = request.values.get('filename')
-    if filename != "README" and not tronco_config.has_permission(name, password, "visualizar"): return None
+    token = request.values.get("token")
+    if filename != "README" and not tronco_config.has_permission(name, password, "visualizar"):
+        return {'error': 2}
     text = functions.load_file(name, filename)
     if text:
-        return {'data': text}
+        return {'data': text, 'error': 0}
     else:
-        return redirect("/")
+        return {'error': 3}
 
 @app.route('/corpus/<name>')
 def load_corpus(name):
@@ -231,5 +254,4 @@ def home():
         )
 
 if __name__ == "__main__":
-    #init_gui(app,)
     ui.run()

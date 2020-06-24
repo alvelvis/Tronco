@@ -1,3 +1,28 @@
+window.onbeforeunload = function(){
+    revokeToken()
+}
+
+function revokeToken(filename=$('#filename').attr('file')) {
+    $.ajax({
+        url: "/api/revokeToken",
+        method: "POST",
+        async: false,
+        data: {
+            "name": $('#name').html(),
+            "filename": filename,
+            'token': getSessionToken(),
+        }
+    })
+}
+
+function shouldReload(should){
+    $('#mainText').prop("readOnly", should)
+    $('#reloadPage').toggle(should)
+    if (should) {
+        reloadPage.scrollIntoView()
+    }
+}
+
 $('.toolbarButton').click(function(){
     $("#toolbar").toggle(false)
     if ($("[toolbar='" + $(this).attr('id') + "']") && $("[toolbar='" + $(this).attr('id') + "']").length) {
@@ -25,16 +50,44 @@ $('#shareText').click(function(){
     }, 2000)
 })
 
+var fileLocked = false
+
 $('#mainText').on("focus", function(){
-    if (isMobile) {
-        $('#mainHeadbar').toggle(false)
-        $('#search').toggle(false)
-        $('#troncoHome').toggle(false)
-        $('#sidebar').toggleClass("d-none", true)
-    }
+    
+    $.ajax({
+        url: "/api/claimAccess",
+        method: "POST",
+        data: {
+            "name": $('#name').html(),
+            "filename": $('#filename').attr('file'),
+            'token': getSessionToken(),
+        }
+    })
+    .done(function(data){
+        if (data.error == 1) {
+            if (!fileLocked) {
+                alert("O arquivo já está sendo editado por outra pessoa")
+            }
+            fileLocked = true
+            $('#mainText').blur()
+        } else {
+            if (isMobile) {
+                $('#mainHeadbar').toggle(false)
+                $('#search').toggle(false)
+                $('#troncoHome').toggle(false)
+                $('#sidebar').toggleClass("d-none", true)
+            }
+        }
+    })
+    .fail(function(){
+        alert("O arquivo já está sendo editado por outra pessoa")
+    })
+
 })
 
 $('#mainText').on("blur", function(){
+    fileLocked = false
+    revokeToken($('#filename').attr('file'))
     if (isMobile) {
         $('#mainHeadbar').toggle(true)
         $('#search').toggle(true)
@@ -61,9 +114,6 @@ $('.togglePerm').on('change', function(){
             "password": getPassword(name)
         }
     })
-    .done(
-        //loadConfig()
-    )
 })
 
 $('#setPermissions').click(function(){
@@ -114,6 +164,15 @@ var expirationDate = 'Fri, 31 Dec 9999 23:59:59 GMT'
 var permissions = []
 
 function validatePassword (name){
+    
+    if (document.cookie.indexOf("tp=") == -1 || document.cookie.indexOf("<troncoPasswords>") >= 0){
+        document.cookie = "tp={}; expires=" + expirationDate
+    }
+
+    if (document.cookie.indexOf("st=") == -1){
+        document.cookie = "st={}; expires=" + expirationDate
+    }
+    
     password = getPassword(name)
     $.ajax({
         url: '/api/validatePassword',
@@ -138,11 +197,21 @@ function validatePassword (name){
         $('#mainText').prop('readonly', !permEdit)
         $('#saveModifications').attr('disabled', !permEdit)
         $('#menu-svg').toggle(permSetup)
-        //$('#newFile').css('visibility', permEdit ? "visible" : "hidden")
-        //$('#permissions').html("Suas permissões:<br>- " + permissions.join("<br>- "))
+        storeSessionToken(data.token)
         loadConfig()
-        //updateFiles("", $('#filename').attr('file'))
     })
+    return true
+}
+
+function storeSessionToken(token) {
+    sessionToken = JSON.parse(document.cookie.split("st=")[1].split("; ")[0])
+    sessionToken['token'] = token
+    document.cookie = "st=" + JSON.stringify(sessionToken) + "; expires=" + expirationDate
+}
+
+function getSessionToken() {
+    sessionToken = JSON.parse(document.cookie.split("st=")[1].split("; ")[0])
+    return sessionToken.token
 }
 
 function storePassword (name, pass){
@@ -152,9 +221,6 @@ function storePassword (name, pass){
 }
 
 function getPassword (name){
-    if (document.cookie.indexOf("tp=") == -1 || document.cookie.indexOf("<troncoPasswords>") >= 0){
-        document.cookie = "tp={}; expires=" + expirationDate
-    }
     troncoPasswords = JSON.parse(document.cookie.split("tp=")[1].split("; ")[0])
     if (name in troncoPasswords){
         return troncoPasswords[name]
@@ -209,9 +275,7 @@ function recentFiles(key = "", typing = ""){
         }
         for (x of data.data.split("|")){
             if (x !== "README"){
-            //if (x.toLowerCase()!=typing.toLowerCase()){
                 new_data = new_data + '<li class="breadcrumb-item"><a class="recentFiles" href="#" file="' + x + '">' + (x == "README" ? "Introdução" : x) + '</a></li>'
-            //}
             }
         }
         $('#recentFiles').html(data.data.length ? new_data : new_data + 'Nenhum arquivo encontrado.')
@@ -276,7 +340,6 @@ $('.toggleSettings').click(function(){
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         $('#search').toggle($('#sidebar').hasClass("d-none"))
-        //$('#troncoHome').toggle($('#sidebar').hasClass("d-none"))
         if (permSetup) {
             $("#" + $(this).attr('settings')).css('display', $('#sidebar').css('display'))
         } else {
@@ -303,21 +366,23 @@ function updateFiles(key = "", click = ""){
     .done(function(data){
         $('#files').html(" ")
         for (x of data.data.split("|")){
-            $('#files').append(`
-            <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
-                <a class="nav-link files d-flex align-items-center" style="width:100%;" file="` + x + `">
-                    <span data-feather="file-text"></span>
-                    <span style="max-width: 130px; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">` + x + `</span>
-                </a>
-                <div class="d-flex align-items-center fileSettings">
-                    <a class="d-flex align-items-center renameFile" style="padding-right:10px" title="Renomear arquivo" file="` + x + `">
-                        <span data-feather="delete"></span>
+            if (x.length) {
+                $('#files').append(`
+                <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
+                    <a class="nav-link files d-flex align-items-center" style="width:100%;" file="` + x + `">
+                        <span data-feather="file-text"></span>
+                        <span style="max-width: 130px; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">` + x + `</span>
                     </a>
-                    <a class="d-flex align-items-center deleteFile" style="padding-right:16px" title="Deletar arquivo" file="` + x + `">
-                        <span data-feather="trash"></span>
-                    </a>
-                </div>
-            </li>`)
+                    <div class="d-flex align-items-center fileSettings">
+                        <a class="d-flex align-items-center renameFile" style="padding-right:10px" title="Renomear arquivo" file="` + x + `">
+                            <span data-feather="delete"></span>
+                        </a>
+                        <a class="d-flex align-items-center deleteFile" style="padding-right:16px" title="Deletar arquivo" file="` + x + `">
+                            <span data-feather="trash"></span>
+                        </a>
+                    </div>
+                </li>`)
+            }
         }
 
         $('.files').click(function(){
@@ -450,18 +515,28 @@ function saveFile(filename ,text){
             'name': name,
             'filename': filename,
             'text': text,
-            "password": getPassword(name)
+            "password": getPassword(name),
+            "token": getSessionToken(),
         }
     })
     .fail(function(){
         if (!failedSave) {
             failedSave = true
-            $('#mainText').prop("readOnly", true)
-            $('#reloadPage').show()
-            alert("Falha na sincronização. Por favor, para não perder quaisquer modificações que você realizou no arquivo, copie o texto e recarregue a página.")
+            shouldReload(true)
+            alert("Falha na sincronização. Copie suas modificações para que não as perca e recarregue a página.")
         }
     })
-    textModified(false)
+    .done(function(data){
+        if (!data.error) {
+            textModified(false)
+        } else {
+            if (data.error == 1 && !failedSave) {
+                failedSave = true
+                shouldReload(true)
+                alert("O arquivo está sendo editado por outra pessoa. Copie suas modificações para que não as perca e recarregue a página.")
+            }
+        }
+    })
 }
 
 $('#mainText').on('keyup', function(event){
@@ -491,14 +566,7 @@ function textModified(state){
 }
 
 function loadFile(filename){
-    if (filename != "README") {
-        $('#recentFiles').toggle(false)
-        if (permissions.indexOf("visualizar") == -1){
-            alert("Você não tem permissão para visualizar esta coleção")
-            window.location.href = "/"
-            return false
-        }
-    } else {
+    if (filename == "README"){
         $('#recentFiles').toggle(true)
     }
     name = $('#name').html()
@@ -508,20 +576,41 @@ function loadFile(filename){
         data: {
             'name': name,
             'filename': filename,
-            "password": getPassword(name)
+            "password": getPassword(name),
+            'token': getSessionToken(),
         }
     })
     .done(function(data){
-        textModified(false)
-        $('#search').val('')
-        $('#filename').html(filename == "README" ? "Introdução" : filename)
-        $('.filename').html(filename == "README" ? "Introdução" : filename)
-        $('#filename').attr('file', filename)
-        $('#mainText').val(data.data.text)
-        $('#mainText').trigger('input')//? por que
-        recentFiles()
-        if (!isMobile) {
-            $('#mainText').focus()
+        if (!data.error) {
+            textModified(false)
+            $('#search').val('')
+            $('#filename').html(filename == "README" ? "Introdução" : filename)
+            $('.filename').html(filename == "README" ? "Introdução" : filename)
+            $('#filename').attr('file', filename)
+            $('#mainText').val(data.data.text)
+            //$('#mainText').trigger('input')//? por que eu escrevi isso?
+            recentFiles()
+            if (!isMobile) {
+                $('#mainText').focus()
+            }
+        } else {
+            if (data.error == 1) {
+                alert("Este arquivo está sendo editado por outra pessoa neste momento")
+                window.location.href = (filename == "README" ? "/" : "/corpus/" + name + "?file=README")
+                return false
+            } else {
+                if (data.error == 2) {
+                    alert("Você não tem permissão para visualizar esta coleção")
+                    window.location.href = "/"
+                    return false
+                } else {
+                    if (data.error == 3){
+                        alert("Este arquivo não existe")
+                        window.location.href = "/corpus/" + name + "?file=README"
+                        return false
+                    }
+                }
+            }
         }
     })
     .fail(function(){
@@ -581,14 +670,13 @@ function loadConfig(){
     .done(function(data){
         auto_save = data.auto_save == "true" ? true : false
         auto_wrap = data.auto_wrap == "true" ? true : false
-        view_perm = data.view_perm// == "true" ? true : false
-        edit_perm = data.edit_perm// == "true" ? true : false
-        setup_perm = data.setup_perm// == "true" ? true : false
+        view_perm = data.view_perm
+        edit_perm = data.edit_perm
+        setup_perm = data.setup_perm
         $('#autoSaveCheckbox').prop('checked', auto_save)
         $('#wrapTextCheckbox').prop('checked', auto_wrap)
         $('#viewPermission').prop('checked', view_perm)
         $('#editPermission').prop('checked', edit_perm)
-        //$('#setupPermission').prop('checked', setup_perm)
         loadConfigFromCheckboxes()
     })
 }
@@ -639,14 +727,11 @@ $(document).ready(function(){
     name = $('#name').html()
     if ($('#sidebar:hidden').length) {
         isMobile = true
-        //$('#main').prepend("<hr>")
-        //$('#main').prepend($('#search').detach())
         $('#troncoHomeLabel').html("<span class='mr-2' style='margin-bottom:6px' data-feather='menu'></span><span class='mt-3 mb-0' style='max-width:70vw; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis'>Tronco / " + name + "</span>")
         $('#troncoLogo').toggleClass("mb-3")
-        //$('#troncoHomeLabel').toggleClass('toggleSettings', true)
-        //$('#search').css('background-color', "white")
-        //$('#search').css('color', "black")
         $('.navbar-brand').hide()
+        $('.row').after($('#mainText').detach())
+        $('#mainText').css("margin", "0px").css("padding", "0px").css("border-style", "none").toggleClass("border-bottom", true)
     } else {
         isMobile = false
         $('#troncoHomeLabel').html("")   
@@ -655,8 +740,8 @@ $(document).ready(function(){
     $('#sidebar').css('margin-top', $('#sidebar').offset().top == 0 ? (isMobile ? "40px" : '54px') : '10px')
     $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")
     $(window).trigger('resize')
-    validatePassword(name)
-    updateFiles("", $('#filename').attr('file'))
+    if (validatePassword(name)) {
+        updateFiles("", $('#filename').attr('file'))
+    }
     $('#mainText').autosize()
-    //$('#search').focus()
 })
