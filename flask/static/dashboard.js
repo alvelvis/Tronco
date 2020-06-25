@@ -744,7 +744,7 @@ function triggerResize(){
     name = $('#name').html()
     if ($('#sidebar:hidden').length || $(window).width() < 600) {
         isMobile = true
-        $('#troncoHomeLabel').html("<span class='mr-2' style='margin-bottom:6px' data-feather='menu'></span><span class='mt-4 mb-0' style='max-width:77vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / " + name + "</span>")
+        $('#troncoHomeLabel').html("<span class='mr-2' style='margin-bottom:6px' data-feather='menu'></span><span class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / " + name + "</span>")
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
         $('.row').after($('#mainText').detach())
