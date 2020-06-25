@@ -130,6 +130,7 @@ $('#filterOpenCorpus').on('keyup', function(e){
 })
 
 $(window).ready(function(){
+    $('#tronco').html(window.location.href.match(/https?:\/\/(.*?)\//)[1].replace(/\//g, ""))
     if ($('#tronco:hidden').length) {
         isMobile = true
     } else {
