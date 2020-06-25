@@ -41,14 +41,6 @@ $(window).bind("keyup", function(){
 
 var expirationDate = 'Fri, 31 Dec 9999 23:59:59 GMT'
 
-function getRecent (){
-    if (document.cookie.indexOf("tr=") == -1){
-        document.cookie = 'tr={"recent": ""}; expires=' + expirationDate
-    }
-    cookie = JSON.parse(document.cookie.split("tr=")[1].split("; ")[0])
-    return cookie
-}
-
 function addRecent (newName){
     recent = getRecent()
     newRecent = []
@@ -73,15 +65,27 @@ function loadCorpora(key = ""){
         }
     })
     .done(function(data){
+        if (key.length && data.data.toLowerCase().split("|").indexOf(key.toLowerCase()) >= 0) {
+            pre_list = "<a class='text-muted'>Abrir " + key + "?</a>"
+        }
+        if (key.length && data.data.toLowerCase().split("|").indexOf(key.toLowerCase()) == -1) {
+            pre_list = "<a class='text-muted'>Criar " + key + "?</a>"
+        }
+        if (!key.length) {
+            pre_list = ""
+        }
         new_data = ""
         for (x of data.data.split("|")) {
             new_data = new_data + "<li><a class='openCorpus' corpus='" + x + "' href='/corpus/" + x + "?file=README'>" + x + "</a></li>"
         }
+        if (pre_list.length) {
+            $('#randomTip').html(pre_list)
+        }
+        $('#openCorpus').html("")
         if (key.length) {
-            $("#openCorpus").html(data.data.length ? new_data : "Nada encontrado. Que tal criar uma nova coleção?")
+            $("#openCorpus").append(data.data.length ? new_data : new_data + "Nada encontrado.")
         } else {
             recent = data['new_recent']
-            $('#openCorpus').html("")
             for (name of recent.split("|").reverse()){
                 $('#openCorpus').append("<li><a corpus='" + name + "' class='openCorpus' href='/corpus/" + name + "?file=README'>" + name + "</a></li>")
             }
@@ -104,7 +108,6 @@ $('#filterOpenCorpus').on('focus', function(){
 })
 
 $('#filterOpenCorpus').on('keyup', function(e){
-    $('#randomTip').hide()
     key = $(this).val()
     if (e.key != "ArrowUp" && e.key != "ArrowDown") {
         loadCorpora(key)

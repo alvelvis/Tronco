@@ -3,6 +3,10 @@ window.addEventListener("beforeunload", function(){
     //revokeToken()
 })
 
+$('#troncoHome').click(function(){
+    window.location.href = '/?load=false'
+})
+
 function revokeToken(filename=$('#filename').attr('file')) {
     $.post("/api/revokeToken", {
         "name": name,
@@ -281,7 +285,7 @@ $('#deleteCorpus').click(function(){
             }
         })
         .done(function(){
-            window.location.href = "/"
+            window.location.href = "/?load=false"
         })
     } else {
         if (confirmName && confirmName.length) {
@@ -616,7 +620,7 @@ function loadFile(filename){
         } else {
             if (data.error == 2) {
                 alert("Você não tem permissão para visualizar esta coleção")
-                window.location.href = "/"
+                window.location.href = "/?load=false"
                 return false
             } else {
                 if (data.error == 3){
@@ -629,7 +633,7 @@ function loadFile(filename){
     })
     .fail(function(){
         alert("Falha na sincronização.")
-        window.location.href = "/"
+        window.location.href = "/?load=false"
         return false
     })
 }

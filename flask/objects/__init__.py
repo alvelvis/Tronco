@@ -38,6 +38,7 @@ startup_tips = [
     "Você pode compartilhar qualquer texto, mas fique atento às permissões de visitante",
     "Utilize as setas do teclado para navegar pelas coleções na tela inicial",
     "Com a barra de buscas você pode tanto pesquisar quanto criar novos arquivos ou coleções",
+    "O arquivo de introdução pode ser visto por todos, mesmo visitantes"
 ]
 
 _filename_ascii_strip_re = re.compile(r"[^ a-zçáéíóúãõàèìòùâêîôû0-9_.-]", flags=re.IGNORECASE)

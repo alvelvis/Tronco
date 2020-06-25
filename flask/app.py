@@ -232,13 +232,13 @@ def load_corpus(name):
     if os.path.isdir(corpus_dir):
         filename = request.args.get("file", None)
         if filename and filename != "README" and not os.path.isfile(os.path.join(app.root_path, "corpora", name, filename)):
-            return redirect("/")
+            return redirect("/?load=false")
         return render_template('dashboard.html',
             name=name,
             filename=filename if filename else "README",
         )
     else:
-        return redirect("/")
+        return redirect("/?load=false")
 
 @app.route('/api/loadCorpora/', methods=["POST"])
 def load_corpora():

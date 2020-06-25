@@ -153,7 +153,7 @@ def create_new_file(name, filename, text=""):
             text = f'''# times_seen = 0
 # last_seen = 0
 # first_seen = {time.time()}
-{name} - Introdução'''
+'''
         with open(filename_dir, "w") as f:
             f.write(text)
         return filename
