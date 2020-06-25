@@ -6,6 +6,7 @@ from flaskwebgui import FlaskUI
 from flask_pwa import PWA
 from uuid import uuid4
 import functions
+import pprint
 
 app = Flask(__name__)
 PWA(app)
@@ -18,18 +19,20 @@ session_tokens = objects.SessionTokens()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
 @app.route("/api/claimAccess", methods=["POST"])
-def claimAccess():
+def claim_access():
     name = request.values.get("name")
     filename = request.values.get("filename")
     token = request.values.get("token")
-    if session_tokens.did_someone_else_edit(name, filename, token):
+    previoustoken = request.values.get("previoustoken")
+    if session_tokens.did_someone_else_edit(name, filename, token, previoustoken):
         return {'error': 1}
     else:
         session_tokens.just_edited(name, filename, token)
         return {'error': 0}
+        
 
 @app.route("/api/revokeToken", methods=["POST"])
-def revokeToken():
+def revoke_token():
     name = request.values.get("name")
     filename = request.values.get("filename")
     token = request.values.get("token")
@@ -79,7 +82,7 @@ def validate_password():
     name = request.values.get("name")
     password = request.values.get("password")
 
-    if (password == tronco_config.corpora[name]['permissions']['password']):
+    if (tronco_config.is_owner(name, password)):
         permissions = objects.all_permissions
     else:
         permissions = tronco_config.corpora[name]['permissions']['disconnected']
@@ -207,7 +210,6 @@ def load_file():
     name = request.values.get('name')
     password = request.values.get("password")
     filename = request.values.get('filename')
-    token = request.values.get("token")
     if filename != "README" and not tronco_config.has_permission(name, password, "visualizar"):
         return {'error': 2}
     text = functions.load_file(name, filename)
@@ -235,7 +237,10 @@ def load_corpora():
     key = request.values.get('key')
     recent = request.values.get("recent")
     corpora = functions.load_corpora(key=key, recent=recent)
-    return {'data': "|".join([x['name'] for x in corpora])}
+    return {
+        'data': "|".join([x['name'] for x in corpora['sorted_list']]),
+        'new_recent': "|".join(corpora['new_recent'])
+    }
 
 @app.route('/')
 def home():

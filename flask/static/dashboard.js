@@ -1,17 +1,13 @@
-window.onbeforeunload = function(){
-    revokeToken($('#filename').attr('file'), false)
-}
+window.addEventListener("beforeunload", function(e){
+    storeSessionPreviousToken(getSessionToken())
+    revokeToken()
+})
 
-function revokeToken(filename=$('#filename').attr('file'), async=true) {
-    $.ajax({
-        url: "/api/revokeToken",
-        method: "POST",
-        async: async,
-        data: {
-            "name": $('#name').html(),
-            "filename": filename,
-            'token': getSessionToken(),
-        }
+function revokeToken(filename=$('#filename').attr('file')) {
+    $.post("/api/revokeToken", {
+        "name": name,
+        "filename": filename,
+        'token': getSessionToken(),
     })
 }
 
@@ -50,44 +46,18 @@ $('#shareText').click(function(){
     }, 2000)
 })
 
-var fileLocked = false
-
 $('#mainText').on("focus", function(){
-    
-    $.ajax({
-        url: "/api/claimAccess",
-        method: "POST",
-        data: {
-            "name": $('#name').html(),
-            "filename": $('#filename').attr('file'),
-            'token': getSessionToken(),
-        }
-    })
-    .done(function(data){
-        if (data.error == 1) {
-            if (!fileLocked) {
-                alert("O arquivo já está sendo editado por outra pessoa")
-            }
-            fileLocked = true
-            $('#mainText').blur()
-        } else {
-            if (isMobile) {
-                $('#mainHeadbar').toggle(false)
-                $('#search').toggle(false)
-                $('#troncoHome').toggle(false)
-                $('#sidebar').toggleClass("d-none", true)
-            }
-        }
-    })
-    .fail(function(){
-        alert("O arquivo já está sendo editado por outra pessoa")
-    })
+
+    if (isMobile) {
+        $('#mainHeadbar').toggle(false)
+        $('#search').toggle(false)
+        $('#troncoHome').toggle(false)
+        $('#sidebar').toggleClass("d-none", true)
+    }
 
 })
 
 $('#mainText').on("blur", function(){
-    fileLocked = false
-    revokeToken($('#filename').attr('file'))
     if (isMobile) {
         $('#mainHeadbar').toggle(true)
         $('#search').toggle(true)
@@ -172,6 +142,10 @@ function validatePassword (name){
     if (document.cookie.indexOf("st=") == -1){
         document.cookie = "st={}; expires=" + expirationDate
     }
+
+    if (document.cookie.indexOf("spt=") == -1){
+        document.cookie = "spt={}; expires=" + expirationDate
+    }
     
     password = getPassword(name)
     $.ajax({
@@ -189,7 +163,7 @@ function validatePassword (name){
         permSetup = permissions.indexOf("configurar") >= 0
         if (permSetup) { permEdit = true }
         if (!permEdit) { permSetup = false }
-        $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não tem permissão"))))
+        $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não tem permissões"))))
         $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
@@ -201,6 +175,17 @@ function validatePassword (name){
         loadConfig()
     })
     return true
+}
+
+function storeSessionPreviousToken(token) {
+    sessionToken = JSON.parse(document.cookie.split("spt=")[1].split("; ")[0])
+    sessionToken['token'] = token
+    document.cookie = "spt=" + JSON.stringify(sessionToken) + "; expires=" + expirationDate
+}
+
+function getSessionPreviousToken() {
+    sessionToken = JSON.parse(document.cookie.split("spt=")[1].split("; ")[0])
+    return sessionToken.token
 }
 
 function storeSessionToken(token) {
@@ -533,14 +518,14 @@ function saveFile(filename ,text){
             if (data.error == 1 && !failedSave) {
                 failedSave = true
                 shouldReload(true)
-                alert("O arquivo está sendo editado por outra pessoa. Copie suas modificações para que não as perca e recarregue a página.")
+                alert("O arquivo está sendo editado por outra pessoa. Recarregue a página.")
             }
         }
     })
 }
 
 $('#mainText').on('keyup', function(event){
-    if ((!event.ctrlKey && !event.metaKey && event.which != 17) || (event.ctrlKey && String.fromCharCode(event.which).toLowerCase() == "v")) {
+    if ((!event.ctrlKey && !event.metaKey && event.which != 17 && event.which != 27) || (event.ctrlKey && String.fromCharCode(event.which).toLowerCase() == "v")) {
         if ($('#autoSaveCheckbox').prop('checked')){
             saveFile($('#filename').attr('file'), $('#mainText').val())
         } else {
@@ -566,56 +551,86 @@ function textModified(state){
 }
 
 function loadFile(filename){
-    if (filename == "README"){
-        $('#recentFiles').toggle(true)
-    }
+    
     name = $('#name').html()
-    window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
-    $.ajax({
-        url: '/api/loadFile',
-        data: {
-            'name': name,
-            'filename': filename,
-            "password": getPassword(name),
-            'token': getSessionToken(),
-        }
-    })
-    .done(function(data){
-        if (!data.error) {
-            textModified(false)
-            $('#search').val('')
-            $('#filename').html(filename == "README" ? "Introdução" : filename)
-            $('.filename').html(filename == "README" ? "Introdução" : filename)
-            $('#filename').attr('file', filename)
-            $('#mainText').val(data.data.text)
-            $('#mainText').trigger('input')//pra dar resize ao carregar
-            recentFiles()
-            if (!isMobile) {
-                $('#mainText').focus()
+    revokeToken($('#filename').attr('file'))
+
+    if (permEdit || permSetup) {
+        $.ajax({
+            url: "/api/claimAccess",
+            method: "POST",
+            data: {
+                "name": $('#name').html(),
+                "filename": filename,
+                "previoustoken": getSessionPreviousToken(),
+                "token": getSessionToken(),
             }
-        } else {
+        })
+        .done(function(data){
             if (data.error == 1) {
-                alert("Este arquivo está sendo editado por outra pessoa neste momento")
-                window.location.href = (filename == "README" ? "/" : "/corpus/" + name + "?file=README")
+                alert("O arquivo já está sendo editado por outra pessoa")
+                if (filename != "README") {
+                    $('[file="README"].files').click()
+                } else {
+                    window.location.href = "/"
+                }
                 return false
             } else {
-                if (data.error == 2) {
-                    alert("Você não tem permissão para visualizar esta coleção")
-                    window.location.href = "/"
-                    return false
-                } else {
-                    if (data.error == 3){
-                        alert("Este arquivo não existe")
-                        window.location.href = "/corpus/" + name + "?file=README"
+                if (!data.error){
+                    if (filename == "README"){
+                        $('#recentFiles').toggle(true)
+                    }         
+                    window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
+                    $.ajax({
+                        url: '/api/loadFile',
+                        data: {
+                            'name': name,
+                            'filename': filename,
+                            "password": getPassword(name),
+                            'token': getSessionToken(),
+                        }
+                    })
+                    .done(function(data){
+                        if (!data.error) {
+                            textModified(false)
+                            $('#search').val('')
+                            $('#filename').html(filename == "README" ? "Introdução" : filename)
+                            $('.filename').html(filename == "README" ? "Introdução" : filename)
+                            $('#filename').attr('file', filename)
+                            $('#mainText').val(data.data.text)
+                            $('#mainText').trigger('input')//pra dar resize ao carregar
+                            recentFiles()
+                            if (!isMobile) {
+                                $('#mainText').focus()
+                            }
+                        } else {
+                            if (data.error == 2) {
+                                alert("Você não tem permissão para visualizar esta coleção")
+                                window.location.href = "/"
+                                return false
+                            } else {
+                                if (data.error == 3){
+                                    alert("Este arquivo não existe")
+                                    $('[file="README"].files').click()
+                                    return false
+                                }
+                            }
+                        }
+                    })
+                    .fail(function(){
+                        alert("Falha na sincronização.")
+                        window.location.href = "/"
                         return false
-                    }
+                    })
                 }
             }
-        }
-    })
-    .fail(function(){
-        window.location.href = "/corpus/" + $('#name').html () + "?file=" + $('#filename').attr('file')
-    })
+        })
+        .fail(function(){
+            alert("Falha na sincronização.")
+            window.location.href = "/"
+            return false
+        })
+    }
 }
 
 $('#autoSaveCheckbox').on('change', function(){

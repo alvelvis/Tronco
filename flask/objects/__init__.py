@@ -3,6 +3,7 @@ import json
 import os
 import app
 import re
+import sys
 
 tronco_version = 1.0
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
@@ -60,11 +61,11 @@ class SessionTokens:
     def __init__(self):
         self.tokens = {}
 
-    def did_someone_else_edit(self, name, filename, token, timelimit=60.0):
+    def did_someone_else_edit(self, name, filename, token, previoustoken="", timelimit=60.0):
         key = name + "|" + filename
         if not key in self.tokens:
             return 0
-        if self.tokens[key]['token'] == token or self.tokens[key]['date'] - time.time() > timelimit:
+        if self.tokens[key]['token'] == token or self.tokens[key]['token'] == previoustoken or time.time() - self.tokens[key]['date'] > timelimit:
             return 0
         else:
             return 1
@@ -73,7 +74,7 @@ class SessionTokens:
         key = name + "|" + filename
         self.tokens[key] = {
             'token': token,
-            'date': time.time()
+            'date': time.time(),
         }
 
     def stopped_editing(self, name, filename, token):
@@ -92,6 +93,11 @@ class TroncoConfig:
         elif permission in self.corpora[name]['permissions']['disconnected']:
             return True
         return False
+
+    def is_owner(self, name, password):
+        if not name in self.corpora:
+            self.add_corpus(name)
+        return password == self.corpora[name]['permissions']['password']
 
     def load(self):
         if os.path.isfile(self.config_file):

@@ -165,10 +165,18 @@ def load_corpora(key="", max_results=20, recent=""):
     if not os.path.isdir(corpora_dir):
         os.mkdir(corpora_dir)
     corpora = {}
-    recent = recent.lower().split("|")
 
-    for item in os.listdir(corpora_dir):
-        if item.lower() not in recent:        
+    recent_lower = recent.lower().split("|")
+    recent = recent.split("|")
+    corpora_list = os.listdir(corpora_dir)
+    corpora_list_lower = [x.lower() for x in corpora_list]
+    
+    for recent_corpus in recent:
+        if recent_corpus.lower() not in corpora_list_lower:
+            recent.remove(recent_corpus)
+
+    for item in corpora_list:
+        if item.lower() not in recent_lower:        
             item_dir = os.path.join(app.root_path, "corpora", item)
             readme_dir = os.path.join(app.root_path, "corpora", item, "README")
             stats = (0, 0)
@@ -181,4 +189,7 @@ def load_corpora(key="", max_results=20, recent=""):
             if os.path.isdir(item_dir):
                 corpora[item] = {'files': len([x for x in os.listdir(item_dir) if x != "README"]), 'stats': stats}
 
-    return sorted([{**{'name': x}, **corpora[x]} for x in corpora if not key.strip() or (key.strip() and all(k in x.lower() for k in key.lower().split()))], key=lambda y: -y['stats'][0])[:max_results]
+    return {
+        'sorted_list': sorted([{**{'name': x}, **corpora[x]} for x in corpora if not key.strip() or (key.strip() and all(k in x.lower() for k in key.lower().split()))], key=lambda y: -y['stats'][0])[:max_results],
+        'new_recent': recent
+    }

@@ -80,16 +80,15 @@ function loadCorpora(key = ""){
         if (key.length) {
             $("#openCorpus").html(data.data.length ? new_data : "Nada encontrado. Que tal criar uma nova coleção?")
         } else {
-            recent = getRecent().recent
+            recent = data['new_recent']
             $('#openCorpus').html("")
-            for (name of getRecent().recent.split("|").reverse()){
+            for (name of recent.split("|").reverse()){
                 $('#openCorpus').append("<li><a corpus='" + name + "' class='openCorpus' href='/corpus/" + name + "?file=README'>" + name + "</a></li>")
             }
             $("#openCorpus").append(new_data)
         }
         $('#filterOpenCorpus').toggleClass("is-invalid", data.data.length ? false : true)
-        $('.openCorpus').click(function(e){
-            //e.preventDefault()
+        $('.openCorpus').click(function(){
             addRecent($(this).attr('corpus'))
         })
     })
