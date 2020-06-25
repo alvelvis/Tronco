@@ -351,7 +351,8 @@ function updateFiles(key = "", click = ""){
         }
     })
     .done(function(data){
-        $('#files').html(" ")
+        $('#files').html("")
+        $('#nFiles').html(data.data.split("|").length)
         for (x of data.data.split("|")){
             if (x.length) {
                 $('#files').append(`
