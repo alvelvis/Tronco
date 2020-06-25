@@ -757,7 +757,8 @@ function triggerResize(first=false){
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
         $('.row').after($('#mainText').detach())
-        $('#mainText').css("margin", "0px").css("padding", "0px").css("border-style", "none")
+        $('#mainText').css("border-style", "none")//.css("margin", "0px").css("padding", "0px")
+        $('.breadcrumb').css('overflow-x', "scroll").css("white-space", "nowrap")
     } else {
         isMobile = false
         $('#troncoLogo').toggleClass("mb-3", false)
@@ -765,6 +766,7 @@ function triggerResize(first=false){
         $('main').append($('#mainText').detach())
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
+        $('.breadcrumb').css('overflow-x', "").css("white-space", "")
     }
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').toggleClass("mt-0", isMobile)

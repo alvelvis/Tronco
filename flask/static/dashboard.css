@@ -1,3 +1,9 @@
+.breadcrumb {
+  display: block !important;
+   }
+.breadcrumb .breadcrumb-item {
+  display: inline; }
+
 body {
   font-size: .875rem;
 }
