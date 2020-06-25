@@ -613,6 +613,7 @@ function loadFile(filename){
             $('.filename').html(filename == "README" ? "Introdução" : filename)
             $('#filename').attr('file', filename)
             $('#mainText').val(data.data.text)
+            $('#mainText').attr('placeholder', filename == "README" ? 'Este arquivo é a capa da coleção "' + name + '" e poderá ser visualizado por todos, inclusive visitantes.' : 'Insira aqui o conteúdo')
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
