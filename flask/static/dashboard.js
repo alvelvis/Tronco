@@ -747,6 +747,9 @@ function triggerResize(first=false){
         $('.row').after($('#mainText').detach())
         $('#mainText').css("border-style", "none")//.css("margin", "0px").css("padding", "0px")
         $('.breadcrumb').css('overflow-x', "scroll").css("white-space", "nowrap")
+        //$('body').css('background-color', "#d0d2cd")
+        //$('.breadcrumb').css('background-color', "#d0d2cd")
+        //$('#mainText').css('background-color', "#d0d2cd")
     } else {
         isMobile = false
         $('#troncoLogo').toggleClass("mb-3", false)
