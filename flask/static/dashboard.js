@@ -699,6 +699,7 @@ function loadConfig(){
 }
 
 var isMobile = false
+var isMobileFromBeginning = false
 var openingPanel = false
 var closingPanel = false
 
@@ -735,14 +736,17 @@ $(document).on('touchend', function(){
 })
 
 $(window).on('resize', function(){
-    if ($(document.activeElement).prop('type') !== 'text') {
+    if (!isMobileFromBeginning) {
         triggerResize()
     }
 })
 
-function triggerResize(){
+function triggerResize(first=false){
     name = $('#name').html()
     if ($('#sidebar:hidden').length || $(window).width() < 600) {
+        if (first) {
+            isMobileFromBeginning = true
+        }
         isMobile = true
         $('#troncoHomeLabel').html("<span class='mr-2' style='margin-bottom:6px' data-feather='menu'></span><span class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / " + name + "</span>")
         $('#troncoLogo').toggleClass("mb-3", true)
@@ -767,7 +771,7 @@ function triggerResize(){
 
 $(document).ready(function(){
     name = $('#name').html()
-    triggerResize()
+    triggerResize(true)
     if (validatePassword(name)) {
         updateFiles("", $('#filename').attr('file'))
     }
