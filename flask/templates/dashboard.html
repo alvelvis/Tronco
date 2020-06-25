@@ -20,11 +20,11 @@
   <body>
       
     <nav id="mainHeadbar" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
-      <a id="troncoHomeBar" class="">
+      <a id="troncoHomeBar">
         <span title="Voltar para coleções (Ctrl+E)" onclick="window.location.href='/'" id="troncoHome">
           <img class="ml-3 mr-3" id="troncoLogo" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
         </span>
-        <span id="troncoHomeLabel" settings="corpusSettings" class='toggleSettings bg-dark form-control-dark'></span>
+        <span id="troncoHomeLabel" settings="corpusSettings" style="width:100%" class='toggleSettings bg-dark form-control-dark'></span>
       </a>
       <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white">
         <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
@@ -177,9 +177,7 @@
             <h1 class="h2 filename" style="max-width:100%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis" file="{{filename}}" id="filename"></h1>
           </div>
 
-          <textarea class="form-control" placeholder="Insira aqui seu conteúdo" style="resize:none; overflow:auto; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; height:100%; width:100%;" id="mainText"></textarea>
-
-          <div class="btn-toolbar mt-2">
+          <div class="btn-toolbar mb-2">
             <div class="btn-group">
               <button id="shareText" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste texto">
                 <span class="mr-1" data-feather="share-2"></span>
@@ -196,11 +194,13 @@
             </div>
           </div>
 
-          <div toolbar="shareText" id="toolbar" class="btn-toolbar mt-2">
+          <div toolbar="shareText" id="toolbar" class="btn-toolbar mb-2">
             <div class="btn-group">
               <input style="display:none; border:none; padding-right:10px" id="shareLink" readonly>
             </div>
           </div>
+
+          <textarea class="form-control" placeholder="Insira aqui seu conteúdo" style="resize:none; overflow:auto; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; height:100%; width:100%;" id="mainText"></textarea>
 
           <!--h2>Section title</h2>
           <div class="table-responsive">

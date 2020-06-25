@@ -577,9 +577,7 @@ function loadFile(filename){
                 return false
             } else {
                 if (!data.error){
-                    if (filename == "README"){
-                        $('#recentFiles').toggle(true)
-                    }         
+                    $('#recentFiles').toggle(filename == "README")
                     window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
                     $.ajax({
                         url: '/api/loadFile',
@@ -733,28 +731,38 @@ $(document).on('touchend', function(){
 })
 
 $(window).on('resize', function(){
-    if (!isMobile) {
-        $('#main').css('margin-left', $('#sidebar:visible').length ? '260px' : '0px')
-    }
+    triggerResize()
 })
 
-$(document).ready(function(){
+function triggerResize(){
     name = $('#name').html()
-    if ($('#sidebar:hidden').length) {
+    if ($('#sidebar:hidden').length || $(window).width() < 600) {
         isMobile = true
-        $('#troncoHomeLabel').html("<span class='mr-2' style='margin-bottom:6px' data-feather='menu'></span><span class='mt-3 mb-0' style='max-width:70vw; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis'>Tronco / " + name + "</span>")
-        $('#troncoLogo').toggleClass("mb-3")
+        $('#troncoHomeLabel').html("<span class='mr-2' style='margin-bottom:6px' data-feather='menu'></span><span class='mt-4 mb-0' style='max-width:77vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / " + name + "</span>")
+        $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
         $('.row').after($('#mainText').detach())
         $('#mainText').css("margin", "0px").css("padding", "0px").css("border-style", "none").toggleClass("border-bottom", true)
     } else {
         isMobile = false
-        $('#troncoHomeLabel').html("")   
+        $('#troncoLogo').toggleClass("mb-3", false)
+        $('#mainText').css("margin", "").css("padding", "").css("border-style", "").toggleClass("border-bottom", false)
+        $('main').append($('#mainText').detach())
+        $('#troncoHomeLabel').html("")
+        $('.navbar-brand').show()
     }
+    //$('#troncoHomeLabel').css("width", (isMobile ? "100%" : ""))
+    $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').toggleClass("mt-0", isMobile)
-    $('#sidebar').css('margin-top', $('#sidebar').offset().top == 0 ? (isMobile ? "40px" : '54px') : '10px')
-    $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")
-    $(window).trigger('resize')
+    $('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "58px" : '54px') : '10px')
+    $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")    
+    $('#main').css('margin-left', !isMobile ? '260px' : '0px')
+    feather.replace()
+}
+
+$(document).ready(function(){
+    name = $('#name').html()
+    triggerResize()
     if (validatePassword(name)) {
         updateFiles("", $('#filename').attr('file'))
     }
