@@ -757,11 +757,11 @@ function triggerResize(first=false){
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
         $('.row').after($('#mainText').detach())
-        $('#mainText').css("margin", "0px").css("padding", "0px").css("border-style", "none").toggleClass("border-bottom", true)
+        $('#mainText').css("margin", "0px").css("padding", "0px").css("border-style", "none")
     } else {
         isMobile = false
         $('#troncoLogo').toggleClass("mb-3", false)
-        $('#mainText').css("margin", "").css("padding", "").css("border-style", "").toggleClass("border-bottom", false)
+        $('#mainText').css("margin", "").css("padding", "").css("border-style", "")
         $('main').append($('#mainText').detach())
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
