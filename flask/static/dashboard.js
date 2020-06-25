@@ -170,6 +170,7 @@ function validatePassword (name){
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
         }
+        $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
         $('#mainText').prop('readonly', !permEdit)
         $('#saveModifications').attr('disabled', !permEdit)
         $('#menu-svg').toggle(permSetup)
@@ -450,25 +451,10 @@ function updateFiles(key = "", click = ""){
 }
 
 $('#newFile').click(function(){
-    filename = prompt("Como deve se chamar o novo arquivo:")
-    if (filename && filename.length) {
-        $.ajax({
-            url: '/api/newFile',
-            method: 'POST',
-            data: {
-                'name': $('#name').html(),
-                'filename': filename,
-                "password": getPassword(name)
-            }
-        })
-        .done(function(data){
-            if (data.data != "false"){
-                updateFiles("", data.data)
-            } else {
-                alert("Já existe um arquivo com o mesmo nome!")
-            }
-        })
+    if (isMobile) {
+        $('.toggleSettings')[0].click()
     }
+    $('#search').focus()
 })
 
 $(window).bind('keydown', function(event) {
