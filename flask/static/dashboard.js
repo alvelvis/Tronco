@@ -175,6 +175,7 @@ function validatePassword (name){
         $('#menu-svg').toggle(permSetup)
         storeSessionToken(data.token)
         loadConfig()
+        updateFiles("", $('#filename').attr('file'))
     })
     return true
 }
@@ -779,8 +780,6 @@ function triggerResize(first=false){
 $(document).ready(function(){
     name = $('#name').html()
     triggerResize(true)
-    if (validatePassword(name)) {
-        updateFiles("", $('#filename').attr('file'))
-    }
+    validatePassword(name)
     $('#mainText').autosize()
 })
