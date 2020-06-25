@@ -47,14 +47,12 @@ $('#shareText').click(function(){
 })
 
 $('#mainText').on("focus", function(){
-
     if (isMobile) {
         $('#mainHeadbar').toggle(false)
         $('#search').toggle(false)
         $('#troncoHome').toggle(false)
         $('#sidebar').toggleClass("d-none", true)
     }
-
 })
 
 $('#mainText').on("blur", function(){
@@ -737,7 +735,9 @@ $(document).on('touchend', function(){
 })
 
 $(window).on('resize', function(){
-    triggerResize()
+    if ($(document.activeElement).prop('type') !== 'text') {
+        triggerResize()
+    }
 })
 
 function triggerResize(){
