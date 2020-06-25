@@ -23,13 +23,21 @@ def claim_access():
     name = request.values.get("name")
     filename = request.values.get("filename")
     token = request.values.get("token")
-    previoustoken = request.values.get("previoustoken")
-    if session_tokens.did_someone_else_edit(name, filename, token, previoustoken):
-        return {'error': 1}
-    else:
-        session_tokens.just_edited(name, filename, token)
-        return {'error': 0}
-        
+    #previoustoken = request.values.get("previoustoken")
+    #if session_tokens.did_someone_else_edit(name, filename, token, previoustoken):
+    #return {'error': 1}
+    #else:
+    session_tokens.just_edited(name, filename, token)
+    return {'error': 0}
+
+@app.route("/api/whoClaimedAccess", methods=["POST"])        
+def who_claimed_access():
+    name = request.values.get("name")
+    filename = request.values.get("filename")
+    return {
+        'error': 0,
+        'token': session_tokens.who_claimed_access(name, filename)
+        }
 
 @app.route("/api/revokeToken", methods=["POST"])
 def revoke_token():
@@ -198,10 +206,6 @@ def save_file():
     filename = request.values.get('filename')
     text = request.values.get('text')
     token = request.values.get("token")
-    if session_tokens.did_someone_else_edit(name, filename, token):
-        return {'error': 1}
-    else:
-        session_tokens.just_edited(name, filename, token)
     functions.save_file(name, filename, text)
     return {'error': 0}
 
@@ -214,7 +218,11 @@ def load_file():
         return {'error': 2}
     text = functions.load_file(name, filename)
     if text:
-        return {'data': text, 'error': 0}
+        return {
+            'data': text, 
+            'error': 0,
+            'who_claimed_access': session_tokens.who_claimed_access(name, filename)
+            }
     else:
         return {'error': 3}
 

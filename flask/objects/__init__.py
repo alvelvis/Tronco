@@ -61,7 +61,14 @@ class SessionTokens:
     def __init__(self):
         self.tokens = {}
 
-    def did_someone_else_edit(self, name, filename, token, previoustoken="", timelimit=60.0):
+    def who_claimed_access(self, name, filename):
+        key = name + "|" + filename
+        if not key in self.tokens:
+            return "none"
+        return self.tokens[key]['token']
+
+    def did_someone_else_edit(self, name, filename, token, previoustoken="", timelimit=120.0):
+        #not being used, entirely frontend thing
         key = name + "|" + filename
         if not key in self.tokens:
             return 0

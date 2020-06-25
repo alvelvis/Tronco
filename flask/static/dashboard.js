@@ -1,6 +1,6 @@
-window.addEventListener("beforeunload", function(e){
-    storeSessionPreviousToken(getSessionToken())
-    revokeToken()
+window.addEventListener("beforeunload", function(){
+    //storeSessionPreviousToken(getSessionToken())
+    //revokeToken()
 })
 
 function revokeToken(filename=$('#filename').attr('file')) {
@@ -308,7 +308,7 @@ $('#renameCorpus').click(function(){
         .done(function(data){
             if (data.data != "false"){
                 storePassword(new_name, getPassword(name))
-                revokePassword(name)
+                //revokePassword(name)
                 window.location.href = "/corpus/" + data.data
             } else {
                 alert("Coleção " + new_name + " já existe!")
@@ -493,33 +493,66 @@ var failedSave = false
 
 function saveFile(filename ,text){
     name = $('#name').html()
+
     $.ajax({
-        url: '/api/saveFile',
-        method: 'POST',
+        url: "/api/whoClaimedAccess",
+        method: "POST",
         data: {
-            'name': name,
-            'filename': filename,
-            'text': text,
-            "password": getPassword(name),
-            "token": getSessionToken(),
-        }
-    })
-    .fail(function(){
-        if (!failedSave) {
-            failedSave = true
-            shouldReload(true)
-            alert("Falha na sincronização. Copie suas modificações para que não as perca e recarregue a página.")
+            "name": $('#name').html(),
+            "filename": $('#filename').attr("file")
         }
     })
     .done(function(data){
-        if (!data.error) {
-            textModified(false)
-        } else {
-            if (data.error == 1 && !failedSave) {
+        if (data.token != whoClaimedAccess && data.token != getSessionToken()) {
+            if (!failedSave) {
                 failedSave = true
                 shouldReload(true)
                 alert("O arquivo está sendo editado por outra pessoa. Recarregue a página.")
             }
+            return false
+        } else {
+            $.ajax({
+                url: "/api/claimAccess",
+                method: "POST",
+                data: {
+                    "name": $('#name').html(),
+                    "filename": filename,
+                    //"previoustoken": getSessionPreviousToken(),
+                    "token": getSessionToken(),
+                }
+            })
+            .fail(function(){
+                if (!failedSave) {
+                    failedSave = true
+                    shouldReload(true)
+                    alert("Falha na sincronização. Copie suas modificações para que não as perca e recarregue a página.")
+                }
+            })
+            .done(function(data){
+                if (!data.error){
+                    $.ajax({
+                        url: '/api/saveFile',
+                        method: 'POST',
+                        data: {
+                            'name': name,
+                            'filename': filename,
+                            'text': text,
+                            "password": getPassword(name),
+                            "token": getSessionToken(),
+                        }
+                    })
+                    .done(function(){
+                        textModified(true)
+                    })
+                    .fail(function(){
+                        if (!failedSave) {
+                            failedSave = true
+                            shouldReload(true)
+                            alert("Falha na sincronização. Copie suas modificações para que não as perca e recarregue a página.")
+                        }
+                    })
+                }
+            })
         }
     })
 }
@@ -550,86 +583,59 @@ function textModified(state){
     }
 }
 
+var whoClaimedAccess = ""
+
 function loadFile(filename){
     
     name = $('#name').html()
-    revokeToken($('#filename').attr('file'))
-
-    if (permEdit || permSetup) {
-        $.ajax({
-            url: "/api/claimAccess",
-            method: "POST",
-            data: {
-                "name": $('#name').html(),
-                "filename": filename,
-                "previoustoken": getSessionPreviousToken(),
-                "token": getSessionToken(),
+    //revokeToken($('#filename').attr('file'))
+        
+    $('#recentFiles').toggle(filename == "README")
+    window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
+    $.ajax({
+        url: '/api/loadFile',
+        data: {
+            'name': name,
+            'filename': filename,
+            "password": getPassword(name),
+            'token': getSessionToken(),
+        }
+    })
+    .done(function(data){
+        if (!data.error) {
+            textModified(false)
+            $('#search').val('')
+            $('#filename').html(filename == "README" ? "Introdução" : filename)
+            $('.filename').html(filename == "README" ? "Introdução" : filename)
+            $('#filename').attr('file', filename)
+            $('#mainText').val(data.data.text)
+            whoClaimedAccess = data['who_claimed_access']
+            $('#mainText').trigger('input')//pra dar resize ao carregar
+            recentFiles()
+            if (!isMobile) {
+                $('#mainText').focus()
             }
-        })
-        .done(function(data){
-            if (data.error == 1) {
-                alert("O arquivo já está sendo editado por outra pessoa")
-                if (filename != "README") {
-                    $('[file="README"].files').click()
-                } else {
-                    window.location.href = "/"
-                }
+        } else {
+            if (data.error == 2) {
+                alert("Você não tem permissão para visualizar esta coleção")
+                window.location.href = "/"
                 return false
             } else {
-                if (!data.error){
-                    $('#recentFiles').toggle(filename == "README")
-                    window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
-                    $.ajax({
-                        url: '/api/loadFile',
-                        data: {
-                            'name': name,
-                            'filename': filename,
-                            "password": getPassword(name),
-                            'token': getSessionToken(),
-                        }
-                    })
-                    .done(function(data){
-                        if (!data.error) {
-                            textModified(false)
-                            $('#search').val('')
-                            $('#filename').html(filename == "README" ? "Introdução" : filename)
-                            $('.filename').html(filename == "README" ? "Introdução" : filename)
-                            $('#filename').attr('file', filename)
-                            $('#mainText').val(data.data.text)
-                            $('#mainText').trigger('input')//pra dar resize ao carregar
-                            recentFiles()
-                            if (!isMobile) {
-                                $('#mainText').focus()
-                            }
-                        } else {
-                            if (data.error == 2) {
-                                alert("Você não tem permissão para visualizar esta coleção")
-                                window.location.href = "/"
-                                return false
-                            } else {
-                                if (data.error == 3){
-                                    alert("Este arquivo não existe")
-                                    $('[file="README"].files').click()
-                                    return false
-                                }
-                            }
-                        }
-                    })
-                    .fail(function(){
-                        alert("Falha na sincronização.")
-                        window.location.href = "/"
-                        return false
-                    })
+                if (data.error == 3){
+                    alert("Este arquivo não existe")
+                    $('[file="README"].files').click()
+                    return false
                 }
             }
-        })
-        .fail(function(){
-            alert("Falha na sincronização.")
-            window.location.href = "/"
-            return false
-        })
-    }
+        }
+    })
+    .fail(function(){
+        alert("Falha na sincronização.")
+        window.location.href = "/"
+        return false
+    })
 }
+            
 
 $('#autoSaveCheckbox').on('change', function(){
     name = $('#name').html()
@@ -751,7 +757,6 @@ function triggerResize(){
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
     }
-    //$('#troncoHomeLabel').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').toggleClass("mt-0", isMobile)
     $('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "58px" : '54px') : '10px')
