@@ -18,9 +18,7 @@ startup_salutations = [
     "Hi,",
     "Salut,",
     "Hallo,",
-    "こんにちは,",
     "Konnichiwa,",
-    "안녕,",
     "Namastê,",
 ]
 startup_tips = [

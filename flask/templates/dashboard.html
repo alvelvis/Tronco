@@ -20,12 +20,12 @@
   <body>
       
     <nav id="mainHeadbar" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
-      <a id="troncoHomeBar">
-        <span title="Voltar para coleções (Ctrl+E)" id="troncoHome">
+      <span id="troncoHomeBar" class="bg-dark form-control-dark">
+        <a title="Voltar para coleções (Ctrl+E)" id="troncoHome">
           <img class="ml-3 mr-3" id="troncoLogo" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
-        </span>
-        <span id="troncoHomeLabel" settings="corpusSettings" style="width:100%" class='toggleSettings bg-dark form-control-dark'></span>
-      </a>
+        </a>
+        <span id="troncoHomeLabel" settings="corpusSettings" style="width:100%" class='toggleSettings'></span>
+      </span>
       <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white">
         <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
             <span id="menu-svg" style="margin-bottom:6px" data-feather="menu"></span>
@@ -165,7 +165,7 @@
           </div>
         </nav>
 
-        <main id="main" role="main" class="pt-3 px-4" style="width:100%; padding-bottom:30px;">
+        <main id="main" role="main" class="py-2" style="width:100%;">
           
           <nav id="breadcrumb-nav" aria-label="breadcrumb">
             <ol class="breadcrumb alert-light" id="recentFiles">
@@ -173,34 +173,44 @@
             </ol>
           </nav>
 
-          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-4 mb-3 border-bottom">
             <h1 class="h2 filename" style="max-width:100%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis" file="{{filename}}" id="filename"></h1>
           </div>
 
-          <div class="btn-toolbar mb-2">
-            <div class="btn-group">
-              <button id="shareText" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste arquivo">
-                <span class="mr-1" data-feather="share-2"></span>
-                <span id="shareLinkLabel">Compartilhar</span>
-              </button>
-              <button id="saveModifications" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Salvar modificações (Ctrl+S)">
-                <span data-feather="save"></span>
-                <!--Salvar modificações-->
-              </button>
-              <button id="reloadPage" style="display:none" class="toolbarButton btn btn-sm btn-danger" title="Recarregar">
-                <span class="mr-1" data-feather="refresh-cw"></span>
-                Recarregar
-              </button>
+          <div id="toolbarRow">
+            <div class="btn-toolbar mb-3">
+              <div class="btn-group px-1">
+                <button id="reloadPage" style="display:none" class="toolbarButton btn btn-sm btn-danger" title="Recarregar">
+                  <span data-feather="refresh-cw"></span>
+                  <span>Recarregar</span>
+                </button>
+                <button id="shareText" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste arquivo">
+                  <span data-feather="share-2"></span>
+                  <span id="shareLinkLabel">Compartilhar</span>
+                </button>
+                <button id="saveModifications" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Salvar modificações (Ctrl+S)">
+                  <span data-feather="save"></span>
+                  <!--Salvar modificações-->
+                </button>
+                <button id="renameFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Renomeie este arquivo">
+                  <span data-feather="delete"></span>
+                  <span></span>
+                </button>
+                <button id="deleteFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Exclua este arquivo">
+                  <span data-feather="trash"></span>
+                  <span></span>
+                </button>
+              </div>
+            </div>
+
+            <div toolbar="shareText" style="display:none" id="toolbar" class="btn-toolbar mb-2">
+              <div class="btn-group">
+                <input style="border:none; padding-right:10px" id="shareLink" readonly>
+              </div>
             </div>
           </div>
 
-          <div toolbar="shareText" id="toolbar" class="btn-toolbar mb-2">
-            <div class="btn-group">
-              <input style="display:none; border:none; padding-right:10px" id="shareLink" readonly>
-            </div>
-          </div>
-
-          <textarea class="form-control" style="resize:none; overflow:auto; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; height:100%; width:100%;" id="mainText"></textarea>
+          <textarea class="form-control p-0" style="resize:none; border-style:none; overflow:auto; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; height:100%; width:100%;" id="mainText"></textarea>
 
           <!--h2>Section title</h2>
           <div class="table-responsive">
@@ -340,16 +350,13 @@
     <script src="{{url_for('static', filename='jquery-3.5.1.min.js')}}"></script>
 
     <script src="{{url_for('static', filename='popper.js')}}"></script>
-    <script src="{{url_for('static', filename='bootstrap.js')}}"></script>
-    <script src="{{url_for('static', filename='tronco.js')}}"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}"></script>
-    
+    <script src="{{url_for('static', filename='bootstrap.js')}}"></script>    
     <!-- Icons -->
     <script src="{{url_for('static', filename='feather.js')}}"></script>
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
+
+    <script src="{{url_for('static', filename='tronco.js')}}"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}"></script>
   
-    <script>
-      feather.replace()
-    </script>  
   </body>
 </html>

@@ -36,10 +36,9 @@ $('#reloadPage').click(function(){
 
 $('#shareText').click(function(){
     $('#shareLink').val(window.location.href.match(/^.*\//)[0] + $('#name').html().replace(/\s/g, "%20") + "?file=" + $('#filename').attr('file').replace(/\s/g, "%20"))
-    $('#shareLink').show()
     $('#shareLink').select()
     document.execCommand('copy')
-    $('#shareLink').hide()
+    $('[toolbar=shareText]').hide()
     $('#shareLinkLabel').html("Link copiado!")
     $('#shareText').toggleClass("btn-success", true)
     $('#shareText').toggleClass("btn-outline-secondary", false)
@@ -56,6 +55,8 @@ $('#mainText').on("focus", function(){
         $('#search').toggle(false)
         $('#troncoHome').toggle(false)
         $('#sidebar').toggleClass("d-none", true)
+        $('#toolbarRow').toggle(false)
+        $('#breadcrumb-nav').toggle(false)
     }
 })
 
@@ -64,6 +65,8 @@ $('#mainText').on("blur", function(){
         $('#mainHeadbar').toggle(true)
         $('#search').toggle(true)
         $('#troncoHome').toggle(true)
+        $('#toolbarRow').toggle(true)
+        $('#breadcrumb-nav').toggle(true)
     }
 })
 
@@ -355,22 +358,15 @@ function updateFiles(key = "", click = ""){
     .done(function(data){
         $('#files').html("")
         $('#nFiles').html(data.data.split("|").length)
+
         for (x of data.data.split("|")){
             if (x.length) {
                 $('#files').append(`
                 <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
                     <a class="nav-link files d-flex align-items-center" style="width:100%;" file="` + x + `">
                         <span data-feather="file-text"></span>
-                        <span style="max-width: 130px; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">` + x + `</span>
+                        <span style="max-width: 70%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">` + x + `</span>
                     </a>
-                    <div class="d-flex align-items-center fileSettings">
-                        <a class="d-flex align-items-center renameFile" style="padding-right:10px" title="Renomear arquivo" file="` + x + `">
-                            <span data-feather="delete"></span>
-                        </a>
-                        <a class="d-flex align-items-center deleteFile" style="padding-right:16px" title="Deletar arquivo" file="` + x + `">
-                            <span data-feather="trash"></span>
-                        </a>
-                    </div>
                 </li>`)
             }
         }
@@ -390,8 +386,8 @@ function updateFiles(key = "", click = ""){
             }
         })
 
-        $('.deleteFile').click(function(){
-            filename = $(this).attr('file')
+        $('#deleteFile').click(function(){
+            filename = $('#filename').attr('file')
             if (confirm("Tem certeza de que deseja excluir " + filename + "?")) {
                 $.ajax({
                     url: '/api/deleteFile',
@@ -412,8 +408,8 @@ function updateFiles(key = "", click = ""){
             }
         })
 
-        $('.renameFile').click(function(){
-            filename = $(this).attr('file')
+        $('#renameFile').click(function(){
+            filename = $('#filename').attr('file')
             new_filename = prompt("Como " + filename + " deve passar a se chamar?", filename)
             if (new_filename && new_filename.length) {
                 $.ajax({
@@ -440,7 +436,6 @@ function updateFiles(key = "", click = ""){
             }
         })
 
-        $('.fileSettings').css('visibility', permEdit ? "visible" : "hidden")
         feather.replace()
         if (click.length) {
             $('[file="' + click + '"].files').toggleClass('active', true).click()
@@ -593,13 +588,15 @@ function loadFile(filename){
     })
     .done(function(data){
         if (!data.error) {
+            $('#renameFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
+            $('#deleteFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
             textModified(false)
             $('#search').val('')
             $('#filename').html(filename == "README" ? "Introdução" : filename)
             $('.filename').html(filename == "README" ? "Introdução" : filename)
             $('#filename').attr('file', filename)
             $('#mainText').val(data.data.text)
-            $('#mainText').attr('placeholder', filename == "README" ? 'Este arquivo é a capa da coleção "' + name + '" e poderá ser visualizado por todos, inclusive visitantes. Crie uma senha para proteger esta coleção e definir as permissões de visitantes.' : 'Insira aqui o conteúdo')
+            $('#mainText').attr('placeholder', filename == "README" ? 'Este arquivo é a capa da coleção "' + name + '" e poderá ser visualizado por todos, inclusive visitantes. Se desejar, crie uma senha para proteger esta coleção e definir as permissões de visitantes.' : 'Insira aqui o conteúdo')
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
@@ -741,23 +738,27 @@ function triggerResize(first=false){
             isMobileFromBeginning = true
         }
         isMobile = true
-        $('#troncoHomeLabel').html("<span class='mr-2' style='margin-bottom:6px' data-feather='menu'></span><span class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / " + name + "</span>")
+        $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
-        $('.row').after($('#mainText').detach())
-        $('#mainText').css("border-style", "none")//.css("margin", "0px").css("padding", "0px")
+        //$('.row').after($('#mainText').detach())
+        $('#main').toggleClass("px-4", true).toggleClass("px-5", false)
+        $('#mainText').css("border-style", "none").toggleClass("border-top", false)//.css("margin", "0px").css("padding", "0px")
         $('.breadcrumb').css('overflow-x', "scroll").css("white-space", "nowrap")
+        $('.btn-toolbar').css('overflow-x', "scroll").css("white-space", "nowrap")
         //$('body').css('background-color', "#d0d2cd")
         //$('.breadcrumb').css('background-color', "#d0d2cd")
         //$('#mainText').css('background-color', "#d0d2cd")
     } else {
         isMobile = false
+        $('#main').toggleClass("px-5", true).toggleClass("px-2", false)
         $('#troncoLogo').toggleClass("mb-3", false)
-        $('#mainText').css("margin", "").css("padding", "").css("border-style", "")
-        $('main').append($('#mainText').detach())
+        $('#mainText').css("margin", "").css("padding", "").css("border-style", "none").toggleClass("border-top", false)
+        //$('main').append($('#mainText').detach())
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
         $('.breadcrumb').css('overflow-x', "").css("white-space", "")
+        $('.btn-toolbar').css('overflow-x', "auto").css("white-space", "nowrap")
     }
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').toggleClass("mt-0", isMobile)
