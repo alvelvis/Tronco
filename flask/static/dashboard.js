@@ -170,7 +170,9 @@ function validatePassword (name){
         if (!permEdit) { permSetup = false }
         $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não tem permissões"))))
         $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
-        $('#corpusSettings').toggle(permSetup)
+        if (isMobile) {
+            $('#corpusSettings').toggle(permSetup)
+        }
         $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
         $('#mainText').prop('readonly', !permEdit).toggleClass("p-3", !permEdit)
         $('#saveModifications').attr('disabled', !permEdit)
