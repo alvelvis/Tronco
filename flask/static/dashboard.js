@@ -573,7 +573,7 @@ function loadFile(filename){
     name = $('#name').html()
     //revokeToken($('#filename').attr('file'))
         
-    $('#recentFiles').toggle(filename == "README")
+    $('#recentFiles').toggle(filename == "README" ? true : false)
     window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
     $.ajax({
         url: '/api/loadFile',
