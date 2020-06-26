@@ -54,6 +54,12 @@ function addRecent (newName){
     document.cookie = "tr=" + JSON.stringify(recent) +'; expires=' + expirationDate
 }
 
+function setRecent (newRecent) {
+    recent = getRecent()
+    recent.recent = newRecent
+    document.cookie = "tr=" + JSON.stringify(recent) + '; expires=' + expirationDate
+}
+
 function loadCorpora(key = ""){
     selectCorpus(-1)
     $.ajax({
@@ -85,7 +91,8 @@ function loadCorpora(key = ""){
         if (key.length) {
             $("#openCorpus").append(data.data.length ? new_data : new_data + "Nada encontrado.")
         } else {
-            recent = data['new_recent']
+            let recent = data["new_recent"]
+            setRecent(recent)
             for (name of recent.split("|").reverse()){
                 $('#openCorpus').append("<li><a corpus='" + name + "' class='openCorpus' href='/corpus/" + name + "?file=README'>" + name + "</a></li>")
             }

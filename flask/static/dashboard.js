@@ -277,7 +277,7 @@ function recentFiles(key = "", typing = ""){
 
 $('#deleteCorpus').click(function(){
     name = $('#name').html()
-    confirmName = prompt("Digite o nome da coleção (" + name + ") para confirmar que deseja excluí-lo:")
+    confirmName = prompt("Digite o nome da coleção (" + name + ") para confirmar que deseja excluí-la:")
     if (confirmName && confirmName.length && confirmName == name) {
         $.ajax({
             url: '/api/deleteCorpus',
