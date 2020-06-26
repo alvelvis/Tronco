@@ -267,7 +267,7 @@ function recentFiles(key = "", typing = ""){
         }
         for (x of data.data.split("|")){
             if (x !== "README"){
-                new_data = new_data + '<li class="breadcrumb-item"><a class="recentFiles" href="#" file="' + x + '">' + (x == "README" ? "Introdução" : x) + '</a></li>'
+                new_data = new_data + '<li class="breadcrumb-item"><a class="recentFiles" href="#" file="' + x + '">' + (x == "README" ? $('#name').html() : x) + '</a></li>'
             }
         }
         $('#recentFiles').html(data.data.length ? new_data : new_data + 'Nenhum arquivo encontrado.')
@@ -596,8 +596,8 @@ function loadFile(filename){
             $('#deleteFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
             textModified(false)
             $('#search').val('')
-            $('#filename').html(filename == "README" ? "Introdução" : filename)
-            $('.filename').html(filename == "README" ? "Introdução" : filename)
+            $('#filename').html(filename == "README" ? name : filename)
+            $('.filename').html(filename == "README" ? name : filename)
             $('#filename').attr('file', filename)
             $('#mainText').val(data.data.text)
             $('#mainText').attr('placeholder', filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução da coleção "' + name + '" e poderá ser visualizado por todos. Crie novos arquivos na barra de busca no topo da página e, se desejar, crie uma senha para proteger esta coleção.' : 'Insira aqui o conteúdo')

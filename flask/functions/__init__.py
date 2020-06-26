@@ -190,6 +190,6 @@ def load_corpora(key="", max_results=20, recent=""):
                 corpora[item] = {'files': len([x for x in os.listdir(item_dir) if x != "README"]), 'stats': stats}
 
     return {
-        'sorted_list': sorted([{**{'name': x}, **corpora[x]} for x in corpora if not key.strip() or (key.strip() and all(k in x.lower() for k in key.lower().split()))], key=lambda y: -y['stats'][0])[:max_results],
+        'sorted_list': sorted([{**{'name': x}, **corpora[x]} for x in corpora if not key.strip() or (key.strip() and all(k in x.lower() for k in key.lower().split()))], key=lambda y: -y['stats'][1])[:max_results],
         'new_recent': recent
     }
