@@ -598,7 +598,7 @@ function loadFile(filename){
             $('.filename').html(filename == "README" ? "Introdução" : filename)
             $('#filename').attr('file', filename)
             $('#mainText').val(data.data.text)
-            $('#mainText').attr('placeholder', filename == "README" ? 'Este arquivo é a capa da coleção "' + name + '" e poderá ser visualizado por todos, inclusive visitantes. Se desejar, crie uma senha para proteger esta coleção e definir as permissões de visitantes.' : 'Insira aqui o conteúdo')
+            $('#mainText').attr('placeholder', filename == "README" ? 'Tudo o que você digitar será salvo automaticamente. Mas não digite dados importantes aqui, pois este arquivo é apenas uma introdução da coleção "' + name + '" e poderá ser visualizado por todos, inclusive visitantes. Crie novos arquivos na barra no topo da página e, se desejar, crie uma senha para proteger esta coleção.' : 'Insira aqui o conteúdo')
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
