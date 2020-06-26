@@ -72,7 +72,7 @@ $('#mainText').on("blur", function(){
 
 $('#search').on('focus', function(){
     window.scrollTo(0, 0)
-    $('#recentFiles').toggle(true)
+    $('#breadcrumb-nav').toggle(true)
 })
 
 $('.togglePerm').on('change', function(){
@@ -577,7 +577,7 @@ function loadFile(filename){
     name = $('#name').html()
     //revokeToken($('#filename').attr('file'))
         
-    $('#recentFiles').toggle(filename == "README" ? true : false)
+    $('#breadcrumb-nav').toggle(filename == "README")
     window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
     $.ajax({
         url: '/api/loadFile',
