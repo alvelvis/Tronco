@@ -109,7 +109,7 @@ $('#filterOpenCorpus').on('focus', function(){
     selectCorpus(-1)
     if (isMobile) {
         setTimeout(function(){
-            window.scrollTo(0, $('#filterOpenCorpus').offset().top-30)
+            window.scrollTo(0, $('#filterOpenCorpus').offset().top-60)
         }, 300)
     }
 })
