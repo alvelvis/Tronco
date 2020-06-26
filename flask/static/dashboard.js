@@ -172,7 +172,7 @@ function validatePassword (name){
         $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
         $('#corpusSettings').toggle(permSetup)
         $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
-        $('#mainText').prop('readonly', !permEdit)
+        $('#mainText').prop('readonly', !permEdit).toggleClass("p-3", !permEdit)
         $('#saveModifications').attr('disabled', !permEdit)
         $('#menu-svg').toggle(permSetup)
         storeSessionToken(data.token)
@@ -475,69 +475,73 @@ $(window).bind('keydown', function(event) {
 var failedSave = false
 
 function saveFile(filename ,text){
-    name = $('#name').html()
 
-    $.ajax({
-        url: "/api/whoClaimedAccess",
-        method: "POST",
-        data: {
-            "name": $('#name').html(),
-            "filename": $('#filename').attr("file")
-        }
-    })
-    .done(function(data){
-        if (data.token != whoClaimedAccess && data.token != getSessionToken()) {
-            if (!failedSave) {
-                failedSave = true
-                shouldReload(true)
-                alert("O arquivo está sendo editado por outra pessoa. Recarregue a página.")
+    if (permEdit || permSetup) {
+
+        name = $('#name').html()
+
+        $.ajax({
+            url: "/api/whoClaimedAccess",
+            method: "POST",
+            data: {
+                "name": $('#name').html(),
+                "filename": $('#filename').attr("file")
             }
-            return false
-        } else {
-            $.ajax({
-                url: "/api/claimAccess",
-                method: "POST",
-                data: {
-                    "name": $('#name').html(),
-                    "filename": filename,
-                    //"previoustoken": getSessionPreviousToken(),
-                    "token": getSessionToken(),
-                }
-            })
-            .fail(function(){
+        })
+        .done(function(data){
+            if (data.token != whoClaimedAccess && data.token != getSessionToken()) {
                 if (!failedSave) {
                     failedSave = true
                     shouldReload(true)
-                    alert("Falha na sincronização. Copie suas modificações para que não as perca e recarregue a página.")
+                    alert("O arquivo está sendo editado por outra pessoa. Recarregue a página.")
                 }
-            })
-            .done(function(data){
-                if (!data.error){
-                    $.ajax({
-                        url: '/api/saveFile',
-                        method: 'POST',
-                        data: {
-                            'name': name,
-                            'filename': filename,
-                            'text': text,
-                            "password": getPassword(name),
-                            "token": getSessionToken(),
-                        }
-                    })
-                    .done(function(){
-                        textModified(true)
-                    })
-                    .fail(function(){
-                        if (!failedSave) {
-                            failedSave = true
-                            shouldReload(true)
-                            alert("Falha na sincronização. Copie suas modificações para que não as perca e recarregue a página.")
-                        }
-                    })
-                }
-            })
-        }
-    })
+                return false
+            } else {
+                $.ajax({
+                    url: "/api/claimAccess",
+                    method: "POST",
+                    data: {
+                        "name": $('#name').html(),
+                        "filename": filename,
+                        //"previoustoken": getSessionPreviousToken(),
+                        "token": getSessionToken(),
+                    }
+                })
+                .fail(function(){
+                    if (!failedSave) {
+                        failedSave = true
+                        shouldReload(true)
+                        alert("Falha na sincronização. Copie suas modificações para que não as perca e recarregue a página.")
+                    }
+                })
+                .done(function(data){
+                    if (!data.error){
+                        $.ajax({
+                            url: '/api/saveFile',
+                            method: 'POST',
+                            data: {
+                                'name': name,
+                                'filename': filename,
+                                'text': text,
+                                "password": getPassword(name),
+                                "token": getSessionToken(),
+                            }
+                        })
+                        .done(function(){
+                            textModified(true)
+                        })
+                        .fail(function(){
+                            if (!failedSave) {
+                                failedSave = true
+                                shouldReload(true)
+                                alert("Falha na sincronização. Copie suas modificações para que não as perca e recarregue a página.")
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    }
 }
 
 $('#mainText').on('keyup', function(event){
