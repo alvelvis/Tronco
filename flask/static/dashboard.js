@@ -170,9 +170,7 @@ function validatePassword (name){
         if (!permEdit) { permSetup = false }
         $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não tem permissões"))))
         $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
-        if (isMobile) {
-            $('#corpusSettings').toggle(permSetup)
-        }
+        $('#corpusSettings').toggle(permSetup)
         $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
         $('#mainText').prop('readonly', !permEdit)
         $('#saveModifications').attr('disabled', !permEdit)
@@ -345,6 +343,56 @@ $('.toggleSettings').click(function(){
     corpusSettings.scrollIntoView()
 })
 
+$('#deleteFile').click(function(){
+    filename = $('#filename').attr('file')
+    if (confirm("Tem certeza de que deseja excluir " + filename + "?")) {
+        $.ajax({
+            url: '/api/deleteFile',
+            method: "POST",
+            data: {
+                'name': name,
+                'filename': filename,
+                "password": getPassword(name)
+            }
+        })
+        .done(function(){
+            if ($('#filename').attr('file') == filename) {
+                updateFiles("", "README")
+            } else {
+                updateFiles()
+            }
+        })
+    }
+})
+
+$('#renameFile').click(function(){
+    filename = $('#filename').attr('file')
+    new_filename = prompt("Como " + filename + " deve passar a se chamar?", filename)
+    if (new_filename && new_filename.length) {
+        $.ajax({
+            url: '/api/renameFile',
+            method: "POST",
+            data: {
+                'name': name,
+                'filename': filename,
+                'new_filename': new_filename,
+                "password": getPassword(name)
+            }
+        })
+        .done(function(data){
+            if (data.data != "false") {
+                if ($('#filename').attr('file') == filename) {
+                    updateFiles("", data.data)
+                } else {
+                    updateFiles()
+                }
+            } else {
+                alert("Arquivo " + new_filename + " já existe!")
+            }
+        })
+    }
+})
+
 function updateFiles(key = "", click = ""){
     name = $('#name').html()
     $.ajax({
@@ -383,56 +431,6 @@ function updateFiles(key = "", click = ""){
             }
             if (isMobile && $('#sidebar:visible').length) {
                 $('.toggleSettings')[0].click()
-            }
-        })
-
-        $('#deleteFile').click(function(){
-            filename = $('#filename').attr('file')
-            if (confirm("Tem certeza de que deseja excluir " + filename + "?")) {
-                $.ajax({
-                    url: '/api/deleteFile',
-                    method: "POST",
-                    data: {
-                        'name': name,
-                        'filename': filename,
-                        "password": getPassword(name)
-                    }
-                })
-                .done(function(){
-                    if ($('#filename').attr('file') == filename) {
-                        updateFiles("", "README")
-                    } else {
-                        updateFiles()
-                    }
-                })
-            }
-        })
-
-        $('#renameFile').click(function(){
-            filename = $('#filename').attr('file')
-            new_filename = prompt("Como " + filename + " deve passar a se chamar?", filename)
-            if (new_filename && new_filename.length) {
-                $.ajax({
-                    url: '/api/renameFile',
-                    method: "POST",
-                    data: {
-                        'name': name,
-                        'filename': filename,
-                        'new_filename': new_filename,
-                        "password": getPassword(name)
-                    }
-                })
-                .done(function(data){
-                    if (data.data != "false") {
-                        if ($('#filename').attr('file') == filename) {
-                            updateFiles("", data.data)
-                        } else {
-                            updateFiles()
-                        }
-                    } else {
-                        alert("Arquivo " + new_filename + " já existe!")
-                    }
-                })
             }
         })
 
