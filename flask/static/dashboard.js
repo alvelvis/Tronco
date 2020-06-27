@@ -869,13 +869,13 @@ function triggerResize(first=false){
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
-        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText').toggleClass("px-5", false).toggleClass("px-4", true)
+        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
         $('#mainText').css("border-style", "none").toggleClass("border-top", false)
         $('.breadcrumb').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
     } else {
         isMobile = false
-        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText').toggleClass("px-5", true).toggleClass("px-4", false)
+        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').toggleClass("mb-3", false)
         $('#mainText').css("margin", "").css("padding", "").css("border-style", "none").toggleClass("border-top", false)
         $('#troncoHomeLabel').html("")
