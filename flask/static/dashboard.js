@@ -12,10 +12,23 @@ function updateToolbar(){
 
     list_links = $('#mainText').val().matchAll(/(https?:\/\/(www\.)?(.*?)(\/|$)(.*\/)?(.*?))(\s|$)/gi)
     for (link of list_links) {
-        if (link[0].match(/\.(png|jpe?g|bmp|gif|ico)/i)) {
+        if (link[1].match(/\.(png|jpe?g|bmp|gif|ico)$/i)) {
             images.push([link[6], link[1]])
         } else {
-            links.push([link[3], link[1]])
+            $.ajax({
+                url: "http://textance.herokuapp.com/title/" + link[1],
+                async: false,
+                complete: function(data) {
+                    if (data.responseText){ 
+                        links.push([data.responseText, link[1]])                    
+                    } else {
+                        links.push([link[3], link[1]])
+                    }
+                }
+            })
+            .fail(function(){
+                links.push([link[3], link[1]])
+            })
         }
     }
     
@@ -23,8 +36,8 @@ function updateToolbar(){
         $('#links').toggle(true)
         $('#linksLabel').html("Links (" + links.length + ")")
         $('[toolbar=links]').html("")
-        for (link of links) {
-            $('[toolbar=links]').append('<a target="_blank" class="pl-2" href="' + link[1] + '">' + link[0] + '</a>')
+        for (link in links) {
+            $('[toolbar=links]').append('<a target="_blank" class="px-1" href="' + links[link][1] + '">' + links[link][0] + '</a>' + (link == links.length -1 ? "" : " / "))
         }
     } else {
         $('#links').toggle(false)
@@ -35,8 +48,8 @@ function updateToolbar(){
         $('#images').toggle(true)
         $('#imagesLabel').html("Imagens (" + images.length + ")")
         $('[toolbar=images]').html("")
-        for (link of images) {
-            $('[toolbar=images]').append('<a target="_blank" class="pl-2" href="' + link[1] + '">' + link[0] + '</a>')
+        for (link in images) {
+            $('[toolbar=images]').append('<a target="_blank" class="px-1" href="' + images[link][1] + '">' + images[link][0] + '</a>' + (link == images.length -1 ? "" : " / "))
         }
     } else {
         $('#images').toggle(false)
@@ -47,8 +60,8 @@ function updateToolbar(){
         $('#filesLink').toggle(true)
         $('#filesLinkLabel').html("Arquivos (" + files.length + ")")
         $('[toolbar=filesLink]').html("")
-        for (link of files) {
-            $('[toolbar=filesLink]').append('<a href="/corpus/' + $('#name').html() + '?file=' + link + '" class="pl-2">' + link + '</a>')
+        for (link in files) {
+            $('[toolbar=filesLink]').append('<a href="/corpus/' + $('#name').html() + '?file=' + files[link] + '" class="px-1">' + files[link] + '</a>' + (link == files.length -1 ? "" : " / "))
         }
     } else {
         $('#filesLink').toggle(false)
