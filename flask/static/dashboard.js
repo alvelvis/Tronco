@@ -740,7 +740,7 @@ function triggerResize(first=false){
     if ($('#sidebar:hidden').length || $(window).width() < 600) {
         if (first) {
             isMobileFromBeginning = true
-            $('#main').before($('#search').detach().toggleClass("mt-2 mx-4", true).css('height', '50px'))
+            $('#main').before($('#search').detach().toggleClass("mt-3 mx-4", true).css("color", "black"))
         }
         isMobile = true
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
