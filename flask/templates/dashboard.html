@@ -173,12 +173,12 @@
             </ol>
           </nav>
 
-          <div id="filename-div" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-4 mb-3">
-            <h1 class="h2 filename border-bottom" style="max-width:100%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis" file="{{filename}}" id="filename"></h1>
+          <div id="filename-div" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-4">
+            <h1 class="h2 filename" style="max-width:100%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis" file="{{filename}}" id="filename"></h1>
           </div>
 
           <div id="toolbarRow">
-            <div class="btn-toolbar ">
+            <div class="btn-toolbar">
               <div class="btn-group" id="toolbar-group">
                 <button id="reloadPage" style="display:none" class="btn btn-sm btn-danger" title="Recarregar">
                   <span data-feather="refresh-cw"></span>
@@ -200,8 +200,9 @@
                   <span data-feather="image"></span>
                   <span id="imagesLabel"></span>
                 </button>
-                <button id="shareText" style="display:none" class="btn btn-sm btn-outline-secondary" title="Compartilhe o link deste arquivo">
+                <button id="shareText" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste arquivo">
                   <span data-feather="share-2"></span>
+                  <input style="border:none; display:none; padding-right:10px" id="shareLink" readonly>
                   <span id="shareLinkLabel">Compartilhar</span>
                 </button>                
                 <button id="saveModifications" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Salvar modificações (Ctrl+S)">
@@ -222,10 +223,6 @@
           </div>
 
           <div id="toolbar" class="my-3">
-              
-            <div toolbar="shareText" style="display:none" class="toolbar">
-              <input style="border:none; padding-right:10px" id="shareLink" readonly>
-            </div>
 
             <div toolbar="links" style="display:none" class="toolbar">
             </div>
@@ -241,6 +238,7 @@
 
           </div>
 
+          <hr>
           <textarea class="form-control p-0 pb-2" style="resize:none; border-style:none; overflow:auto; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; height:100%; width:100%;" id="mainText"></textarea>
 
         </main>

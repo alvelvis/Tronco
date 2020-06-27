@@ -129,11 +129,11 @@ $('#reloadPage').click(function(){
 })
 
 $('#shareText').click(function(){
-    $('[toolbar=shareText]').show()
+    $('#shareLink').show()
     $('#shareLink').val(window.location.href.match(/^.*\//)[0] + $('#name').html().replace(/\s/g, "%20") + "?file=" + $('#filename').attr('file').replace(/\s/g, "%20"))
     $('#shareLink').select()
     document.execCommand('copy')
-    $('[toolbar=shareText]').hide()
+    $('#shareLink').hide()
     $('#shareLinkLabel').html("Link copiado!")
     $('#shareText').toggleClass("btn-success", true)
     $('#shareText').toggleClass("btn-outline-secondary", false)
@@ -562,7 +562,11 @@ $('#newFile').click(function(){
 
 $(window).bind('keydown', function(event) {
     if (event.which === 27){
-        $('#mainText').focus()
+        if ($('#mainText').is(":focus")) {
+            $('#mainText').blur()
+        } else {
+            $('#mainText').focus()
+        }
     }
     if (event.ctrlKey || event.metaKey) {
         switch (String.fromCharCode(event.which).toLowerCase()) {
@@ -821,7 +825,7 @@ $(document).on('touchstart', function(e){
         $('.toggleSettings')[0].click()
         return true
     }
-    if (isMobile && e.originalEvent.touches[0].pageX < 60 && !$('#sidebar:visible').length) {
+    if (isMobile && e.originalEvent.touches[0].pageX < 40 && !$('#sidebar:visible').length) {
         openingPanel = true
     }
     if (isMobile && e.originalEvent.touches[0].pageX > ($(window).width()-($(window).width()/3)) && $('#sidebar:visible').length){
