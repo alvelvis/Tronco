@@ -55,6 +55,40 @@ _windows_device_files = (
     "NUL",
 )
 
+class TroncoTokens:
+
+    def load(self):
+        if os.path.isfile(self.tokens_file):
+            with open(self.tokens_file, "rb") as f:
+                self.tokens = json.load(f)
+
+    def save(self):
+        with open(self.tokens_file, "w") as f:
+            json.dump(self.tokens, f)
+
+    def store_password(self, name, password, token):
+        if not token in self.tokens:
+            self.tokens[token] = {}
+        self.tokens[token][name] = password
+        self.save()
+
+    def revoke_password(self, name, token):
+        if token in self.tokens and name in self.tokens[token]:
+            del self.tokens[token][name]
+            self.save()
+
+    def get_password(self, name, token):
+        if not token in self.tokens:
+            return "default"
+        if not name in self.tokens[token]:
+            return "default"
+        return self.tokens[token][name]
+
+    def __init__(self):
+        self.tokens = {}
+        self.tokens_file = os.path.join(app.root_path, "tronco_tokens.json")
+        self.load()
+
 class SessionTokens:
 
     def __init__(self):
@@ -65,16 +99,6 @@ class SessionTokens:
         if not key in self.tokens:
             return "none"
         return self.tokens[key]['token']
-
-    def did_someone_else_edit(self, name, filename, token, previoustoken="", timelimit=120.0):
-        #not being used, entirely frontend thing
-        key = name + "|" + filename
-        if not key in self.tokens:
-            return 0
-        if self.tokens[key]['token'] == token or self.tokens[key]['token'] == previoustoken or time.time() - self.tokens[key]['date'] > timelimit:
-            return 0
-        else:
-            return 1
 
     def just_edited(self, name, filename, token):
         key = name + "|" + filename
@@ -90,10 +114,24 @@ class SessionTokens:
 
 class TroncoConfig:
 
+    def delete_corpus(self, name):
+        if name in self.corpora:
+            del self.corpora[name]
+            self.save()
+
+    def change_password(self, name, new_password):
+        if name in self.corpora:
+            self.corpora[name]['permissions']['password'] = new_password
+            self.save()
+
+    def change_permissions(self, name, permissions):
+        if name in self.corpora:
+            self.corpora[name]['permissions']['disconnected'] = permissions
+            self.save()
+
     def has_permission(self, name, password, permission):
         if not name in self.corpora:
             self.add_corpus(name)
-            self.save()
         if password == self.corpora[name]['permissions']['password']:
             return True
         elif permission in self.corpora[name]['permissions']['disconnected']:
@@ -126,6 +164,7 @@ class TroncoConfig:
                     'auto_save': "true",
                     }
                 }
+            self.save()
 
     def __init__(self):
         self.corpora = {}

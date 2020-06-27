@@ -144,6 +144,7 @@ $(window).ready(function(){
     } else {
         isMobile = false
     }
+    $('#footer').toggleClass("fixed-bottom", !isMobile)
     loadCorpora()
     $('#filterOpenCorpus').val("")
     if (!isMobile) {

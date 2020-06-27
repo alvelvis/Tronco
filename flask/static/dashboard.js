@@ -1,19 +1,6 @@
-window.addEventListener("beforeunload", function(){
-    //storeSessionPreviousToken(getSessionToken())
-    //revokeToken()
-})
-
 $('#troncoHome').click(function(){
     window.location.href = '/?load=false'
 })
-
-function revokeToken(filename=$('#filename').attr('file')) {
-    $.post("/api/revokeToken", {
-        "name": name,
-        "filename": filename,
-        'token': getSessionToken(),
-    })
-}
 
 function shouldReload(should){
     $('#mainText').prop("readOnly", should)
@@ -86,7 +73,7 @@ $('.togglePerm').on('change', function(){
             "name": name,
             "perm": perm,
             "value": value,
-            "password": getPassword(name)
+            "tronco_token": getTroncoToken()
         }
     })
 })
@@ -108,11 +95,10 @@ $('#setPassword').click(function(){
                     data: {
                         'name': name,
                         'new_password': new_password,
-                        "password": getPassword(name)
+                        "tronco_token": getTroncoToken()
                     }
                 })
                 .done(function(){
-                    storePassword(name, new_password)
                     validatePassword(name)
                 })
             } else {
@@ -124,11 +110,10 @@ $('#setPassword').click(function(){
 
 $('#changePassword').click(function(){
     name = $('#name').html()
-    if (!permSetup || getPassword(name) != "default") {
+    if (!permSetup || $("#conected").html() != "Crie uma senha") {
         password = prompt("Insira a senha para " + name + ":")
         if (password && password.length){
             storePassword(name, password)
-            validatePassword(name)
         }
     } else {
         $('#setPassword').click()
@@ -139,26 +124,26 @@ var expirationDate = 'Fri, 31 Dec 9999 23:59:59 GMT'
 var permissions = []
 
 function validatePassword (name){
-    
-    if (document.cookie.indexOf("tp=") == -1 || document.cookie.indexOf("<troncoPasswords>") >= 0){
-        document.cookie = "tp={}; expires=" + expirationDate
+
+    if (document.cookie.indexOf("tt=") == -1){
+        document.cookie = "tt={}; expires=" + expirationDate
     }
+    
+    /*if (document.cookie.indexOf("tp=") == -1 || document.cookie.indexOf("<troncoPasswords>") >= 0){
+        document.cookie = "tp={}; expires=" + expirationDate
+    }*/
 
     if (document.cookie.indexOf("st=") == -1){
         document.cookie = "st={}; expires=" + expirationDate
     }
 
-    if (document.cookie.indexOf("spt=") == -1){
-        document.cookie = "spt={}; expires=" + expirationDate
-    }
-    
-    password = getPassword(name)
+    token = getTroncoToken()
     $.ajax({
         url: '/api/validatePassword',
         method: 'POST',
         data: {
             'name': name,
-            'password': password
+            'token': token
         }
     })
     .done(function(data){
@@ -168,8 +153,8 @@ function validatePassword (name){
         permSetup = permissions.indexOf("configurar") >= 0
         if (permSetup) { permEdit = true }
         if (!permEdit) { permSetup = false }
-        $('#conected').html(password == "default" && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não tem permissões"))))
-        $('#permissionsSettings').toggle(password == "default" ? false : (permSetup ? true : false))
+        $('#conected').html(!data.has_password && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não tem permissões"))))
+        $('#permissionsSettings').toggle(!data.has_password ? false : (permSetup ? true : false))
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
         }
@@ -178,21 +163,13 @@ function validatePassword (name){
         $('#saveModifications').attr('disabled', !permEdit)
         $('#menu-svg').toggle(permSetup)
         storeSessionToken(data.token)
+        if (!token.length) {
+            setTroncoToken(data.tronco_token)
+        }
         loadConfig()
         updateFiles("", $('#filename').attr('file'))
     })
     return true
-}
-
-function storeSessionPreviousToken(token) {
-    sessionToken = JSON.parse(document.cookie.split("spt=")[1].split("; ")[0])
-    sessionToken['token'] = token
-    document.cookie = "spt=" + JSON.stringify(sessionToken) + "; expires=" + expirationDate
-}
-
-function getSessionPreviousToken() {
-    sessionToken = JSON.parse(document.cookie.split("spt=")[1].split("; ")[0])
-    return sessionToken.token
 }
 
 function storeSessionToken(token) {
@@ -206,25 +183,41 @@ function getSessionToken() {
     return sessionToken.token
 }
 
-function storePassword (name, pass){
-    troncoPasswords = JSON.parse(document.cookie.split("tp=")[1].split("; ")[0])
-    troncoPasswords[name] = pass
-    document.cookie = "tp=" + JSON.stringify(troncoPasswords) +'; expires=' + expirationDate
+function getTroncoToken (){
+    troncoToken = JSON.parse(document.cookie.split("tt=")[1].split("; ")[0])
+    return "token" in troncoToken ? troncoToken.token : ""
 }
 
-function getPassword (name){
-    troncoPasswords = JSON.parse(document.cookie.split("tp=")[1].split("; ")[0])
-    if (name in troncoPasswords){
-        return troncoPasswords[name]
-    } else {
-        return "default"
-    }
+function setTroncoToken (token){
+    troncoToken = JSON.parse(document.cookie.split("tt=")[1].split("; ")[0])
+    troncoToken['token'] = token
+    document.cookie = "tt=" + JSON.stringify(troncoToken) + "; expires=" + expirationDate
 }
 
-function revokePassword (name){
-    troncoPasswords = JSON.parse(document.cookie.split("tp=")[1].split("; ")[0])
-    delete troncoPasswords[name]
-    document.cookie = "tp=" + JSON.stringify(troncoPasswords) +'; expires=' + expirationDate
+function storePassword(name, password){
+    $.ajax({
+        url: "/api/storePassword",
+        method: "POST",
+        data: {
+            "name": name,
+            "password": password,
+            "tronco_token": getTroncoToken()
+        }
+    })
+    .done(function(){
+        validatePassword(name)
+    })
+}
+
+function revokePassword(name){
+    $.ajax({
+        url: "/api/revokePassword",
+        method: "POST",
+        data: {
+            "name": name,
+            "tronco_token": getTroncoToken()
+        }
+    })
 }
 
 $('#search').on('keyup', function(e){
@@ -237,7 +230,7 @@ $('#search').on('keyup', function(e){
             data: {
                 "name": $('#name').html(),
                 "filename": filename,
-                "password": getPassword(name)
+                "tronco_token": getTroncoToken()
             }
         })
         .done(function(data){
@@ -256,7 +249,7 @@ function recentFiles(key = "", typing = ""){
         data: {
             "name": $('#name').html(),
             "key": key,
-            "password": getPassword(name)
+            "tronco_token": getTroncoToken()
         }
     })
     .done(function(data){
@@ -286,11 +279,12 @@ $('#deleteCorpus').click(function(){
             method: 'POST',
             data: {
                 'name': name,
-                "password": getPassword(name)
+                "tronco_token": getTroncoToken()
             }
         })
         .done(function(){
             window.location.href = "/?load=false"
+            return false
         })
     } else {
         if (confirmName && confirmName.length) {
@@ -309,13 +303,11 @@ $('#renameCorpus').click(function(){
             data: {
                 "name": name,
                 "new_name": new_name,
-                "password": getPassword(name)
+                "tronco_token": getTroncoToken(),
             }
         })
         .done(function(data){
             if (data.data != "false"){
-                storePassword(new_name, getPassword(name))
-                //revokePassword(name)
                 window.location.href = "/corpus/" + data.data
             } else {
                 alert("Coleção " + new_name + " já existe!")
@@ -354,7 +346,7 @@ $('#deleteFile').click(function(){
             data: {
                 'name': name,
                 'filename': filename,
-                "password": getPassword(name)
+                "tronco_token": getTroncoToken()
             }
         })
         .done(function(){
@@ -378,7 +370,7 @@ $('#renameFile').click(function(){
                 'name': name,
                 'filename': filename,
                 'new_filename': new_filename,
-                "password": getPassword(name)
+                "tronco_token": getTroncoToken()
             }
         })
         .done(function(data){
@@ -402,7 +394,7 @@ function updateFiles(key = "", click = ""){
         data: {
             'name': name,
             'key': key,
-            "password": getPassword(name)
+            "tronco_token": getTroncoToken()
         }
     })
     .done(function(data){
@@ -419,6 +411,12 @@ function updateFiles(key = "", click = ""){
                     </a>
                 </li>`)
             }
+        }
+
+        if (!isMobile) {
+            $('.one-of-the-files').on('mouseenter mouseleave', function(){
+                $(this).toggleClass("files-hover")
+            })
         }
 
         $('.files').click(function(){
@@ -525,7 +523,7 @@ function saveFile(filename ,text){
                                 'name': name,
                                 'filename': filename,
                                 'text': text,
-                                "password": getPassword(name),
+                                "tronco_token": getTroncoToken(),
                                 "token": getSessionToken(),
                             }
                         })
@@ -546,10 +544,20 @@ function saveFile(filename ,text){
     }
 }
 
+var typingTimer
+var doneTypingInterval = 1000
+
+function doneTyping () {
+    saveFile($('#filename').attr('file'), $('#mainText').val())
+}
+
 $('#mainText').on('keyup', function(event){
     if ((!event.ctrlKey && !event.metaKey && event.which != 17 && event.which != 27) || (event.ctrlKey && String.fromCharCode(event.which).toLowerCase() == "v")) {
         if ($('#autoSaveCheckbox').prop('checked')){
-            saveFile($('#filename').attr('file'), $('#mainText').val())
+            clearTimeout(typingTimer)
+            if ($('#mainText').val()) {
+                typingTimer = setTimeout(doneTyping, doneTypingInterval)
+            }
         } else {
             textModified(true)
         }
@@ -577,7 +585,6 @@ var whoClaimedAccess = ""
 function loadFile(filename){
     
     name = $('#name').html()
-    //revokeToken($('#filename').attr('file'))
         
     $('#breadcrumb-nav').toggle(filename == "README")
     window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
@@ -586,7 +593,7 @@ function loadFile(filename){
         data: {
             'name': name,
             'filename': filename,
-            "password": getPassword(name),
+            "tronco_token": getTroncoToken(),
             'token': getSessionToken(),
         }
     })
@@ -641,7 +648,7 @@ $('#autoSaveCheckbox').on('change', function(){
         data: {
             'name': name,
             'auto_save': autoSave,
-            "password": getPassword(name)
+            "tronco_token": getTroncoToken()
         }
     })
     loadConfigFromCheckboxes()
@@ -656,7 +663,7 @@ $('#wrapTextCheckbox').on('change', function(){
         data: {
             'name': name,
             'auto_wrap': auto_wrap,
-            "password": getPassword(name)
+            "tronco_token": getTroncoToken()
         }
     })
     loadConfigFromCheckboxes()
@@ -675,7 +682,7 @@ function loadConfig(){
         method: 'POST',
         data: {
             'name': name,
-            "password": getPassword(name)
+            "tronco_token": getTroncoToken()
         }
     })
     .done(function(data){
