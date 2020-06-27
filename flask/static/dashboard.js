@@ -1,7 +1,7 @@
 function changeATitle(link){
     $.ajax({
         url: "https://textance.herokuapp.com/title/" + link,
-        success: function(data) {
+        complete: function(data) {
             if (data.responseText){ 
                 $('[href="' + link + '"]').html(data.responseText)
             }
