@@ -1,10 +1,10 @@
 function changeATitle(link){
     $.ajax({
         url: "https://textance.herokuapp.com/title/" + link,
-    })
-    .done(function(data) {
-        if (data.responseText){ 
-            $('[href="' + link + '"]').html(data.responseText)
+        complete: function(data) {
+            if (data.responseText){ 
+                $('[href="' + link + '"]').html(data.responseText)
+            }
         }
     })
 }
@@ -13,6 +13,12 @@ function updateToolbar(){
     links = []
     images = []
     files = []
+    checklist = []
+
+    list_check = $('#mainText').val().matchAll(/\[(x)?\]\s?(.+)($|\n)/gi)
+    for (check of list_check) {
+        checklist.push([check[1] ? true : false, check[2]])
+    }
 
     list_files = $('#mainText').val().matchAll(/\[(.*?)\]/gi)
     for (file of list_files) {
@@ -21,13 +27,33 @@ function updateToolbar(){
         }
     }
 
-    list_links = $('#mainText').val().matchAll(/(https?:\/\/(www\.)?(.*?)(\/|$)(.*\/)?(.*?))(\s|$)/gi)
+    list_links = $('#mainText').val().matchAll(/(https?:\/\/(www\.)?(.*?)(\/|$|\n)(.*\/)?(.*?))(\s|\n|$)/gi)
     for (link of list_links) {
         if (link[1].match(/\.(png|jpe?g|bmp|gif|ico)$/i)) {
             images.push([link[6], link[1]])
         } else {
             links.push([link[3], link[1]])
         }
+    }
+
+    if (checklist.length) {
+        $('#checklist').toggle(true)
+        $('#checklistLabel').html("Checklist (" + checklist.filter(x => x[0]).length + "/" + checklist.length + ")")
+        $('[toolbar=checklist]').html("")
+        for (check in checklist) {
+            $('[toolbar=checklist]').append('<div class="form-row align-items-left"><div class="col-auto my-1"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer" for="checkbox-' + check + '">' + checklist[check][1] + '</label></div></div></div>')            
+        }
+        $('.file-checkbox').change(function(){
+            checkString = $('[for="' + $(this).attr('id') + '"]').html()
+            toCheck = $(this).prop('checked')
+            pattern = RegExp("\\[.?\\]\\s?" + checkString)
+            $('#mainText').val($('#mainText').val().replace(pattern, "[" + (toCheck ? "x" : "") + "] " + checkString))
+            saveFile($('#filename').attr('file'), $('#mainText').val())
+            updateToolbar()
+        })
+    } else {
+        $('#checklist').toggle(false)
+        $('[toolbar=checklist]').toggle(false)
     }
     
     if (links.length) {
@@ -839,7 +865,7 @@ function triggerResize(first=false){
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
         $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText').toggleClass("px-5", false).toggleClass("px-4", true)
-        $('#mainText').css("border-style", "none").toggleClass("border-top", false)//.css("margin", "0px").css("padding", "0px")
+        $('#mainText').css("border-style", "none").toggleClass("border-top", false)
         $('.breadcrumb').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
     } else {
