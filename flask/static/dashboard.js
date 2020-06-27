@@ -16,7 +16,7 @@ function updateToolbar(){
             images.push([link[6], link[1]])
         } else {
             $.ajax({
-                url: "http://textance.herokuapp.com/title/" + link[1],
+                url: "https://textance.herokuapp.com/title/" + link[1],
                 async: false,
                 complete: function(data) {
                     if (data.responseText){ 
@@ -67,6 +67,8 @@ function updateToolbar(){
         $('#filesLink').toggle(false)
         $('[toolbar=filesLink]').toggle(false)
     }
+
+    $('#shareText').show()
         
 }
 
@@ -139,6 +141,7 @@ $('#mainText').on("blur", function(){
 
 $('#search').on('focus', function(){
     window.scrollTo(0, 0)
+    $(this).select()
     $('#breadcrumb-nav').toggle(true)
 })
 
@@ -849,12 +852,20 @@ function triggerResize(first=false){
         $('.breadcrumb').css('overflow-x', "").css("white-space", "")
         $('#toolbarRow').css('overflow-x', "auto")
     }
+
+    if (first && !isMobile) {
+        $('.toolbarButton').on('mouseenter mouseleave', function(){
+            $(this).toggleClass("btn-toolbar-hover")
+        })
+    }
+
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').toggleClass("mt-0", isMobile)
     $('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "58px" : '54px') : '10px')
     $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")    
     $('#main').css('margin-left', !isMobile ? '260px' : '0px')
     feather.replace()
+    
 }
 
 $(document).ready(function(){
