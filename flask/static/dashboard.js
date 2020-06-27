@@ -15,20 +15,7 @@ function updateToolbar(){
         if (link[1].match(/\.(png|jpe?g|bmp|gif|ico)$/i)) {
             images.push([link[6], link[1]])
         } else {
-            $.ajax({
-                url: "https://textance.herokuapp.com/title/" + link[1],
-                async: false,
-                complete: function(data) {
-                    if (data.responseText){ 
-                        links.push([data.responseText, link[1]])                    
-                    } else {
-                        links.push([link[3], link[1]])
-                    }
-                }
-            })
-            .fail(function(){
-                links.push([link[3], link[1]])
-            })
+            links.push([link[3], link[1]])
         }
     }
     
@@ -38,6 +25,14 @@ function updateToolbar(){
         $('[toolbar=links]').html("")
         for (link in links) {
             $('[toolbar=links]').append('<a target="_blank" class="px-1" href="' + links[link][1] + '">' + links[link][0] + '</a>' + (link == links.length -1 ? "" : " / "))
+            $.ajax({
+                url: "https://textance.herokuapp.com/title/" + link[1],
+                complete: function(data) {
+                    if (data.responseText){ 
+                        $('[href="' + links[link][1] + '"]').html(data.responseText)
+                    }
+                }
+            })
         }
     } else {
         $('#links').toggle(false)
