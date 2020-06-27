@@ -821,7 +821,7 @@ $(document).on('touchstart', function(e){
         $('.toggleSettings')[0].click()
         return true
     }
-    if (isMobile && e.originalEvent.touches[0].pageX < ($(window).width()/3) && !$('#sidebar:visible').length) {
+    if (isMobile && e.originalEvent.touches[0].pageX < 60 && !$('#sidebar:visible').length) {
         openingPanel = true
     }
     if (isMobile && e.originalEvent.touches[0].pageX > ($(window).width()-($(window).width()/3)) && $('#sidebar:visible').length){
