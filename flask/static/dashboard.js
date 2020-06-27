@@ -161,7 +161,7 @@ $('#mainText').on("blur", function(){
         $('#search').toggle(true)
         $('#troncoHome').toggle(true)
         $('#toolbarRow, #toolbar').toggle(true)
-        $('#breadcrumb-nav').toggle(true)
+        //$('#breadcrumb-nav').toggle(true)
     }
 })
 
