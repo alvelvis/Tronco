@@ -26,7 +26,7 @@ function updateToolbar(){
         for (link in links) {
             $('[toolbar=links]').append('<a target="_blank" class="px-1" href="' + links[link][1] + '">' + links[link][0] + '</a>' + (link == links.length -1 ? "" : " / "))
             $.ajax({
-                url: "https://textance.herokuapp.com/title/" + link[1],
+                url: "https://textance.herokuapp.com/title/" + links[link][1],
                 complete: function(data) {
                     if (data.responseText){ 
                         $('[href="' + links[link][1] + '"]').html(data.responseText)
