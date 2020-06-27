@@ -1,10 +1,10 @@
 function changeATitle(link){
     $.ajax({
         url: "https://textance.herokuapp.com/title/" + link,
-        complete: function(data) {
-            if (data.responseText){ 
-                $('[href="' + link + '"]').html(data.responseText)
-            }
+    })
+    .done(function(data) {
+        if (data.responseText){ 
+            $('[href="' + link + '"]').html(data.responseText)
         }
     })
 }
@@ -142,6 +142,7 @@ $('#search').on('focus', function(){
     window.scrollTo(0, 0)
     $(this).select()
     $('#breadcrumb-nav').toggle(true)
+    $('.breadcrumb').scrollLeft(0)
 })
 
 $('.togglePerm').on('change', function(){
@@ -489,7 +490,7 @@ function updateFiles(key = "", click = ""){
                 <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
                     <a class="nav-link files d-flex align-items-center" style="width:100%;" file="` + x + `">
                         <span data-feather="file-text"></span>
-                        <span style="max-width: 70%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">` + x + `</span>
+                        <span style="max-width: 60%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">` + x + `</span>
                     </a>
                 </li>`)
             }
@@ -696,7 +697,7 @@ function loadFile(filename){
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
             if (!isMobile) {
-                $('#mainText').focus()
+                //$('#mainText').focus()
             }
         } else {
             if (data.error == 2) {
@@ -793,10 +794,10 @@ $(document).on('touchstart', function(e){
         $('.toggleSettings')[0].click()
         return true
     }
-    if (isMobile && e.originalEvent.touches[0].pageX < 30 && !$('#sidebar:visible').length) {
+    if (isMobile && e.originalEvent.touches[0].pageX < ($(window).width()/3) && !$('#sidebar:visible').length) {
         openingPanel = true
     }
-    if (isMobile && e.originalEvent.touches[0].pageX > $(window).width()-30 && $('#sidebar:visible').length){
+    if (isMobile && e.originalEvent.touches[0].pageX > ($(window).width()-($(window).width()/3)) && $('#sidebar:visible').length){
         closingPanel = true
     }
 })
@@ -837,13 +838,13 @@ function triggerResize(first=false){
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
-        $('#main').toggleClass("px-4", true).toggleClass("px-5", false)
+        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText').toggleClass("px-5", false).toggleClass("px-4", true)
         $('#mainText').css("border-style", "none").toggleClass("border-top", false)//.css("margin", "0px").css("padding", "0px")
         $('.breadcrumb').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
     } else {
         isMobile = false
-        $('#main').toggleClass("px-5", true).toggleClass("px-4", false)
+        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').toggleClass("mb-3", false)
         $('#mainText').css("margin", "").css("padding", "").css("border-style", "none").toggleClass("border-top", false)
         $('#troncoHomeLabel').html("")

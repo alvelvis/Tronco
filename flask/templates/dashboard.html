@@ -170,20 +170,20 @@
 
         <main id="main" role="main" class="py-2" style="width:100%;">
           
-          <nav id="breadcrumb-nav" class="px-0" aria-label="breadcrumb">
+          <nav id="breadcrumb-nav" class="px-4" aria-label="breadcrumb">
             <ol class="breadcrumb px-0 m-0 alert-light" id="recentFiles">
                 
             </ol>
           </nav>
 
-          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-4 mb-3 border-bottom">
-            <h1 class="h2 filename" style="max-width:100%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis" file="{{filename}}" id="filename"></h1>
+          <div id="filename-div" class="px-4 d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-4 mb-3">
+            <h1 class="h2 filename border-bottom" style="max-width:100%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis" file="{{filename}}" id="filename"></h1>
           </div>
 
-          <div id="toolbarRow" style="width:100%">
-            <div class="btn-toolbar">
-              <div class="btn-group mx-1">
-                <button id="reloadPage" style="display:none" class="toolbarButton btn btn-sm btn-danger" title="Recarregar">
+          <div id="toolbarRow">
+            <div class="btn-toolbar ">
+              <div class="btn-group px-4" id="toolbar-group">
+                <button id="reloadPage" style="display:none" class="btn btn-sm btn-danger" title="Recarregar">
                   <span data-feather="refresh-cw"></span>
                   <span>Recarregar</span>
                 </button>
@@ -220,7 +220,7 @@
 
           </div>
 
-          <div id="toolbar" class="my-3">
+          <div id="toolbar" class="my-3 px-4">
               
             <div toolbar="shareText" style="display:none" class="toolbar">
               <input style="border:none; padding-right:10px" id="shareLink" readonly>
@@ -237,7 +237,7 @@
 
           </div>
 
-          <textarea class="form-control p-0 pb-2" style="resize:none; border-style:none; overflow:auto; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; height:100%; width:100%;" id="mainText"></textarea>
+          <textarea class="form-control p-0 pb-2 px-4" style="resize:none; border-style:none; overflow:auto; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; height:100%; width:100%;" id="mainText"></textarea>
 
         </main>
       </div>
