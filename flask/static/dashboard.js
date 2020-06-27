@@ -838,7 +838,7 @@ function triggerResize(first=false){
         $('#main').toggleClass("px-4", true).toggleClass("px-5", false)
         $('#mainText').css("border-style", "none").toggleClass("border-top", false)//.css("margin", "0px").css("padding", "0px")
         $('.breadcrumb').css('overflow-x', "scroll").css("white-space", "nowrap")
-        $('#toolbarRow, #toolbar').css('overflow-x', "scroll").css("margin-right", "0px")
+        $('#toolbarRow').css('overflow-x', "scroll")
     } else {
         isMobile = false
         $('#main').toggleClass("px-5", true).toggleClass("px-4", false)
@@ -847,7 +847,7 @@ function triggerResize(first=false){
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
         $('.breadcrumb').css('overflow-x', "").css("white-space", "")
-        $('#toolbarRow, #toolbar').css('overflow-x', "auto").css("margin-right", "260px")
+        $('#toolbarRow').css('overflow-x', "auto")
     }
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').toggleClass("mt-0", isMobile)
