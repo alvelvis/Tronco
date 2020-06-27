@@ -1,3 +1,62 @@
+function updateToolbar(){
+    links = []
+    images = []
+    files = []
+
+    list_files = $('#mainText').val().matchAll(/\[(.*?)\]/gi)
+    for (file of list_files) {
+        if ($('[file="' + file[1] + '"]').length) {
+            files.push(file[1])
+        }
+    }
+
+    list_links = $('#mainText').val().matchAll(/(https?:\/\/(www\.)?(.*?)(\/|$)(.*\/)?(.*?))(\s|$)/gi)
+    for (link of list_links) {
+        if (link[0].match(/\.(png|jpe?g|bmp|gif|ico)/i)) {
+            images.push([link[6], link[1]])
+        } else {
+            links.push([link[3], link[1]])
+        }
+    }
+    
+    if (links.length) {
+        $('#links').toggle(true)
+        $('#linksLabel').html("Links (" + links.length + ")")
+        $('[toolbar=links]').html("")
+        for (link of links) {
+            $('[toolbar=links]').append('<a target="_blank" class="pl-2" href="' + link[1] + '">' + link[0] + '</a>')
+        }
+    } else {
+        $('#links').toggle(false)
+        $('[toolbar=links]').toggle(false)
+    }
+
+    if (images.length) {
+        $('#images').toggle(true)
+        $('#imagesLabel').html("Imagens (" + images.length + ")")
+        $('[toolbar=images]').html("")
+        for (link of images) {
+            $('[toolbar=images]').append('<a target="_blank" class="pl-2" href="' + link[1] + '">' + link[0] + '</a>')
+        }
+    } else {
+        $('#images').toggle(false)
+        $('[toolbar=images]').toggle(false)
+    }
+
+    if (files.length) {
+        $('#filesLink').toggle(true)
+        $('#filesLinkLabel').html("Arquivos (" + files.length + ")")
+        $('[toolbar=filesLink]').html("")
+        for (link of files) {
+            $('[toolbar=filesLink]').append('<a href="/corpus/' + $('#name').html() + '?file=' + link + '" class="pl-2">' + link + '</a>')
+        }
+    } else {
+        $('#filesLink').toggle(false)
+        $('[toolbar=filesLink]').toggle(false)
+    }
+        
+}
+
 $('#troncoHome').click(function(){
     window.location.href = '/?load=false'
 })
@@ -11,9 +70,16 @@ function shouldReload(should){
 }
 
 $('.toolbarButton').click(function(){
-    $("#toolbar").toggle(false)
-    if ($("[toolbar='" + $(this).attr('id') + "']") && $("[toolbar='" + $(this).attr('id') + "']").length) {
+    $(".toolbar").toggle(false)
+    if ($(this).hasClass("btn-primary")) {
         $("[toolbar='" + $(this).attr('id') + "']").toggle(true)
+    }
+    $('.toolbarButton').toggleClass("btn-primary", false).toggleClass("btn-outline-secondary", true)
+    if ($("[toolbar='" + $(this).attr('id') + "']") && $("[toolbar='" + $(this).attr('id') + "']").length) {
+        $("[toolbar='" + $(this).attr('id') + "']").toggle()
+    }
+    if ($("[toolbar='" + $(this).attr('id') + "']:visible").length) {
+        $(this).toggleClass("btn-primary", true).toggleClass("btn-outline-secondary", false)
     }
 })
 
@@ -22,6 +88,7 @@ $('#reloadPage').click(function(){
 })
 
 $('#shareText').click(function(){
+    $('[toolbar=shareText]').show()
     $('#shareLink').val(window.location.href.match(/^.*\//)[0] + $('#name').html().replace(/\s/g, "%20") + "?file=" + $('#filename').attr('file').replace(/\s/g, "%20"))
     $('#shareLink').select()
     document.execCommand('copy')
@@ -42,7 +109,7 @@ $('#mainText').on("focus", function(){
         $('#search').toggle(false)
         $('#troncoHome').toggle(false)
         $('#sidebar').toggleClass("d-none", true)
-        $('#toolbarRow').toggle(false)
+        $('#toolbarRow, #toolbar').toggle(false)
         $('#breadcrumb-nav').toggle(false)
     }
 })
@@ -52,7 +119,7 @@ $('#mainText').on("blur", function(){
         $('#mainHeadbar').toggle(true)
         $('#search').toggle(true)
         $('#troncoHome').toggle(true)
-        $('#toolbarRow').toggle(true)
+        $('#toolbarRow, #toolbar').toggle(true)
         $('#breadcrumb-nav').toggle(true)
     }
 })
@@ -474,7 +541,7 @@ $(window).bind('keydown', function(event) {
 
 var failedSave = false
 
-function saveFile(filename ,text){
+function saveFile(filename, text){
 
     if (permEdit || permSetup) {
 
@@ -570,6 +637,7 @@ $('#mainText').on('change', function(){
     } else {
         textModified(true)
     }
+    updateToolbar()
 })
 
 function textModified(state){
@@ -607,6 +675,7 @@ function loadFile(filename){
             $('.filename').html(filename == "README" ? name : filename)
             $('#filename').attr('file', filename)
             $('#mainText').val(data.data.text)
+            updateToolbar()
             $('#mainText').attr('placeholder', filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução da coleção "' + name + '" e poderá ser visualizado por todos. Crie novos arquivos na barra de busca no topo da página e, se desejar, crie uma senha para proteger esta coleção.' : 'Insira aqui o conteúdo')
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
@@ -753,24 +822,19 @@ function triggerResize(first=false){
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
-        //$('.row').after($('#mainText').detach())
         $('#main').toggleClass("px-4", true).toggleClass("px-5", false)
         $('#mainText').css("border-style", "none").toggleClass("border-top", false)//.css("margin", "0px").css("padding", "0px")
         $('.breadcrumb').css('overflow-x', "scroll").css("white-space", "nowrap")
-        $('.btn-toolbar').css('overflow-x', "scroll").css("white-space", "nowrap")
-        //$('body').css('background-color', "#d0d2cd")
-        //$('.breadcrumb').css('background-color', "#d0d2cd")
-        //$('#mainText').css('background-color', "#d0d2cd")
+        $('#toolbarRow, #toolbar').css('overflow-x', "scroll").css("margin-right", "0px")
     } else {
         isMobile = false
-        $('#main').toggleClass("px-5", true).toggleClass("px-2", false)
+        $('#main').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').toggleClass("mb-3", false)
         $('#mainText').css("margin", "").css("padding", "").css("border-style", "none").toggleClass("border-top", false)
-        //$('main').append($('#mainText').detach())
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
         $('.breadcrumb').css('overflow-x', "").css("white-space", "")
-        $('.btn-toolbar').css('overflow-x', "auto").css("white-space", "nowrap")
+        $('#toolbarRow, #toolbar').css('overflow-x', "auto").css("margin-right", "260px")
     }
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').toggleClass("mt-0", isMobile)
