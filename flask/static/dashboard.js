@@ -1,3 +1,7 @@
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
 function changeATitle(link){
     $.ajax({
         url: "https://textance.herokuapp.com/title/" + link,
@@ -47,7 +51,7 @@ function updateToolbar(){
         $('.file-checkbox').change(function(){
             checkString = $('[for="' + $(this).attr('id') + '"]').html()
             toCheck = $(this).prop('checked')
-            pattern = RegExp("\\[.?\\]\\s?" + checkString)
+            pattern = RegExp("\\[.?\\]\\s?" + escapeRegExp(checkString))
             $('#mainText').val($('#mainText').val().replace(pattern, "[" + (toCheck ? "x" : "") + "] " + checkString))
             saveFile($('#filename').attr('file'), $('#mainText').val())
             updateToolbar()

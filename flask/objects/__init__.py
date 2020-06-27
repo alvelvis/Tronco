@@ -23,7 +23,7 @@ startup_salutations = [
 ]
 startup_tips = [
     "Você pode sempre acessar a barra de buscas apertando Ctrl+P",
-    "Está sem internet? Você pode sempre utilizar a versão off-line do Tronco",
+    "Não quer depender de internet? Você pode baixar a versão off-line do Tronco",
     "Está na rua e precisa tomar nota? Experimente nosso aplicativo",
     "Buscar coleções ou textos que não existem é uma maneira rápida de criá-los",
     "Você pode sempre configurar se outras pessoas terão acesso aos seus arquivos",
