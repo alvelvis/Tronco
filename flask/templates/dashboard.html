@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Tronco te ajuda a organizar coleções de texto.">
 
-    <meta property="og:title" content="{% filename if filename != 'README' else name %} - Tronco">
+    <meta property="og:title" content="{% if filename != 'README' %}{{filename}}{% else %}{{name}}{% endif %} - Tronco">
     <meta property="og:description" content="Tronco te ajuda a organizar coleções de texto.">
     <meta property="og:image" content="{{url_for('static', filename='favicon2.png')}}">
     <meta property="og:url" content="https://tronco.ga">
