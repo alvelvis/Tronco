@@ -17,6 +17,10 @@ session_tokens = objects.SessionTokens()
 tronco_tokens = objects.TroncoTokens()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
+@app.route("/pwa")
+def pwa():
+    app.send_static_file("pwabuilder-sw.js")
+
 @app.route("/api/claimAccess", methods=["POST"])
 def claim_access():
     name = request.values.get("name")
@@ -33,10 +37,6 @@ def who_claimed_access():
         'error': 0,
         'token': session_tokens.who_claimed_access(name, filename)
         }
-
-@app.route("/pwabuilder-sw")
-def pwabuilder_sw():
-    return redirect(url_for('static', filename='pwabuilder-sw.js'))
 
 @app.route("/api/revokeToken", methods=["POST"])
 def revoke_token():
