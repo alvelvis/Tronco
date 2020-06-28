@@ -125,11 +125,6 @@
         text: 'Thumbnail'
       });
 
-      import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
-
-      const el = document.createElement('pwa-update');
-      document.body.appendChild(el);
-
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register("{{url_for('static', filename='pwabuilder-sw.js')}}");
       }
