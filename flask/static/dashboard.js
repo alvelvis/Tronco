@@ -890,14 +890,14 @@ function triggerResize(first=false){
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
         $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
-        $('#mainText').css("border-style", "none").toggleClass("border-top", false)
+        
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
     } else {
         isMobile = false
         $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').toggleClass("mb-3", false)
-        $('#mainText').css("margin", "").css("padding", "").css("border-style", "none").toggleClass("border-top", false)
+        
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
         $('.breadcrumb, #filename').css('overflow-x', "").css("white-space", "")

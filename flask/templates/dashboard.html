@@ -31,13 +31,13 @@
       <span data-feather="arrow-left"></span>
     </div>
     <nav id="mainHeadbar" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
-      <span id="troncoHomeBar" class="bg-dark form-control-dark">
+      <span id="troncoHomeBar" style="width:100%" class="mt-0 bg-dark form-control-dark">
         <a title="Voltar para coleções (Ctrl+E)" id="troncoHome">
-          <img class="ml-3 mr-3" id="troncoLogo" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
+          <img class="ml-3 mr-3 mb-3" id="troncoLogo" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
         </a>
-        <span id="troncoHomeLabel" settings="corpusSettings" style="width:100%" class='toggleSettings'></span>
+        <span id="troncoHomeLabel" settings="corpusSettings" style="width:100%" class='toggleSettings'><a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / {{name}}</a></span>
       </span>
-      <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white">
+      <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white; display:none;">
         <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
             <span id="menu-svg" style="margin-bottom:6px" data-feather="menu"></span>
             <span id="name" class="name" style="margin-left:5px; max-width:90%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{{name}}</span>
