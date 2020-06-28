@@ -149,4 +149,7 @@ $(window).ready(function(){
         $('#filterOpenCorpus').focus()
     }
     scrollTo(0,0)
+    if (window.location.href.match(/app=true/)) {
+        setTimeout(() => {$('#downloadTronco').trigger("click")}, 3000)
+    }
 })

@@ -17,6 +17,10 @@ session_tokens = objects.SessionTokens()
 tronco_tokens = objects.TroncoTokens()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
+@app.route("/app")
+def download_app():
+    return redirect("/?app=true")
+
 @app.route("/pwa")
 def pwa():
     return app.send_static_file("pwabuilder-sw.js")

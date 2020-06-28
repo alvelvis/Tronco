@@ -168,7 +168,7 @@ $('#mainText').on("focus", function(){
 $('#mainText').on("blur", function(){
     if (isMobile) {
         $('#mainHeadbar').toggle(true)
-        $('#search').toggle(true)
+        $('#search').toggle(permView)
         $('#troncoHome').toggle(true)
         $('#toolbarRow, #toolbar').toggle(true)
         $('#blurHeadbar').toggle(false)
@@ -286,6 +286,7 @@ function validatePassword (name){
         $('#permissionsSettings').toggle(!data.has_password ? false : (permSetup ? true : false))
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
+            $('#search').toggle(permView)
         }
         $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
         $('#mainText').prop('readonly', !permEdit).toggleClass("p-3", !permEdit)
@@ -720,7 +721,7 @@ function loadFile(filename){
     
     name = $('#name').html()
         
-    $('#breadcrumb-nav').toggle(filename == "README")
+    $('#breadcrumb-nav').toggle(filename == "README" && permView)
     window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
     $.ajax({
         url: '/api/loadFile',
@@ -742,7 +743,7 @@ function loadFile(filename){
             $('#filename').attr('file', filename)
             $('#mainText').val(data.data.text)
             updateToolbar()
-            $('#mainText').attr('placeholder', filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução da coleção "' + name + '" e poderá ser visualizado por todos. Crie novos arquivos na barra de busca no topo da página e, se desejar, crie uma senha para proteger esta coleção.' : 'Insira aqui o conteúdo')
+            $('#mainText').attr('placeholder', filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução da coleção "' + name + '" e poderá ser visualizado por todos. Crie novos arquivos na barra de busca no topo da página e, se desejar, crie uma senha para proteger todos os arquivos desta coleção.' : 'Insira aqui o conteúdo')
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()

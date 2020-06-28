@@ -24,7 +24,7 @@
           return cookie
       }
 
-      if (!window.location.href.match(/\?load=false/) && getRecent().recent.length){
+      if (!window.location.href.match(/\?(load=false|app=true)/) && getRecent().recent.length){
           window.location.href = "/corpus/" + getRecent().recent.split("|")[getRecent().recent.split("|").length-1] + "?file=README"
       }      
     </script>
