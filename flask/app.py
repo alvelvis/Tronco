@@ -129,6 +129,8 @@ def find_or_create_file():
 def recent_files():
     name = request.values.get("name")
     password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "visualizar"):
+        return {"data": ""}
     key = request.values.get("key", "")
     return {'data': "|".join(functions.recent_files(name, key))}
 
@@ -205,6 +207,9 @@ def delete_files():
 @app.route("/api/updateFiles")
 def update_files():
     name = request.values.get("name")
+    password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "visualizar"):
+        return {'data': ""}
     return {'data': "|".join(functions.update_files(name))}
 
 @app.route('/api/changeTroncoConfig', methods=["POST"])
