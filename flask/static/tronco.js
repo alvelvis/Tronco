@@ -9,5 +9,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register("/static/pwabuilder-sw.js", {scope: '/'});
+    navigator.serviceWorker.register("/pwabuilder-sw.js", {scope: '/'});
   }
