@@ -125,10 +125,6 @@
         text: 'Thumbnail'
       });
 
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register("{{url_for('static', filename='pwabuilder-sw.js')}}");
-      }
-
     </script>
 
   </body>
