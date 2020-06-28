@@ -43,8 +43,7 @@
             <span id="name" class="name" style="margin-left:5px; max-width:90%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{{name}}</span>
         </a>   
       </span>
-      <input class="form-control form-control-dark w-100" id="search" type="text" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Procure ou crie novos arquivos" aria-label="Search">
-      <a class="d-none d-md-block col-md-2"></a>
+      <a id="afterSearch" class="d-none d-md-block col-md-2"></a>
     </nav>
     
 
@@ -173,6 +172,8 @@
             </ul>
           </div>
         </nav>
+
+        <input class="form-control mt-3 mx-4 form-control-dark w-100" style="color:black" id="search" type="text" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Procure ou crie novos arquivos" aria-label="Search">
 
         <main id="main" role="main" class="py-2" style="width:100%;">
           

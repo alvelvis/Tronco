@@ -882,7 +882,6 @@ function triggerResize(first=false){
     if ($('#sidebar:hidden').length || $(window).width() < 600) {
         if (first) {
             isMobileFromBeginning = true
-            $('#main').before($('#search').detach().toggleClass("mt-3 mx-4", true).css("color", "black"))
             $('#sidebar').css("max-width", "")
         }
         isMobile = true
@@ -908,6 +907,7 @@ function triggerResize(first=false){
         $('.toolbarButton').on('mouseenter mouseleave', function(){
             $(this).toggleClass("btn-toolbar-hover")
         })
+        $('#afterSearch').before($('#search').detach().toggleClass("mt-3 mx-4", false).css("color", ""))
     }
 
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
