@@ -24,7 +24,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 $('#downloadTronco').click(function(e){
-    if (isMobile) {
+    if (isMobile && deferredPrompt) {
         e.preventDefault()
           // Hide the app provided install promotion
         //hideMyInstallPromotion();
