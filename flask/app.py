@@ -34,6 +34,10 @@ def who_claimed_access():
         'token': session_tokens.who_claimed_access(name, filename)
         }
 
+@app.route("/pwabuilder-sw")
+def pwabuilder_sw():
+    return app.send_static_file('/static/pwabuilder-sw.js')
+
 @app.route("/api/revokeToken", methods=["POST"])
 def revoke_token():
     name = request.values.get("name")
