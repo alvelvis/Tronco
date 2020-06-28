@@ -19,7 +19,7 @@ app.jinja_env.globals.update(tronco_config=tronco_config)
 
 @app.route("/pwa")
 def pwa():
-    app.send_static_file("pwabuilder-sw.js")
+    app.send_static_file("/static/pwabuilder-sw.js")
 
 @app.route("/api/claimAccess", methods=["POST"])
 def claim_access():
