@@ -36,7 +36,7 @@ def who_claimed_access():
 
 @app.route("/pwabuilder-sw")
 def pwabuilder_sw():
-    return app.send_static_file('/static/pwabuilder-sw.js')
+    return redirect(url_for('static', filename='pwabuilder-sw.js'))
 
 @app.route("/api/revokeToken", methods=["POST"])
 def revoke_token():
