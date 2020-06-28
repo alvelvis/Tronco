@@ -10,6 +10,8 @@
     <meta property="og:image" content="{{url_for('static', filename='favicon2.png')}}">
     <meta property="og:url" content="https://tronco.ga">
 
+    <link rel="manifest" href="{{url_for('static', filename='manifest.json')}}?version=1">
+
     <script>
       function getRecent (){
           if (document.cookie.indexOf("tr=") == -1){
@@ -38,11 +40,11 @@
   <body>
 
     <div class="d-flex flex-column sticky-top flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-      <h5 id="tronco" class="my-0 mr-md-auto font-weight-normal d-none d-lg-block">Tronco {{version}}</h5>
+      <h5 id="tronco" class="my-0 mr-md-auto font-weight-normal d-none d-lg-block"></h5>
       <nav class="my-2 my-md-0 mr-md-3">
         <a href="https://github.com/alvelvis/Tronco#Tronco" target="_blank" class="p-2 text-dark">Sobre o Tronco</a>
         <!--a href="#" class="p-2 text-dark">Carregar projeto</a-->
-        <a href="https://github.com/alvelvis/Tronco#Dispositivos" target="_blank" class="p-2 text-dark">Baixe o aplicativo</a>
+        <a href="https://github.com/alvelvis/Tronco#Dispositivos" id="downloadTronco" target="_blank" class="p-2 text-dark">Baixe o aplicativo</a>
       </nav>
       <!--a class="btn btn-outline-primary">Sign up</a-->
     </div>

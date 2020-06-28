@@ -1,3 +1,7 @@
+$('#settingsDiv').click(function(){
+    $('#settings').toggle()
+})
+
 function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
@@ -224,13 +228,21 @@ $('#setPassword').click(function(){
 
 $('#changePassword').click(function(){
     name = $('#name').html()
-    if (!permSetup || $("#conected").html() != "Crie uma senha") {
-        password = prompt("Insira a senha para " + name + ":")
-        if (password && password.length){
-            storePassword(name, password)
-        }
-    } else {
-        $('#setPassword').click()
+    switch ($('#conected').html()) {
+        case "Crie uma senha":
+            $('#setPassword').click()
+            break
+        case "Você é dono":
+            if (confirm("Deseja se desconectar de " + name + "?")) {
+                storePassword(name, "default")
+            }
+            break
+        default:
+            password = prompt("Insira a senha para " + name + ":")
+            if (password && password.length){
+                storePassword(name, password)
+            }
+            break
     }
 })
 
@@ -868,6 +880,7 @@ function triggerResize(first=false){
         if (first) {
             isMobileFromBeginning = true
             $('#main').before($('#search').detach().toggleClass("mt-3 mx-4", true).css("color", "black"))
+            $('#sidebar').css("max-width", "")
         }
         isMobile = true
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")

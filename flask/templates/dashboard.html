@@ -49,24 +49,28 @@
           <div id="sidebar-scroll" class="sidebar-sticky p-0">
             <ul class="nav flex-column">
                 <li class="nav-item settings form-control-dark bg-dark pb-2" id="corpusSettings" style="display:none;">
-                    <a class="nav-link">
-                        <!--div class="form-row align-items-left">
-                            <div class="col-auto my-1">
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                <input type="checkbox" checked="true" class="custom-control-input" id="autoSaveCheckbox">
-                                <label class="custom-control-label" style="cursor:pointer" title="Modificações no arquivo e nos seus metadados serão salvas automaticamente" for="autoSaveCheckbox">Salvamento automático</label>
-                                </div>
-                            </div>                        
-                        </div-->
-                        <input type="checkbox" style="display:none" checked="true" class="custom-control-input" id="autoSaveCheckbox">
-                        <div class="form-row align-items-left">
-                            <div class="col-auto my-1">
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                <input type="checkbox" checked="true" class="custom-control-input" id="wrapTextCheckbox">
-                                <label class="custom-control-label" style="cursor:pointer" title="O texto terá quebra de linha" for="wrapTextCheckbox">Quebra de linha</label>
-                                </div>
-                            </div>                        
-                        </div>
+                    <a class="nav-link" id="settingsDiv">
+                      <span data-feather="settings"></span>
+                      Configurações
+                    </a>
+                    <a class="nav-link" style="margin-left:10px; display:none" id="settings">
+                      <!--div class="form-row align-items-left">
+                          <div class="col-auto my-1">
+                              <div class="custom-control custom-checkbox mr-sm-2">
+                              <input type="checkbox" checked="true" class="custom-control-input" id="autoSaveCheckbox">
+                              <label class="custom-control-label" style="cursor:pointer" title="Modificações no arquivo e nos seus metadados serão salvas automaticamente" for="autoSaveCheckbox">Salvamento automático</label>
+                              </div>
+                          </div>                        
+                      </div-->
+                      <input type="checkbox" style="display:none" checked="true" class="custom-control-input" id="autoSaveCheckbox">
+                      <div class="form-row align-items-left">
+                          <div class="col-auto my-1">
+                              <div class="custom-control custom-checkbox mr-sm-2">
+                              <input type="checkbox" checked="true" class="custom-control-input" id="wrapTextCheckbox">
+                              <label class="custom-control-label" style="cursor:pointer" title="O texto terá quebra de linha" for="wrapTextCheckbox">Quebra de linha</label>
+                              </div>
+                          </div>                        
+                      </div>
                     </a>
                     <a id="renameCorpus" class="nav-link">
                         <span data-feather="delete"></span>

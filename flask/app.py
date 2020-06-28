@@ -3,13 +3,11 @@ import requests
 import random
 from flask import Flask, redirect, render_template, request
 from flaskwebgui import FlaskUI
-from flask_pwa import PWA
 from uuid import uuid4
 import functions
 import pprint
 
 app = Flask(__name__)
-PWA(app)
 ui = FlaskUI(app, port=5240, maximized=True)
 root_path = app.root_path
 

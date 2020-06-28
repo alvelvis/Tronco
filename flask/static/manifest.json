@@ -1,0 +1,27 @@
+{
+  "name": "Tronco",
+  "short_name": "Tronco",
+  "theme_color": "#272b30",
+  "background_color": "#250f00",
+  "display": "minimal-ui",
+  "Scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "images/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }
+  ],
+  "splash_pages": null
+}
