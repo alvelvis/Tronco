@@ -453,7 +453,7 @@ $('.toggleSettings').click(function(){
     if (isMobile){
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
-        $('#search').toggle($('#sidebar').hasClass("d-none"))
+        $('#search').toggle($('#sidebar').hasClass("d-none") && permView)
         if (permSetup) {
             $("#" + $(this).attr('settings')).css('display', $('#sidebar').css('display'))
         } else {
