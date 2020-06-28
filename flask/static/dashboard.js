@@ -103,7 +103,8 @@ function updateToolbar(){
     }
 
     $('#shareText').show()
-        
+    $('#toolbarRow').scrollLeft(0)
+
 }
 
 $('#troncoHome').click(function(){
@@ -160,6 +161,7 @@ $('#mainText').on("focus", function(){
         $('#sidebar').toggleClass("d-none", true)
         $('#toolbarRow, #toolbar').toggle(false)
         $('#breadcrumb-nav').toggle(false)
+        $('#blurHeadbar').toggle(true)
     }
 })
 
@@ -169,6 +171,7 @@ $('#mainText').on("blur", function(){
         $('#search').toggle(true)
         $('#troncoHome').toggle(true)
         $('#toolbarRow, #toolbar').toggle(true)
+        $('#blurHeadbar').toggle(false)
         //$('#breadcrumb-nav').toggle(true)
     }
 })
