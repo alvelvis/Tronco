@@ -7,7 +7,7 @@
   "background_color": "#250f00",
   "display": "standalone",
   "Scope": "/",
-  "start_url": "https://tronco.ga/",
+  "start_url": "/",
   "icons": [
     {
       "src": "images/icons/icon-72x72.png",
