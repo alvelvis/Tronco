@@ -1,14 +1,26 @@
+function returnSearch(){
+    $.ajax({
+        url: '/api/findOrCreateFile',
+        method: 'POST',
+        data: {
+            "name": $('#name').html(),
+            "filename": $('#search').val(),
+            "tronco_token": getTroncoToken()
+        }
+    })
+    .done(function(data){
+        //recentFiles("", filename)
+        updateFiles("", data.data)
+        $('#search').val('')
+    })
+}
+
 function toggleMobile(el) {
     $('#mobileLeft, #mobileTronco, #mobileSearch, #mobileSearch').toggle(false)
     if (el && isMobile) {
         $('#' + el).toggle(true)
     }
 }
-
-$('#mobileSend').click(function(){
-    var e = $.Event( "keyup", { which: 13 } );
-    $('#search').trigger(e);
-})
 
 $('#mobileTronco').click(function(){
     $('#troncoHome').click()
@@ -260,9 +272,9 @@ $('#mainText').on("blur", function(){
     if (isMobile) {
         $('#mainHeadbar').toggle(true)
         $('#search').toggle(permView)
-        toggleMobile("mobileSearch")
         $('#troncoHome').toggle(true)
         $('#toolbarRow, #toolbar').toggle(true)
+        toggleMobile("mobileSearch")
         //$('#blurHeadbar').toggle(false)
         //$('#breadcrumb-nav').toggle(true)
     }
@@ -273,7 +285,7 @@ $('#search').on('focus', function(){
     $(this).select()
     $('#breadcrumb-nav').toggle(true)
     $('.breadcrumb').scrollLeft(0)
-    toggleMobile("mobileSend")
+    toggleMobile(false)
 })
 
 $('#search').on('blur', function(){
@@ -452,20 +464,7 @@ $('#search').on('keyup', function(e){
     filename = $(this).val()
     recentFiles(filename, filename)
     if (e.which == 13){
-        $.ajax({
-            url: '/api/findOrCreateFile',
-            method: 'POST',
-            data: {
-                "name": $('#name').html(),
-                "filename": filename,
-                "tronco_token": getTroncoToken()
-            }
-        })
-        .done(function(data){
-            //recentFiles("", filename)
-            updateFiles("", data.data)
-            $('#search').val('')
-        })
+        returnSearch()
     }
 })
 
@@ -995,7 +994,7 @@ function triggerResize(first=false){
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
         mobileInterval = window.setInterval(() => {
-            $('#mobileTronco, #mobileSend, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-85})
+            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-85})
         }, 200)
     } else {
         if (mobileInterval) {
