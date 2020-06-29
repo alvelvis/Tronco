@@ -1,3 +1,12 @@
+function toggleInsertSuccess(){
+    $('.insertLabel').html("Adicionado!")
+    $('.dropdown-toggle').toggleClass("btn-outline-secondary", false).toggleClass("btn-success", true)
+    setTimeout(() => { 
+        $('.insertLabel').html("Inserir")
+        $('.dropdown-toggle').toggleClass("btn-outline-secondary", true).toggleClass("btn-success", false)
+    }, 2000)
+}
+
 function returnSearch(){
     $.ajax({
         url: '/api/findOrCreateFile',
@@ -45,6 +54,7 @@ $('.insertDate').click(function(){
     saveFile()
     updateToolbar()
     $('#mainText').trigger("input")
+    toggleInsertSuccess()
 });
 
 $('.insertChecklist').click(function(){
@@ -52,6 +62,7 @@ $('.insertChecklist').click(function(){
     saveFile()
     updateToolbar()
     $('#mainText').trigger("input")
+    toggleInsertSuccess()
 });
 
 $('.insertImage').click(function(){
@@ -80,6 +91,7 @@ $('#upload-image').change(function(){
                         saveFile()
                         updateToolbar()
                         $('#mainText').trigger("input")
+                        toggleInsertSuccess()
                     } else {
                         if (result.error == "1") {
                             alert("Imagem é pesada demais")
