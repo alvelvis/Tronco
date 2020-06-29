@@ -6,7 +6,7 @@ function toggleMobile(el) {
 }
 
 $('#mobileSend').click(function(){
-    var e = $.Event( "keypress", { which: 13 } );
+    var e = $.Event( "keyup", { which: 13 } );
     $('#search').trigger(e);
 })
 
