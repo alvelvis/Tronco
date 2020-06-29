@@ -5,14 +5,14 @@ String.prototype.rsplit = function(sep, maxsplit) {
 
 $('.insertDate').click(function(){
     date = new Date()
-    $('#mainText').val($('#mainText').val() + "\n\n" + date.getDate() + "/" + (parseInt(date.getMonth())+1).toString() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes())
+    $('#mainText').val($('#mainText').val() + "\n" + date.getDate() + "/" + (parseInt(date.getMonth())+1).toString() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes())
     saveFile()
     updateToolbar()
     $('#mainText').trigger("input")
 });
 
 $('.insertChecklist').click(function(){
-    $('#mainText').val($('#mainText').val() + "\n\n[] Checklist")
+    $('#mainText').val($('#mainText').val() + "\n[] Checklist")
     saveFile()
     updateToolbar()
     $('#mainText').trigger("input")
@@ -40,7 +40,7 @@ $('#upload-image').change(function(){
                 contentType: false,
                 success: function (result) {
                     if (result.error == "0") {
-                        $('#mainText').val($('#mainText').val() + "\n\ntronco/" + result.filename)
+                        $('#mainText').val($('#mainText').val() + "\ntronco/" + result.filename)
                         saveFile()
                         updateToolbar()
                         $('#mainText').trigger("input")
