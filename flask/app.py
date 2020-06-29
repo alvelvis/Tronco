@@ -1,7 +1,7 @@
 import os, sys
 import requests
 import random
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, send_from_directory
 from flaskwebgui import FlaskUI
 from uuid import uuid4
 import functions
@@ -16,6 +16,10 @@ tronco_config = objects.TroncoConfig()
 session_tokens = objects.SessionTokens()
 tronco_tokens = objects.TroncoTokens()
 app.jinja_env.globals.update(tronco_config=tronco_config)
+
+@app.route("/cdn/<filename>", methods=["GET"])
+def get_uploads(filename):
+    return send_from_directory(os.path.join(app.root_path, "uploads"), filename)
 
 @app.route("/api/uploadImage", methods=["POST"])
 def upload_image():

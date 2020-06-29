@@ -8,14 +8,14 @@ import objects
 
 def upload_file(uploading, filename):
     filename = secure_filename(filename.replace(" ", "_"))
-    upload_dir = os.path.join(app.root_path, "static", "uploads")
+    upload_dir = os.path.join(app.root_path, "uploads")
     if not os.path.isdir(upload_dir):
         os.mkdir(upload_dir)
     files_in_folder = [x.lower() for x in os.listdir(upload_dir)]
     n_files = len(files_in_folder)
     if filename.lower() in files_in_folder:
         filename = "{}_{}{}".format(filename.split(".")[0], n_files, "." + filename.split(".")[1] if "." in filename else "")
-    upload_dir = os.path.join(app.root_path, "static", "uploads", filename)
+    upload_dir = os.path.join(app.root_path, "uploads", filename)
     uploading.save(upload_dir)
     if os.stat(upload_dir).st_size > 10000000:
         os.remove(upload_dir)

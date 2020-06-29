@@ -1,3 +1,22 @@
+function toggleMobile(el) {
+    $('#mobileLeft, #mobileTronco, #mobileSearch').toggle(false)
+    if (el && isMobile) {
+        $('#' + el).toggle(true)
+    }
+}
+
+$('#mobileTronco').click(function(){
+    $('#troncoHome').click()
+})
+
+$('#mobileSearch').click(function(){
+    $('#search').focus()
+})
+
+$('#mobileLeft').click(function(){
+    $('#mainText').blur()
+})
+
 String.prototype.rsplit = function(sep, maxsplit) {
     var split = this.split(sep);
     return maxsplit ? [ split.slice(0, -maxsplit).join(sep) ].concat(split.slice(-maxsplit)) : split;
@@ -82,7 +101,7 @@ function updateToolbar(){
 
     list_images = $('#mainText').val().matchAll(/tronco\/(\S+\.(png|jpe?g|bmp|gif|ico))(\s|$|\n)/gi)
     for (image of list_images) {
-        images.push([image[1], "/static/uploads/" + image[1]])
+        images.push([image[1], "/cdn/" + image[1]])
     }
 
     list_check = $('#mainText').val().matchAll(/\[(x)?\]\s?(.+)($|\n)/gi)
@@ -90,7 +109,7 @@ function updateToolbar(){
         checklist.push([check[1] ? true : false, check[2]])
     }
 
-    list_files = $('#mainText').val().matchAll(/\[(.*:)?(.*?)\]/gi)
+    list_files = $('#mainText').val().matchAll(/\[([^\]]+:)?(.*?)\]/gi)
     for (file of list_files) {
         if (file[1]) {
             files.push(file[2] + ":" + file[1])
@@ -223,11 +242,12 @@ $('#mainText').on("focus", function(){
     if (isMobile) {
         $('#mainHeadbar').toggle(false)
         $('#search').toggle(false)
+        toggleMobile("mobileLeft")
         $('#troncoHome').toggle(false)
         $('#sidebar').toggleClass("d-none", true)
         $('#toolbarRow, #toolbar').toggle(false)
         $('#breadcrumb-nav').toggle(false)
-        $('#blurHeadbar').toggle(true)
+        //$('#blurHeadbar').toggle(true)
     }
 })
 
@@ -235,9 +255,10 @@ $('#mainText').on("blur", function(){
     if (isMobile) {
         $('#mainHeadbar').toggle(true)
         $('#search').toggle(permView)
+        toggleMobile("mobileSearch")
         $('#troncoHome').toggle(true)
         $('#toolbarRow, #toolbar').toggle(true)
-        $('#blurHeadbar').toggle(false)
+        //$('#blurHeadbar').toggle(false)
         //$('#breadcrumb-nav').toggle(true)
     }
 })
@@ -247,6 +268,11 @@ $('#search').on('focus', function(){
     $(this).select()
     $('#breadcrumb-nav').toggle(true)
     $('.breadcrumb').scrollLeft(0)
+    toggleMobile(false)
+})
+
+$('#search').on('blur', function(){
+    toggleMobile("mobileSearch")
 })
 
 $('.togglePerm').on('change', function(){
@@ -353,6 +379,7 @@ function validatePassword (name){
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
             $('#search').toggle(permView)
+            toggleMobile(permView ? "mobileSearch" : false)
         }
         $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
         $('#mainText').prop('readonly', !permEdit).toggleClass("p-3", !permEdit)
@@ -520,6 +547,7 @@ $('.toggleSettings').click(function(){
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         $('#search').toggle($('#sidebar').hasClass("d-none") && permView)
+        toggleMobile($('#sidebar').hasClass("d-none") && permView ? "mobileSearch" : "mobileTronco")
         if (permSetup) {
             $("#" + $(this).attr('settings')).css('display', $('#sidebar').css('display'))
         } else {
@@ -911,10 +939,10 @@ $(document).on('touchstart', function(e){
         $('.toggleSettings')[0].click()
         return true
     }
-    if (isMobile && e.originalEvent.touches[0].pageX < 40 && !$('#sidebar:visible').length) {
+    if (isMobile && e.originalEvent.touches[0].pageX < 20 && !$('#sidebar:visible').length) {
         openingPanel = true
     }
-    if (isMobile && e.originalEvent.touches[0].pageX > ($(window).width()-($(window).width()/3)) && $('#sidebar:visible').length){
+    if (isMobile && e.originalEvent.touches[0].pageX > ($(window).width()-20) && $('#sidebar:visible').length){
         closingPanel = true
     }
 })
@@ -959,15 +987,16 @@ function triggerResize(first=false){
         
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
+        $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-90})
     } else {
         isMobile = false
         $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').toggleClass("mb-3", false)
-        
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
         $('.breadcrumb, #filename').css('overflow-x', "").css("white-space", "")
         $('#toolbarRow').css('overflow-x', "")
+        toggleMobile(false)
     }
 
     if (first && !isMobile) {

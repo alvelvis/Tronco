@@ -26,6 +26,18 @@
   </head>
 
   <body>
+
+    <a id="mobileTronco" style="position:fixed; display:none; background-color:#62330f; z-index:101; padding:20px 20px; color:white;" class="rounded-circle">
+      <img src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
+    </a>
+
+    <a id="mobileLeft" style="position:fixed; display:none; background-color:gray; z-index:101; padding:20px 20px; color:white;" class="rounded-circle">
+      <span data-feather="arrow-left"></span>
+    </a>
+
+    <a id="mobileSearch" style="position:fixed; display:none; background-color:#bf6724; z-index:101; padding:20px 20px; color:white;" class="rounded-circle">
+      <span data-feather="plus"></span>
+    </a>
     
     <div id="blurHeadbar" style="display:none" class="navbar navbar-dark bg-dark flex-md-nowrap p-4 sticky-top form-control-dark">
       <span data-feather="arrow-left"></span>
@@ -282,7 +294,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=3"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=6"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=7"></script>
   
   </body>
 </html>
