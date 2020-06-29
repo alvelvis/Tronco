@@ -844,7 +844,7 @@ function loadFile(filename){
     
     name = $('#name').html()
         
-    $('#breadcrumb-nav').toggle(permView)//filename == "README"
+    $('#breadcrumb-nav').toggle(false)//filename == "README" && permView
     window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
     $.ajax({
         url: '/api/loadFile',
