@@ -972,6 +972,8 @@ $(window).on('resize', function(){
     }
 })
 
+let mobileInterval
+
 function triggerResize(first=false){
     name = $('#name').html()
     if ($('#sidebar:hidden').length || $(window).width() < 600) {
@@ -987,8 +989,13 @@ function triggerResize(first=false){
         
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
-        $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-85})
+        mobileInterval = window.setInterval(() => {
+            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-85})
+        }, 1000)
     } else {
+        if (mobileInterval) {
+            clearInterval(mobileInterval)
+        }
         isMobile = false
         $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').toggleClass("mb-3", false)
