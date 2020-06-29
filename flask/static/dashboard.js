@@ -1,5 +1,5 @@
 function toggleMobile(el) {
-    $('#mobileLeft, #mobileTronco, #mobileSearch').toggle(false)
+    $('#mobileLeft, #mobileTronco, #mobileSearch, #mobileSearch').toggle(false)
     if (el && isMobile) {
         $('#' + el).toggle(true)
     }
@@ -268,7 +268,7 @@ $('#search').on('focus', function(){
     $(this).select()
     $('#breadcrumb-nav').toggle(true)
     $('.breadcrumb').scrollLeft(0)
-    toggleMobile(false)
+    toggleMobile("mobileSend")
 })
 
 $('#search').on('blur', function(){
@@ -990,7 +990,7 @@ function triggerResize(first=false){
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
         mobileInterval = window.setInterval(() => {
-            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-85})
+            $('#mobileTronco, #mobileSend, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-85})
         }, 200)
     } else {
         if (mobileInterval) {
