@@ -839,6 +839,7 @@ function loadFile(filename){
             $('#filename').html(filename == "README" ? name : filename)
             $('.filename').html(filename == "README" ? name : filename)
             $('#filename').attr('file', filename)
+            $('#filename').scrollLeft(0)
             $('#mainText').val(data.data.text)
             updateToolbar()
             $('#mainText').attr('placeholder', !permEdit ? "" : (filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução da coleção "' + name + '" e poderá ser visualizado por todos. Crie novos arquivos na barra de busca no topo da página e, se desejar, crie uma senha para proteger todos os arquivos desta coleção.' : 'Insira aqui o conteúdo'))
@@ -993,9 +994,6 @@ function triggerResize(first=false){
         
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
-        mobileInterval = window.setInterval(() => {
-            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-85})
-        }, 200)
     } else {
         if (mobileInterval) {
             clearInterval(mobileInterval)
@@ -1022,8 +1020,14 @@ function triggerResize(first=false){
     $('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "58px" : '54px') : '10px')
     $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")    
     $('#main').css('margin-left', !isMobile ? '260px' : '0px')
+
+    if (first && isMobile) {
+        mobileInterval = window.setInterval(() => {
+            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-85})
+        }, 200)
+    }
+
     feather.replace()
-    
 }
 
 function onDropdownShow(){
