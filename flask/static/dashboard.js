@@ -1,3 +1,60 @@
+String.prototype.rsplit = function(sep, maxsplit) {
+    var split = this.split(sep);
+    return maxsplit ? [ split.slice(0, -maxsplit).join(sep) ].concat(split.slice(-maxsplit)) : split;
+}
+
+$('.insertDate').click(function(){
+    date = new Date()
+    $('#mainText').val($('#mainText').val() + "\n\n" + date.getDate() + "/" + (parseInt(date.getMonth())+1).toString() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes())
+    saveFile()
+    updateToolbar()
+    $('#mainText').trigger("input")
+});
+
+$('.insertChecklist').click(function(){
+    $('#mainText').val($('#mainText').val() + "\n\n[] Checklist")
+    saveFile()
+    updateToolbar()
+    $('#mainText').trigger("input")
+});
+
+$('.insertImage').click(function(){
+    $('#upload-image').click()
+})
+
+$('#upload-image').change(function(){    
+    formdata = new FormData()
+    if($(this).prop('files').length > 0)
+    {
+        file = $(this).prop('files')[0]
+        extension = file.name.rsplit(".")[1]
+        filename = prompt("Dê um nome para a imagem:", file.name.rsplit(".")[0])
+        if (filename.length) {
+            formdata.append("uploading", file)
+            formdata.append("filename", filename + "." + extension)
+            $.ajax({
+                url: "/api/uploadImage",
+                type: "POST",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.error == "0") {
+                        $('#mainText').val($('#mainText').val() + "\n\ntronco/" + result.filename)
+                        saveFile()
+                        updateToolbar()
+                        $('#mainText').trigger("input")
+                    } else {
+                        if (result.error == "1") {
+                            alert("Imagem é pesada demais")
+                        }
+                    }
+                }
+            })
+        }
+    }
+})
+
 $('#settingsDiv').click(function(){
     $('#settings').toggle()
 })
@@ -23,15 +80,23 @@ function updateToolbar(){
     files = []
     checklist = []
 
+    list_images = $('#mainText').val().matchAll(/tronco\/(\S+\.(png|jpe?g|bmp|gif|ico))(\s|$|\n)/gi)
+    for (image of list_images) {
+        images.push([image[1], "/static/uploads/" + image[1]])
+    }
+
     list_check = $('#mainText').val().matchAll(/\[(x)?\]\s?(.+)($|\n)/gi)
     for (check of list_check) {
         checklist.push([check[1] ? true : false, check[2]])
     }
 
-    list_files = $('#mainText').val().matchAll(/\[(.*?)\]/gi)
+    list_files = $('#mainText').val().matchAll(/\[(.*:)?(.*?)\]/gi)
     for (file of list_files) {
-        if ($('[file="' + file[1] + '"]').length) {
-            files.push(file[1])
+        if (file[1]) {
+            files.push(file[2] + ":" + file[1])
+        }
+        if ($('[file="' + file[2] + '"]').length) {
+            files.push(file[2])
         }
     }
 
@@ -53,9 +118,9 @@ function updateToolbar(){
         }
         $('.checkbox-item-div').css('overflow-x', isMobile ? "scroll" : "auto")
         $('.file-checkbox').change(function(){
-            checkString = $('[for="' + $(this).attr('id') + '"]').html()
+            checkString = $('[for="' + $(this).attr('id') + '"]').html().replace("&gt;", ">").replace("&lt;", "<")
             toCheck = $(this).prop('checked')
-            pattern = RegExp("\\[.?\\]\\s?" + escapeRegExp(checkString))
+            pattern = RegExp("\\[.?\\]\\s?" + escapeRegExp(checkString), "gi")
             $('#mainText').val($('#mainText').val().replace(pattern, "[" + (toCheck ? "x" : "") + "] " + checkString))
             saveFile($('#filename').attr('file'), $('#mainText').val())
             updateToolbar()
@@ -95,7 +160,7 @@ function updateToolbar(){
         $('#filesLinkLabel').html("Arquivos (" + files.length + ")")
         $('[toolbar=filesLink]').html("")
         for (link in files) {
-            $('[toolbar=filesLink]').append('<a href="/corpus/' + $('#name').html() + '?file=' + files[link] + '" class="px-1">' + files[link] + '</a>' + (link == files.length -1 ? "" : " / "))
+            $('[toolbar=filesLink]').append('<a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + files[link].split(":")[0] + '</a>' + (link == files.length -1 ? "" : " / "))
         }
     } else {
         $('#filesLink').toggle(false)
@@ -103,6 +168,7 @@ function updateToolbar(){
     }
 
     $('#shareText').show()
+    $('#dropdown').toggle(permEdit)
     $('#toolbarRow').scrollLeft(0)
 
 }
@@ -608,7 +674,7 @@ $(window).bind('keydown', function(event) {
 
 var failedSave = false
 
-function saveFile(filename, text){
+function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val()){
 
     if (permEdit || permSetup) {
 
@@ -743,7 +809,7 @@ function loadFile(filename){
             $('#filename').attr('file', filename)
             $('#mainText').val(data.data.text)
             updateToolbar()
-            $('#mainText').attr('placeholder', filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução da coleção "' + name + '" e poderá ser visualizado por todos. Crie novos arquivos na barra de busca no topo da página e, se desejar, crie uma senha para proteger todos os arquivos desta coleção.' : 'Insira aqui o conteúdo')
+            $('#mainText').attr('placeholder', !permEdit ? "" : (filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução da coleção "' + name + '" e poderá ser visualizado por todos. Crie novos arquivos na barra de busca no topo da página e, se desejar, crie uma senha para proteger todos os arquivos desta coleção.' : 'Insira aqui o conteúdo'))
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
@@ -901,7 +967,7 @@ function triggerResize(first=false){
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
         $('.breadcrumb, #filename').css('overflow-x', "").css("white-space", "")
-        $('#toolbarRow').css('overflow-x', "auto")
+        $('#toolbarRow').css('overflow-x', "")
     }
 
     if (first && !isMobile) {
@@ -919,6 +985,25 @@ function triggerResize(first=false){
     feather.replace()
     
 }
+
+function onDropdownShow(){
+    
+}
+
+$('.dropdown').on('show.bs.dropdown', function(){
+    clone = $(this).clone().attr("id", "deleteThis")
+    $('body').append($(this).css({
+        position: 'absolute',
+        left: $(this).offset().left,
+        top: $(this).offset().top
+    }).detach())
+    $('#reloadPage').after(clone)
+})
+
+$('.dropdown').on('hidden.bs.dropdown', function() {
+    $('#deleteThis').remove()
+    $('#reloadPage').after($(this).css({position: "", left: "", top: ""}).detach())
+})
 
 $(document).ready(function(){
     name = $('#name').html()

@@ -151,9 +151,7 @@ $(window).ready(function(){
     scrollTo(0,0)
     if (window.location.href.match(/app=true/)) {
         $('#downloadTronco').toggleClass("h2", true)
-        setTimeout(() => {
-            $('#downloadTronco').slideToggle(2000)
-        }, 1000)
+        $('#downloadTronco').slideToggle(2000)
     } else {
         $('#aboutTronco').show()
         $('#downloadTronco').show()

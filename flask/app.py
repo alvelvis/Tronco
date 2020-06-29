@@ -17,6 +17,14 @@ session_tokens = objects.SessionTokens()
 tronco_tokens = objects.TroncoTokens()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
+@app.route("/api/uploadImage", methods=["POST"])
+def upload_image():
+    result = functions.upload_file(request.files.get("uploading"), request.values.get("filename"))
+    return {
+        'filename': result['filename'],
+        'error': result['error'],
+    }
+
 @app.route("/app")
 def download_app():
     return redirect("/?app=true")
