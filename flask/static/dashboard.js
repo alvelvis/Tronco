@@ -1016,7 +1016,7 @@ function triggerResize(first=false){
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
         $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
-        
+        $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
     } else {
@@ -1028,6 +1028,7 @@ function triggerResize(first=false){
         $('#troncoLogo').toggleClass("mb-3", false)
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
+        $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "").css("white-space", "")
         $('#toolbarRow').css('overflow-x', "")
         //$('#editingPanel').css("z-index", "1200").toggleClass("sticky-top", true)
@@ -1053,8 +1054,6 @@ function triggerResize(first=false){
         }, 200)
     }
 
-    $('#editingPanel').css("position", isMobile ? "" : "fixed")
-
     feather.replace()
 }
 
@@ -1076,6 +1075,6 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 $(document).ready(function(){
     name = $('#name').html()
     triggerResize(true)
-    validatePassword(name)
     $('#mainText').autosize()
+    validatePassword(name)
 })
