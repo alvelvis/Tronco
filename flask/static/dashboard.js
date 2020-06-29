@@ -5,6 +5,11 @@ function toggleMobile(el) {
     }
 }
 
+$('#mobileSend').click(function(){
+    var e = $.Event( "keypress", { which: 13 } );
+    $('#search').trigger(e);
+})
+
 $('#mobileTronco').click(function(){
     $('#troncoHome').click()
 })
