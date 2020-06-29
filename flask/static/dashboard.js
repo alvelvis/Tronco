@@ -990,7 +990,7 @@ function triggerResize(first=false){
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
         mobileInterval = window.setInterval(() => {
-            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-85})
+            $('#mobileTronco:visible, #mobileLeft:visible, #mobileSearch:visible').css({left: $(window).width()-85, top: $(window).height()-85})
         }, 1000)
     } else {
         if (mobileInterval) {
