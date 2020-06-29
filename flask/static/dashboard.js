@@ -310,7 +310,7 @@ $('#search').on('focus', function(){
     $(this).select()
     $('#breadcrumb-nav').toggle(true)
     $('.breadcrumb').scrollLeft(0)
-    toggleMobile(false)
+    //toggleMobile(false)
 })
 
 $('#search').on('blur', function(){
@@ -1050,7 +1050,7 @@ function triggerResize(first=false){
 
     if (first && isMobile) {
         mobileInterval = window.setInterval(() => {
-            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-75, top: $(window).height()-75})
+            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(document).width()-75, top: $(document).height()-75})
         }, 200)
     }
 
