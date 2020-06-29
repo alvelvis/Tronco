@@ -17,7 +17,7 @@ def upload_file(uploading, filename):
         filename = "{}_{}{}".format(filename.split(".")[0], n_files, "." + filename.split(".")[1] if "." in filename else "")
     upload_dir = os.path.join(app.root_path, "static", "uploads", filename)
     uploading.save(upload_dir)
-    if os.stat(upload_dir).st_size > 2000000:
+    if os.stat(upload_dir).st_size > 10000000:
         os.remove(upload_dir)
         return {'filename': filename, 'error': "1"}
     return {
