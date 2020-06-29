@@ -1049,7 +1049,7 @@ function triggerResize(first=false){
 
     if (first && isMobile) {
         mobileInterval = window.setInterval(() => {
-            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-85})
+            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-75, top: $(window).height()-75})
         }, 200)
     }
 
