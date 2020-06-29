@@ -27,7 +27,7 @@ function returnSearch(){
 }
 
 function toggleMobile(el) {
-    $('#mobileLeft, #mobileTronco, #mobileSearch, #mobileSearch').toggle(false)
+    $('#mobileLeft, #mobileTronco, #mobileSearch').toggle(false)
     if (el && isMobile) {
         $('#' + el).toggle(true)
     }
@@ -299,7 +299,7 @@ $('#mainText').on("blur", function(){
         $('#search').toggle(permView)
         $('#troncoHome').toggle(true)
         $('#toolbarRow, #toolbar').toggle(true)
-        toggleMobile("mobileSearch")
+        toggleMobile(permEdit ? "mobileSearch" : false)
         //$('#blurHeadbar').toggle(false)
         //$('#breadcrumb-nav').toggle(true)
     }
@@ -314,7 +314,7 @@ $('#search').on('focus', function(){
 })
 
 $('#search').on('blur', function(){
-    toggleMobile("mobileSearch")
+    toggleMobile(permEdit ? "mobileSearch" : false)
 })
 
 $('.togglePerm').on('change', function(){
@@ -421,7 +421,7 @@ function validatePassword (name){
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
             $('#search').toggle(permView)
-            toggleMobile(permView ? "mobileSearch" : false)
+            toggleMobile(permEdit ? "mobileSearch" : false)
         }
         $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
         $('#mainText').prop('readonly', !permEdit).toggleClass("p-3", !permEdit)
@@ -576,7 +576,7 @@ $('.toggleSettings').click(function(){
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         $('#search').toggle($('#sidebar').hasClass("d-none") && permView)
-        toggleMobile($('#sidebar').hasClass("d-none") && permView ? "mobileSearch" : "mobileTronco")
+        toggleMobile($('#sidebar').hasClass("d-none") && permEdit ? "mobileSearch" : "mobileTronco")
         if (permSetup) {
             $("#" + $(this).attr('settings')).css('display', $('#sidebar').css('display'))
         } else {
@@ -1015,7 +1015,7 @@ function triggerResize(first=false){
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
-        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText').toggleClass("px-5", false).toggleClass("px-4", true)
+        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
         
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
@@ -1024,7 +1024,7 @@ function triggerResize(first=false){
             clearInterval(mobileInterval)
         }
         isMobile = false
-        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText').toggleClass("px-5", true).toggleClass("px-4", false)
+        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').toggleClass("mb-3", false)
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
