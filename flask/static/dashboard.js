@@ -987,7 +987,7 @@ function triggerResize(first=false){
         
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
-        $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-90})
+        $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-85, top: $(window).height()-70})
     } else {
         isMobile = false
         $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
