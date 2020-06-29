@@ -1,10 +1,12 @@
 function toggleInsertSuccess(){
+    
     $('.insertLabel').html("Adicionado!")
     $('.dropdown-toggle').toggleClass("btn-outline-secondary", false).toggleClass("btn-success", true)
     setTimeout(() => { 
         $('.insertLabel').html("Inserir")
         $('.dropdown-toggle').toggleClass("btn-outline-secondary", true).toggleClass("btn-success", false)
     }, 2000)
+    
 }
 
 function returnSearch(){
@@ -217,8 +219,14 @@ function updateToolbar(){
 
     $('#shareText').show()
     $('#dropdown').toggle(permEdit)
-    $('#toolbarRow').scrollLeft(0)
-
+    if (isMobile) {
+        $('#toolbarRow').scrollLeft(0)
+    }
+    if (!isMobile) {
+        $('#mainText').css("margin-top", $("#editingPanel").height())  
+    } else {
+        $('#mainText').css("margin-top", "")
+    }
 }
 
 $('#troncoHome').click(function(){
@@ -244,6 +252,11 @@ $('.toolbarButton').click(function(){
     }
     if ($("[toolbar='" + $(this).attr('id') + "']:visible").length) {
         $(this).toggleClass("btn-primary", true).toggleClass("btn-outline-secondary", false)
+    }
+    if (!isMobile) {
+        $('#mainText').css("margin-top", $("#editingPanel").height())  
+    } else {
+        $('#mainText').css("margin-top", "")
     }
 })
 
@@ -1002,7 +1015,7 @@ function triggerResize(first=false){
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
-        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
+        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText').toggleClass("px-5", false).toggleClass("px-4", true)
         
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
@@ -1011,12 +1024,13 @@ function triggerResize(first=false){
             clearInterval(mobileInterval)
         }
         isMobile = false
-        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
+        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').toggleClass("mb-3", false)
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
         $('.breadcrumb, #filename').css('overflow-x', "").css("white-space", "")
         $('#toolbarRow').css('overflow-x', "")
+        //$('#editingPanel').css("z-index", "1200").toggleClass("sticky-top", true)
         toggleMobile(false)
     }
 
@@ -1039,15 +1053,13 @@ function triggerResize(first=false){
         }, 200)
     }
 
+    $('#editingPanel').css("position", isMobile ? "" : "fixed")
+
     feather.replace()
 }
 
-function onDropdownShow(){
-    
-}
-
 $('.dropdown').on('show.bs.dropdown', function(){
-    clone = $(this).clone().attr("id", "deleteThis")
+    clone = $(this).clone().toggleClass("deleteThis", true)
     $('body').append($(this).css({
         position: 'absolute',
         left: $(this).offset().left,
@@ -1057,7 +1069,7 @@ $('.dropdown').on('show.bs.dropdown', function(){
 })
 
 $('.dropdown').on('hidden.bs.dropdown', function() {
-    $('#deleteThis').remove()
+    $('.deleteThis').remove()
     $('#reloadPage').after($(this).css({position: "", left: "", top: ""}).detach())
 })
 
