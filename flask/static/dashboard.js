@@ -222,7 +222,7 @@ function updateToolbar(){
         $('#linksLabel').html("Links (" + links.length + ")")
         $('[toolbar=links]').html("")
         for (link in links) {
-            $('[toolbar=links]').append('<a target="_blank" class="px-1" href="' + links[link][1] + '">' + links[link][0] + '</a>' + (link == links.length -1 ? "" : " / "))
+            $('[toolbar=links]').append('<a target="_blank" class="px-1" href="' + links[link][1] + '">' + links[link][0] + '</a>' + (link == links.length -1 ? "" : "<br>"))
             changeATitle(links[link][1])
         }
     } else {
@@ -235,7 +235,7 @@ function updateToolbar(){
         $('#imagesLabel').html("Imagens (" + images.length + ")")
         $('[toolbar=images]').html("")
         for (link in images) {
-            $('[toolbar=images]').append('<a target="_blank" class="px-1" href="' + images[link][1] + '">' + images[link][0] + '</a>' + (link == images.length -1 ? "" : " / "))
+            $('[toolbar=images]').append('<a target="_blank" class="px-1" href="' + images[link][1] + '">' + images[link][0] + '</a>' + (link == images.length -1 ? "" : "<br>"))
         }
     } else {
         $('#images').toggle(false)
@@ -247,7 +247,7 @@ function updateToolbar(){
         $('#filesLinkLabel').html("Arquivos (" + files.length + ")")
         $('[toolbar=filesLink]').html("")
         for (link in files) {
-            $('[toolbar=filesLink]').append('<a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + files[link].split(":")[0] + '</a>' + (link == files.length -1 ? "" : " / "))
+            $('[toolbar=filesLink]').append('<a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + files[link].split(":")[0] + '</a>' + (link == files.length -1 ? "" : "<br>"))
         }
     } else {
         $('#filesLink').toggle(false)
