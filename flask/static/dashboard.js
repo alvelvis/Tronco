@@ -184,7 +184,7 @@ function updateToolbar(){
         for (check in checklist) {
             $('[toolbar=checklist]').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer;  user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + checklist[check][1] + '</label></div></div></div>')
         }
-        $('.checkbox-item-div').css('overflow-x', isMobile ? "scroll" : "auto")
+        $('.checkbox-item-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
         $('.file-checkbox').change(function(){
             checkString = $('[for="' + $(this).attr('id') + '"]').html().replace("&gt;", ">").replace("&lt;", "<")
             toCheck = $(this).prop('checked')
@@ -222,9 +222,10 @@ function updateToolbar(){
         $('#linksLabel').html("Links (" + links.length + ")")
         $('[toolbar=links]').html("")
         for (link in links) {
-            $('[toolbar=links]').append('<a target="_blank" class="px-1" href="' + links[link][1] + '">' + links[link][0] + '</a>' + (link == links.length -1 ? "" : "<br>"))
+            $('[toolbar=links]').append('<div class="link-div"><a target="_blank" class="px-1" href="' + links[link][1] + '">' + links[link][0] + '</a></div>' + (link == links.length -1 ? "" : ""))
             changeATitle(links[link][1])
         }
+        $('.link-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
     } else {
         $('#links').toggle(false)
         $('[toolbar=links]').toggle(false)
@@ -235,8 +236,9 @@ function updateToolbar(){
         $('#imagesLabel').html("Imagens (" + images.length + ")")
         $('[toolbar=images]').html("")
         for (link in images) {
-            $('[toolbar=images]').append('<a target="_blank" class="px-1" href="' + images[link][1] + '">' + images[link][0] + '</a>' + (link == images.length -1 ? "" : "<br>"))
+            $('[toolbar=images]').append('<div class="image-div"><a target="_blank" class="px-1" href="' + images[link][1] + '">' + images[link][0] + '</a></div>' + (link == images.length -1 ? "" : ""))
         }
+        $('.image-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
     } else {
         $('#images').toggle(false)
         $('[toolbar=images]').toggle(false)
@@ -247,8 +249,9 @@ function updateToolbar(){
         $('#filesLinkLabel').html("Arquivos (" + files.length + ")")
         $('[toolbar=filesLink]').html("")
         for (link in files) {
-            $('[toolbar=filesLink]').append('<a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + files[link].split(":")[0] + '</a>' + (link == files.length -1 ? "" : "<br>"))
+            $('[toolbar=filesLink]').append('<div class="file-div"><a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + files[link].split(":")[0] + '</a></div>' + (link == files.length -1 ? "" : ""))
         }
+        $('.file-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
     } else {
         $('#filesLink').toggle(false)
         $('[toolbar=filesLink]').toggle(false)
