@@ -1088,8 +1088,8 @@ function triggerResize(first=false){
 
     if (first && isMobile) {
         mobileInterval = window.setInterval(() => {
-            $('.mobile-btn').css({left: $(window).width()-75, top: $(window).height()-75})
-            $('.mobile-btn-secondary').css({left: $(window).width()-75, top: $(window).height()-75-65})
+            $('.mobile-btn').css({left: $(window).width()-65, top: document.documentElement.clientHeight-65})
+            $('.mobile-btn-secondary').css({left: $(window).width()-65, top: document.documentElement.clientHeight-65-62})
         }, 200)
     }
     feather.replace()
