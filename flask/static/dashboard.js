@@ -60,7 +60,7 @@ $('.insertDate').click(function(){
 });
 
 $('.insertChecklist').click(function(){
-    $('#mainText').val($('#mainText').val() + "\n[] Checklist")
+    $('#mainText').val($('#mainText').val() + "\n[] ")
     saveFile()
     updateToolbar()
     $('#mainText').trigger("input")
@@ -1045,12 +1045,12 @@ function triggerResize(first=false){
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').toggleClass("mt-0", isMobile)
     $('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "58px" : '54px') : '10px')
-    $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")    
+    $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")
     $('#main').css('margin-left', !isMobile ? '260px' : '0px')
 
     if (first && isMobile) {
         mobileInterval = window.setInterval(() => {
-            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(document).width()-75, top: $(document).height()-75})
+            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-75, top: $(window).height()-75})
         }, 200)
     }
 
