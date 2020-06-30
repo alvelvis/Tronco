@@ -75,7 +75,6 @@ $('.insertDate').click(function(){
     date = new Date()
     $('#mainText').val($('#mainText').val() + "\n" + date.getDate() + "/" + (parseInt(date.getMonth())+1).toString() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes())
     saveFile()
-    updateToolbar()
     $('#mainText').trigger("input")
     toggleInsertSuccess()
 });
@@ -84,7 +83,6 @@ $('.insertChecklist').click(function(){
     n_checklists = $('#mainText').val().match(/\[(x)?\]/gi)
     $('#mainText').val($('#mainText').val() + "\n[] Item " + (n_checklists ? n_checklists.length+1 : 1).toString())
     saveFile()
-    updateToolbar()
     $('#mainText').trigger("input")
     toggleInsertSuccess()
 });
@@ -113,7 +111,6 @@ $('#upload-image').change(function(){
                     if (result.error == "0") {
                         $('#mainText').val($('#mainText').val() + "\ntronco/" + result.filename)
                         saveFile()
-                        updateToolbar()
                         $('#mainText').trigger("input")
                         toggleInsertSuccess()
                     } else {
@@ -195,7 +192,6 @@ function updateToolbar(){
             pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkString), "g")
             $('#mainText').val($('#mainText').val().replace(pattern, "[" + (toCheck ? "x" : "") + "] " + checkString))
             saveFile($('#filename').attr('file'), $('#mainText').val())
-            updateToolbar()
         })
 
         $('.checkbox-item-subdiv').on('contextmenu', function(e) {
@@ -780,6 +776,7 @@ function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val(
     if (permEdit || permSetup) {
 
         name = $('#name').html()
+        updateToolbar()
 
         $.ajax({
             url: "/api/whoClaimedAccess",
@@ -830,7 +827,6 @@ function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val(
                         })
                         .done(function(){
                             textModified(true)
-                            updateToolbar()
                         })
                         .fail(function(){
                             if (!failedSave) {
@@ -1078,14 +1074,12 @@ function triggerResize(first=false){
         //$('#editingPanel').css("z-index", "1200").toggleClass("sticky-top", true)
         toggleMobile(false)
     }
-
     if (first && !isMobile) {
         $('.toolbarButton').on('mouseenter mouseleave', function(){
             $(this).toggleClass("btn-toolbar-hover")
         })
         $('#afterSearch').before($('#search').detach().toggleClass("mt-3 mx-4", false).css("color", ""))
     }
-
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').toggleClass("mt-0", isMobile)
     $('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "58px" : '54px') : '10px')
@@ -1098,7 +1092,6 @@ function triggerResize(first=false){
             $('.mobile-btn-secondary').css({left: $(window).width()-75, top: $(window).height()-75-65})
         }, 200)
     }
-
     feather.replace()
 }
 
@@ -1119,10 +1112,10 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 
 $(document).ready(function(){
     name = $('#name').html()
-    triggerResize(true)
     $('#mainText').autosize()
     validatePassword(name)
     $(document).click(function(){
         $("#context-menu-checklist").removeClass("show").hide()
     })
+    triggerResize(true)
 })
