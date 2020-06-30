@@ -1047,6 +1047,10 @@ let mobileInterval
 function triggerResize(first=false){
     name = $('#name').html()
     if ($('#sidebar:hidden').length || $(window).width() < 600) {
+        mobileInterval = window.setInterval(() => {
+            $('.mobile-btn').css({left: $(window).width()-75, top: document.documentElement.clientHeight-75})
+            $('.mobile-btn-secondary').css({left: $(window).width()-75, top: document.documentElement.clientHeight-75-65})
+        }, 200)
         if (first) {
             isMobileFromBeginning = true
             $('#sidebar').css("max-width", "")
@@ -1087,12 +1091,6 @@ function triggerResize(first=false){
     //$('#main').css('margin-left', !isMobile ? '260px' : '0px')
     $('#main').toggleClass("col-md-9 ml-sm-auto col-lg-10", !isMobile)
 
-    if (first && isMobile) {
-        mobileInterval = window.setInterval(() => {
-            $('.mobile-btn').css({left: $(window).width()-75, top: document.documentElement.clientHeight-75})
-            $('.mobile-btn-secondary').css({left: $(window).width()-75, top: document.documentElement.clientHeight-75-65})
-        }, 200)
-    }
     feather.replace()
 }
 
