@@ -182,7 +182,7 @@ function updateToolbar(){
         $('#checklistLabel').html("Checklist (" + checklist.filter(x => x[0]).length + "/" + checklist.length + ")")
         $('[toolbar=checklist]').html("")
         for (check in checklist) {
-            $('[toolbar=checklist]').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer;" for="checkbox-' + check + '">' + checklist[check][1] + '</label></div></div></div>')            
+            $('[toolbar=checklist]').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer;  user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + checklist[check][1] + '</label></div></div></div>')
         }
         $('.checkbox-item-div').css('overflow-x', isMobile ? "scroll" : "auto")
         $('.file-checkbox').change(function(){
