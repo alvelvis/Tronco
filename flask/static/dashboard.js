@@ -44,9 +44,13 @@ function returnSearch(){
 }
 
 function toggleMobile(el) {
-    $('#mobileLeft, #mobileTronco, #mobileSearch').toggle(false)
+    $('.mobile-btn').toggle(false)
+    $('.mobile-btn-secondary').toggle(false)
     if (el && isMobile) {
         $('#' + el).toggle(true)
+        if (el == "mobileSearch") {
+            $('#mobileTronco').show()
+        }
     }
 }
 
@@ -1090,7 +1094,8 @@ function triggerResize(first=false){
 
     if (first && isMobile) {
         mobileInterval = window.setInterval(() => {
-            $('#mobileTronco, #mobileLeft, #mobileSearch').css({left: $(window).width()-75, top: $(window).height()-75})
+            $('.mobile-btn').css({left: $(window).width()-75, top: $(window).height()-75})
+            $('.mobile-btn-secondary').css({left: $(window).width()-75, top: $(window).height()-75-65})
         }, 200)
     }
 
