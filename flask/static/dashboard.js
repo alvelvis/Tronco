@@ -343,7 +343,7 @@ $('#mainText').on("blur", function(){
         $('#search').toggle(permView)
         $('#troncoHome').toggle(true)
         $('#toolbarRow, #toolbar').toggle(true)
-        toggleMobile(permEdit ? "mobileSearch" : false)
+        toggleMobile(permEdit ? "mobileSearch" : "mobileTronco")
         //$('#blurHeadbar').toggle(false)
         //$('#breadcrumb-nav').toggle(true)
     }
@@ -354,11 +354,11 @@ $('#search').on('focus', function(){
     $(this).select()
     $('#breadcrumb-nav').toggle(true)
     $('.breadcrumb').scrollLeft(0)
-    //toggleMobile(false)
+    toggleMobile("mobileTronco")
 })
 
 $('#search').on('blur', function(){
-    toggleMobile(permEdit ? "mobileSearch" : false)
+    toggleMobile(permEdit ? "mobileSearch" : "mobileTronco")
 })
 
 $('.togglePerm').on('change', function(){
@@ -465,7 +465,7 @@ function validatePassword (name){
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
             $('#search').toggle(permView)
-            toggleMobile(permEdit ? "mobileSearch" : false)
+            toggleMobile(permEdit ? "mobileSearch" : "mobileTronco")
         }
         $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
         $('#mainText').prop('readonly', !permEdit).toggleClass("p-3", !permEdit)
