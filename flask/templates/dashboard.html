@@ -27,7 +27,7 @@
 
   <body>
 
-    <div class="dropdown-menu dropdown-menu-sm" id="context-menu-checklist">
+    <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px" id="context-menu-checklist">
       <a class="dropdown-item editCheckbox" href="#">Editar</a>
       <a class="dropdown-item deleteCheckbox" href="#">Apagar</a>
     </div>
@@ -185,7 +185,7 @@
                 <span data-feather="plus-circle"></span>
               </a>
             </h6>
-            <ul id="files" class="nav flex-column mb-2">
+            <ul id="files" class="nav flex-column mb-2 pb-4">
 
             </ul>
           </div>
@@ -299,7 +299,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=3"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=30"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=31"></script>
   
   </body>
 </html>
