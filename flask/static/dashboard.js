@@ -1084,7 +1084,8 @@ function triggerResize(first=false){
     $('#troncoHomeBar').toggleClass("mt-0", isMobile)
     $('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "58px" : '54px') : '10px')
     $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")
-    $('#main').css('margin-left', !isMobile ? '260px' : '0px')
+    //$('#main').css('margin-left', !isMobile ? '260px' : '0px')
+    $('#main').toggleClass("col-md-9 ml-sm-auto col-lg-10", !isMobile)
 
     if (first && isMobile) {
         mobileInterval = window.setInterval(() => {
