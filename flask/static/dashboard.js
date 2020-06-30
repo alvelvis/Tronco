@@ -1,5 +1,22 @@
+$('.editCheckbox').click(function(){
+    checkboxString = checkboxdiv.find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
+    pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString), "g")
+    is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
+    newString = prompt("Editar item:", checkboxString)
+    if (newString && newString.length) {
+        $('#mainText').val($('#mainText').val().replace(pattern, "[" + (is_checked ? "x" : "") + "] " + newString))
+        saveFile()
+    }
+})
+
+$('.deleteCheckbox').click(function(){
+    checkboxString = checkboxdiv.find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
+    pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString), "g")
+    $('#mainText').val($('#mainText').val().replace(pattern, "[-] " + checkboxString))
+    saveFile()
+})
+
 function toggleInsertSuccess(){
-    
     $('.insertLabel').html("Adicionado!")
     $('.dropdown-toggle').toggleClass("btn-outline-secondary", false).toggleClass("btn-success", true)
     setTimeout(() => { 
@@ -60,7 +77,8 @@ $('.insertDate').click(function(){
 });
 
 $('.insertChecklist').click(function(){
-    $('#mainText').val($('#mainText').val() + "\n[] ")
+    n_checklists = $('#mainText').val().match(/\[(x)?\]/gi)
+    $('#mainText').val($('#mainText').val() + "\n[] Item " + (n_checklists ? n_checklists.length+1 : 1).toString())
     saveFile()
     updateToolbar()
     $('#mainText').trigger("input")
@@ -164,17 +182,36 @@ function updateToolbar(){
         $('#checklistLabel').html("Checklist (" + checklist.filter(x => x[0]).length + "/" + checklist.length + ")")
         $('[toolbar=checklist]').html("")
         for (check in checklist) {
-            $('[toolbar=checklist]').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer;" for="checkbox-' + check + '">' + checklist[check][1] + '</label></div></div></div>')            
+            $('[toolbar=checklist]').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer;" for="checkbox-' + check + '">' + checklist[check][1] + '</label></div></div></div>')            
         }
         $('.checkbox-item-div').css('overflow-x', isMobile ? "scroll" : "auto")
         $('.file-checkbox').change(function(){
             checkString = $('[for="' + $(this).attr('id') + '"]').html().replace("&gt;", ">").replace("&lt;", "<")
             toCheck = $(this).prop('checked')
-            pattern = RegExp("\\[.?\\]\\s?" + escapeRegExp(checkString), "gi")
+            pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkString), "g")
             $('#mainText').val($('#mainText').val().replace(pattern, "[" + (toCheck ? "x" : "") + "] " + checkString))
             saveFile($('#filename').attr('file'), $('#mainText').val())
             updateToolbar()
         })
+
+        $('.checkbox-item-subdiv').on('contextmenu', function(e) {
+            checkboxdiv = $(this)
+            var top = e.pageY
+            var left = e.pageX
+            $("#context-menu-checklist").css({
+                display: "block",
+                top: top,
+                left: left
+            }).addClass("show")
+            return false //blocks default Webbrowser right click menu
+            }).on("click", function() {
+                $("#context-menu-checklist").removeClass("show").hide()
+            })
+
+            $("#context-menu-checklist a").on("click", function() {
+                $(this).parent().removeClass("show").hide()
+            })
+
     } else {
         $('#checklist').toggle(false)
         $('[toolbar=checklist]').toggle(false)
@@ -786,6 +823,7 @@ function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val(
                         })
                         .done(function(){
                             textModified(true)
+                            updateToolbar()
                         })
                         .fail(function(){
                             if (!failedSave) {
@@ -827,7 +865,6 @@ $('#mainText').on('change', function(){
     } else {
         textModified(true)
     }
-    updateToolbar()
 })
 
 function textModified(state){
@@ -1077,4 +1114,7 @@ $(document).ready(function(){
     triggerResize(true)
     $('#mainText').autosize()
     validatePassword(name)
+    $(document).click(function(){
+        $("#context-menu-checklist").removeClass("show").hide()
+    })
 })
