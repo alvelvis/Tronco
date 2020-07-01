@@ -17,12 +17,34 @@ session_tokens = objects.SessionTokens()
 tronco_tokens = objects.TroncoTokens()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
-@app.route("/cdn/<filename>", methods=["GET"])
+@app.route("/media/<filename>", methods=["GET"])
 def get_uploads(filename):
     return send_from_directory(os.path.join(app.root_path, "uploads"), filename)
 
-@app.route("/api/uploadImage", methods=["POST"])
-def upload_image():
+@app.route("/api/uploadText", methods=["POST"])
+def upload_text():
+    name = request.values.get("name")
+    password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "editar"): return None
+    result = functions.upload_file(request.files.get("file"), request.files.get("file").filename, corpus=name)
+    return {
+        'filename': result['filename'],
+        'error': result['error'],
+    }
+
+@app.route("/api/uploadDrop", methods=["POST"])
+def upload_drop():
+    name = request.values.get("name")
+    password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "editar"): return None
+    result = functions.upload_file(request.files.get("file"), request.files.get("file").filename)
+    return {
+        'filename': result['filename'],
+        'error': result['error'],
+    }
+
+@app.route("/api/uploadFile", methods=["POST"])
+def upload_file():
     result = functions.upload_file(request.files.get("uploading"), request.values.get("filename"))
     return {
         'filename': result['filename'],

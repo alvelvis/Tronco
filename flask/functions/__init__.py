@@ -6,19 +6,19 @@ import time
 import shutil
 import objects
 
-def upload_file(uploading, filename):
+def upload_file(uploading, filename, corpus=False):
     filename = secure_filename(filename.replace(" ", "_"))
-    upload_dir = os.path.join(app.root_path, "uploads")
+    upload_dir = os.path.join(app.root_path, "uploads") if not corpus else os.path.join(app.root_path, "corpora", corpus)
     if not os.path.isdir(upload_dir):
         os.mkdir(upload_dir)
     files_in_folder = [x.lower() for x in os.listdir(upload_dir)]
     n_files = len(files_in_folder)
     if filename.lower() in files_in_folder:
-        filename = "{}_{}{}".format(filename.split(".")[0], n_files, "." + filename.split(".")[1] if "." in filename else "")
-    upload_dir = os.path.join(app.root_path, "uploads", filename)
-    uploading.save(upload_dir)
-    if os.stat(upload_dir).st_size > 10000000:
-        os.remove(upload_dir)
+        filename = "{}_{}{}".format(filename.rsplit(".", 1)[0], n_files, "." + filename.rsplit(".", 1)[1] if "." in filename else "")
+    uploaded_dir = os.path.join(app.root_path, "uploads", filename) if not corpus else os.path.join(app.root_path, "corpora", corpus, filename)
+    uploading.save(uploaded_dir)
+    if os.stat(uploaded_dir).st_size > 5000000:
+        os.remove(uploaded_dir)
         return {'filename': filename, 'error': "1"}
     return {
         'filename': filename,
@@ -47,7 +47,10 @@ def recent_files(name, key="", max_results=30):
         }
         item_dir = os.path.join(app.root_path, "corpora", name, item)
         with open(item_dir) as f:
-            text = f.read()
+            try:
+                text = f.read()
+            except:
+                text = ""
         files[item]['text'] = text
         if all(x in text for x in ["# times_seen = ", "# last_seen = "]):
             files[item]['stats'][0] = float(text.split("# last_seen = ")[1].split("\n")[0])

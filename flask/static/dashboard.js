@@ -1,3 +1,11 @@
+$('.renameFileContext').click(function(){
+    renameFile(filedivcontext.attr('file'))
+})
+
+$('.deleteFileContext').click(function(){
+    deleteFile(filedivcontext.attr('file'))
+})
+
 $('.editCheckbox').click(function(){
     checkboxString = checkboxdiv.find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
     pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString), "g")
@@ -91,18 +99,24 @@ $('.insertImage').click(function(){
     $('#upload-image').click()
 })
 
-$('#upload-image').change(function(){    
+$('.insertDocument').click(function(){
+    $('#upload-document').click()
+})
+
+$('.uploadFile').change(function(){    
     formdata = new FormData()
     if($(this).prop('files').length > 0)
     {
         file = $(this).prop('files')[0]
         extension = file.name.rsplit(".")[1]
-        filename = prompt("Dê um nome para a imagem:", file.name.rsplit(".")[0])
+        filename = prompt("Dê um nome para o arquivo:", file.name.rsplit(".")[0])
         if (filename.length) {
             formdata.append("uploading", file)
             formdata.append("filename", filename + "." + extension)
+            formdata.append("tronco_token", getTroncoToken())
+            formdata.append("name", $('#name').html())
             $.ajax({
-                url: "/api/uploadImage",
+                url: "/api/uploadFile",
                 type: "POST",
                 data: formdata,
                 processData: false,
@@ -115,7 +129,7 @@ $('#upload-image').change(function(){
                         toggleInsertSuccess()
                     } else {
                         if (result.error == "1") {
-                            alert("Imagem é pesada demais")
+                            alert(result.filename + " é pesado demais!")
                         }
                     }
                 }
@@ -151,7 +165,12 @@ function updateToolbar(){
 
     list_images = $('#mainText').val().matchAll(/tronco\/(\S+\.(png|jpe?g|bmp|gif|ico))(\s|$|\n)/gi)
     for (image of list_images) {
-        images.push([image[1], "/cdn/" + image[1]])
+        images.push([image[1], "/media/" + image[1]])
+    }
+
+    list_files = $('#mainText').val().matchAll(/tronco\/(\S+\.(zip|rar|pdf|rtf|txt|htm|html|doc|docx|tsv|csv|xls|xlsx))(\s|$|\n)/gi)
+    for (file of list_files) {
+        files.push([file[1], "/media/" + file[1]])
     }
 
     list_check = $('#mainText').val().matchAll(/\[(x)?\]\s?(.+)($|\n)/gi)
@@ -249,7 +268,11 @@ function updateToolbar(){
         $('#filesLinkLabel').html("Arquivos (" + files.length + ")")
         $('[toolbar=filesLink]').html("")
         for (link in files) {
-            $('[toolbar=filesLink]').append('<div class="file-div"><a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + files[link].split(":")[0] + '</a></div>' + (link == files.length -1 ? "" : ""))
+            if (files[link][1].indexOf("/media/") >= 0) {
+                $('[toolbar=filesLink]').append('<div class="file-div"><a href="' + files[link][1] + '" target="_blank" class="px-1">' + files[link][0] + '</a></div>' + (link == files.length -1 ? "" : ""))
+            } else {
+                $('[toolbar=filesLink]').append('<div class="file-div"><a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + files[link].split(":")[0] + '</a></div>' + (link == files.length -1 ? "" : ""))
+            }
         }
         $('.file-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
     } else {
@@ -371,6 +394,9 @@ $('.togglePerm').on('change', function(){
             "tronco_token": getTroncoToken()
         }
     })
+    .done(function(){
+        loadConfig()
+    })
 })
 
 $('#setPermissions').click(function(){
@@ -428,18 +454,6 @@ var permissions = []
 
 function validatePassword (name){
 
-    if (document.cookie.indexOf("tt=") == -1){
-        document.cookie = "tt={}; expires=" + expirationDate
-    }
-    
-    /*if (document.cookie.indexOf("tp=") == -1 || document.cookie.indexOf("<troncoPasswords>") >= 0){
-        document.cookie = "tp={}; expires=" + expirationDate
-    }*/
-
-    if (document.cookie.indexOf("st=") == -1){
-        document.cookie = "st={}; expires=" + expirationDate
-    }
-
     token = getTroncoToken()
     $.ajax({
         url: '/api/validatePassword',
@@ -458,6 +472,7 @@ function validatePassword (name){
         if (!permEdit) { permSetup = false }
         $('#conected').html(!data.has_password && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não tem permissões"))))
         $('#permissionsSettings').toggle(!data.has_password ? false : (permSetup ? true : false))
+        $('#uploadTextDiv').toggle(permEdit)
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
             $('#search').toggle(permView)
@@ -630,8 +645,7 @@ $('.toggleSettings').click(function(){
     corpusSettings.scrollIntoView()
 })
 
-$('#deleteFile').click(function(){
-    filename = $('#filename').attr('file')
+function deleteFile(filename){
     if (confirm("Tem certeza de que deseja excluir " + filename + "?")) {
         $.ajax({
             url: '/api/deleteFile',
@@ -650,10 +664,13 @@ $('#deleteFile').click(function(){
             }
         })
     }
+}
+
+$('#deleteFile').click(function(){
+    deleteFile($('#filename').attr('file'))
 })
 
-$('#renameFile').click(function(){
-    filename = $('#filename').attr('file')
+function renameFile(filename) {
     new_filename = prompt("Como " + filename + " deve passar a se chamar?", filename)
     if (new_filename && new_filename.length) {
         $.ajax({
@@ -678,6 +695,10 @@ $('#renameFile').click(function(){
             }
         })
     }
+}
+
+$('#renameFile').click(function(){
+    renameFile($('#filename').attr('file'))
 })
 
 function updateFiles(key = "", click = ""){
@@ -725,6 +746,24 @@ function updateFiles(key = "", click = ""){
             if (isMobile && $('#sidebar:visible').length) {
                 $('.toggleSettings')[0].click()
             }
+        })
+
+        $('[file!=README].files').on('contextmenu', function(e) {
+            filedivcontext = $(this)
+            var top = e.pageY
+            var left = e.pageX
+            $("#context-menu-file").css({
+                display: "block",
+                top: top,
+                left: left
+            }).addClass("show")
+            return false //blocks default Webbrowser right click menu
+        }).on("click", function() {
+            $("#context-menu-file").removeClass("show").hide()
+        })
+
+        $("#context-menu-file a").on("click", function() {
+            $(this).parent().removeClass("show").hide()
         })
 
         feather.replace()
@@ -929,9 +968,13 @@ function loadFile(filename){
         }
     })
     .fail(function(){
-        alert("Falha na sincronização.")
-        window.location.href = "/?load=false"
-        return false
+        alert("Falha na sincronização")
+        if (filename == "README") {
+            window.location.href = "/?load=false"
+            return false
+        } else {
+            $('[file=README].files').click()
+        }
     })
 }
             
@@ -995,6 +1038,7 @@ function loadConfig(){
         $('#wrapTextCheckbox').prop('checked', auto_wrap)
         $('#viewPermission').prop('checked', view_perm)
         $('#editPermission').prop('checked', edit_perm)
+        $('#visitante-perms').html(view_perm ? "Visitantes podem " + (edit_perm ? "editar" : "visualizar") : "Visitantes não têm permissões")
         loadConfigFromCheckboxes()
     })
 }
@@ -1110,11 +1154,51 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 })
 
 $(document).ready(function(){
+
+    if (document.cookie.indexOf("tt=") == -1){
+        document.cookie = "tt={}; expires=" + expirationDate
+    }
+    if (document.cookie.indexOf("st=") == -1){
+        document.cookie = "st={}; expires=" + expirationDate
+    }
+
     name = $('#name').html()
     $('#mainText').autosize()
     validatePassword(name)
+    
+    var uploadText = new Dropzone("#uploadText", { url: "/api/uploadText" })
+    uploadText.on("success", function(file, result){
+        if (result.error == "1") {
+            alert(result.filename + " é pesado demais!")
+        }
+    })
+    .on("queuecomplete", function(){
+        updateFiles("", "README")
+    })
+    .on("sending", function(file, xhr, formData){
+        formData.append("name", name)
+        formData.append("tronco_token", getTroncoToken())
+    })
+
+    var mainTextDropzone = new Dropzone("#mainText", { url: "/api/uploadDrop", clickable: false })
+    mainTextDropzone.on("success", function(file, result){
+        if (result.error == "0") {
+            $('#mainText').val($('#mainText').val() + "\ntronco/" + result.filename)
+            saveFile()
+            $('#mainText').trigger("input")
+            toggleInsertSuccess()
+        } else {
+            if (result.error == "1") {
+                alert(result.filename + " é pesado demais!")
+            }
+        }
+    })
+    .on("sending", function(file, xhr, formData) {
+        formData.append("name", name)
+        formData.append("tronco_token", getTroncoToken())
+    })
     $(document).click(function(){
-        $("#context-menu-checklist").removeClass("show").hide()
+        $("#context-menu-checklist, #context-menu-file").removeClass("show").hide()
     })
     triggerResize(true)
 })
