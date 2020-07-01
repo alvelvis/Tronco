@@ -7,12 +7,12 @@ $('.deleteFileContext').click(function(){
 })
 
 $('.moveBottomCheckbox').click(function(){
-    checkboxString = checkboxdiv.find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
+    checkboxString = checkboxdiv.find(".custom-control-label").text()
     pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
     is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
 
     bottom_is_checked = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').length-1]).find("[type=checkbox]").prop("checked")
-    bottomString = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').length-1]).find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
+    bottomString = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').length-1]).find(".custom-control-label").text()
     bottomPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(bottomString), "g")
     
     if (bottomString != checkboxString) {
@@ -22,12 +22,12 @@ $('.moveBottomCheckbox').click(function(){
 })
 
 $('.moveTopCheckbox').click(function(){
-    checkboxString = checkboxdiv.find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
+    checkboxString = checkboxdiv.find(".custom-control-label").text()
     pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
     is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
 
     top_is_checked = $($('.checkbox-item-subdiv')[0]).find("[type=checkbox]").prop("checked")//$('.checkbox-item-subdiv').length-1
-    topString = $($('.checkbox-item-subdiv')[0]).find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
+    topString = $($('.checkbox-item-subdiv')[0]).find(".custom-control-label").text()
     topPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(topString), "g")
     
     if (topString != checkboxString) {
@@ -37,7 +37,7 @@ $('.moveTopCheckbox').click(function(){
 })
 
 $('.editCheckbox').click(function(){
-    checkboxString = checkboxdiv.find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
+    checkboxString = checkboxdiv.find(".custom-control-label").text()
     pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString), "g")
     is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
     newString = prompt("Editar item:", checkboxString)
@@ -48,7 +48,7 @@ $('.editCheckbox').click(function(){
 })
 
 $('.deleteCheckbox').click(function(){
-    checkboxString = checkboxdiv.find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
+    checkboxString = checkboxdiv.find(".custom-control-label").text()
     pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
     $('#mainText').val($('#mainText').val().replace(pattern, ""))
     saveFile()
@@ -236,7 +236,7 @@ function updateToolbar(){
         }
         $('.checkbox-item-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
         $('.file-checkbox').change(function(){
-            checkString = $('[for="' + $(this).attr('id') + '"]').html().replace("&gt;", ">").replace("&lt;", "<")
+            checkString = $('[for="' + $(this).attr('id') + '"]').text()
             toCheck = $(this).prop('checked')
             pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkString), "g")
             $('#mainText').val($('#mainText').val().replace(pattern, "[" + (toCheck ? "x" : "") + "] " + checkString))
