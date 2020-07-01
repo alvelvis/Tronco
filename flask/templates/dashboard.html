@@ -34,6 +34,8 @@
     </div>
 
     <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px" id="context-menu-checklist">
+      <a class="dropdown-item moveTopCheckbox" href="#">Mover p/ início</a>
+      <a class="dropdown-item moveBottomCheckbox" href="#">Mover p/ fim</a>
       <a class="dropdown-item editCheckbox" href="#">Editar</a>
       <a class="dropdown-item deleteCheckbox" href="#">Apagar</a>
     </div>
@@ -157,9 +159,9 @@
                   </li>
 
                   <li class="nav-item" style="display:none" id="uploadTextDiv">
-                    <a class="nav-link" id="uploadText" title="Enviar arquivos para a coleção">
-                      <span data-feather="upload"></span>
-                      Solte arquivos aqui
+                    <a class="nav-link uploadText" id="uploadText" title="Enviar arquivos para a coleção">
+                      <span class="uploadText" data-feather="upload"></span>
+                      <span class="uploadText" id="uploadTextLabel"></span>
                     </a>
                   </li>
 
@@ -315,7 +317,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=3"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=40"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=41"></script>
   
   </body>
 </html>

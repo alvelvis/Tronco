@@ -6,6 +6,32 @@ $('.deleteFileContext').click(function(){
     deleteFile(filedivcontext.attr('file'))
 })
 
+$('.moveBottomCheckbox').click(function(){
+    checkboxString = checkboxdiv.find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
+    pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
+    is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
+
+    bottom_is_checked = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').length-1]).find("[type=checkbox]").prop("checked")
+    bottomString = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').length-1]).find(".custom-control-label").html()
+    bottomPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(bottomString), "g")
+    
+    $('#mainText').val($('#mainText').val().replace(pattern, "").replace(bottomPattern, "[" + (bottom_is_checked ? "x" : "") + "] " + bottomString + "\n" + "[" + (is_checked ? "x" : "") + "] " + checkboxString))
+    saveFile()
+})
+
+$('.moveTopCheckbox').click(function(){
+    checkboxString = checkboxdiv.find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
+    pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
+    is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
+
+    top_is_checked = $($('.checkbox-item-subdiv')[0]).find("[type=checkbox]").prop("checked")//$('.checkbox-item-subdiv').length-1
+    topString = $($('.checkbox-item-subdiv')[0]).find(".custom-control-label").html()
+    topPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(topString), "g")
+    
+    $('#mainText').val($('#mainText').val().replace(pattern, "").replace(topPattern, "[" + (is_checked ? "x" : "") + "] " + checkboxString + "\n" + "[" + (top_is_checked ? "x" : "") + "] " + topString))
+    saveFile()
+})
+
 $('.editCheckbox').click(function(){
     checkboxString = checkboxdiv.find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
     pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString), "g")
@@ -19,8 +45,8 @@ $('.editCheckbox').click(function(){
 
 $('.deleteCheckbox').click(function(){
     checkboxString = checkboxdiv.find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
-    pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString), "g")
-    $('#mainText').val($('#mainText').val().replace(pattern, "[-] " + checkboxString))
+    pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
+    $('#mainText').val($('#mainText').val().replace(pattern, ""))
     saveFile()
 })
 
@@ -202,7 +228,7 @@ function updateToolbar(){
         $('#checklistLabel').html("Checklist (" + checklist.filter(x => x[0]).length + "/" + checklist.length + ")")
         $('[toolbar=checklist]').html("")
         for (check in checklist) {
-            $('[toolbar=checklist]').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer;  user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + checklist[check][1] + '</label></div></div></div>')
+            $('[toolbar=checklist]').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + checklist[check][1] + '</label></div></div></div>')
         }
         $('.checkbox-item-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
         $('.file-checkbox').change(function(){
@@ -721,7 +747,7 @@ function updateFiles(key = "", click = ""){
                 <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
                     <a class="nav-link files d-flex align-items-center" style="width:100%;" file="` + x + `">
                         <span data-feather="file-text"></span>
-                        <span style="max-width: 98%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">` + x + `</span>
+                        <span style="max-width: 98%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;">` + x + `</span>
                     </a>
                 </li>`)
             }
@@ -946,7 +972,7 @@ function loadFile(filename){
             $('#filename').scrollLeft(0)
             $('#mainText').val(data.data.text)
             updateToolbar()
-            $('#mainText').attr('placeholder', !permEdit ? "" : (filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução da coleção "' + name + '" e poderá ser visualizado por todos. Crie novos arquivos na barra de busca no topo da página e, se desejar, crie uma senha para proteger todos os arquivos desta coleção.' : 'Insira aqui o conteúdo'))
+            $('#mainText').attr('placeholder', !permEdit ? "" : (filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução da coleção "' + name + '" e poderá ser visualizado por todos. Crie novos arquivos na barra de busca no topo da página e, se desejar, crie uma senha para proteger todos os arquivos desta coleção.' : 'Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens")))
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
@@ -1135,6 +1161,8 @@ function triggerResize(first=false){
     //$('#main').css('margin-left', !isMobile ? '260px' : '0px')
     $('#main').toggleClass("col-md-9 ml-sm-auto col-lg-10", !isMobile)
 
+    $('#uploadTextLabel').html(isMobile ? "Enviar arquivos" : "Solte arquivos aqui")
+
     feather.replace()
 }
 
@@ -1166,7 +1194,7 @@ $(document).ready(function(){
     $('#mainText').autosize()
     validatePassword(name)
     
-    var uploadText = new Dropzone("#uploadText", { url: "/api/uploadText" })
+    var uploadText = new Dropzone(".uploadText", { url: "/api/uploadText" })
     uploadText.on("success", function(file, result){
         if (result.error == "1") {
             alert(result.filename + " é pesado demais!")
