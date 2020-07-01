@@ -15,8 +15,10 @@ $('.moveBottomCheckbox').click(function(){
     bottomString = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').length-1]).find(".custom-control-label").html()
     bottomPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(bottomString), "g")
     
-    $('#mainText').val($('#mainText').val().replace(pattern, "").replace(bottomPattern, "[" + (bottom_is_checked ? "x" : "") + "] " + bottomString + "\n" + "[" + (is_checked ? "x" : "") + "] " + checkboxString))
-    saveFile()
+    if (bottomString != checkboxString) {
+        $('#mainText').val($('#mainText').val().replace(pattern, "").replace(bottomPattern, "[" + (bottom_is_checked ? "x" : "") + "] " + bottomString + "\n" + "[" + (is_checked ? "x" : "") + "] " + checkboxString))
+        saveFile()
+    }
 })
 
 $('.moveTopCheckbox').click(function(){
@@ -28,8 +30,10 @@ $('.moveTopCheckbox').click(function(){
     topString = $($('.checkbox-item-subdiv')[0]).find(".custom-control-label").html()
     topPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(topString), "g")
     
-    $('#mainText').val($('#mainText').val().replace(pattern, "").replace(topPattern, "[" + (is_checked ? "x" : "") + "] " + checkboxString + "\n" + "[" + (top_is_checked ? "x" : "") + "] " + topString))
-    saveFile()
+    if (topString != checkboxString) {
+        $('#mainText').val($('#mainText').val().replace(pattern, "").replace(topPattern, "[" + (is_checked ? "x" : "") + "] " + checkboxString + "\n" + "[" + (top_is_checked ? "x" : "") + "] " + topString))
+        saveFile()
+    }
 })
 
 $('.editCheckbox').click(function(){
@@ -1182,19 +1186,18 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 })
 
 $(document).ready(function(){
-
+    feather.replace()
     if (document.cookie.indexOf("tt=") == -1){
         document.cookie = "tt={}; expires=" + expirationDate
     }
     if (document.cookie.indexOf("st=") == -1){
         document.cookie = "st={}; expires=" + expirationDate
     }
-
     name = $('#name').html()
     $('#mainText').autosize()
     validatePassword(name)
     
-    var uploadText = new Dropzone(".uploadText", { url: "/api/uploadText" })
+    var uploadText = new Dropzone(".uploadText", { url: "/api/uploadText", clickable: ".uploadText" })
     uploadText.on("success", function(file, result){
         if (result.error == "1") {
             alert(result.filename + " é pesado demais!")
