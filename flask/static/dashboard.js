@@ -12,7 +12,7 @@ $('.moveBottomCheckbox').click(function(){
     is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
 
     bottom_is_checked = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').length-1]).find("[type=checkbox]").prop("checked")
-    bottomString = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').length-1]).find(".custom-control-label").html()
+    bottomString = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').length-1]).find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
     bottomPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(bottomString), "g")
     
     if (bottomString != checkboxString) {
@@ -27,7 +27,7 @@ $('.moveTopCheckbox').click(function(){
     is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
 
     top_is_checked = $($('.checkbox-item-subdiv')[0]).find("[type=checkbox]").prop("checked")//$('.checkbox-item-subdiv').length-1
-    topString = $($('.checkbox-item-subdiv')[0]).find(".custom-control-label").html()
+    topString = $($('.checkbox-item-subdiv')[0]).find(".custom-control-label").html().replace("&gt;", ">").replace("&lt;", "<")
     topPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(topString), "g")
     
     if (topString != checkboxString) {
