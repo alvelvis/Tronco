@@ -976,7 +976,7 @@ function loadFile(filename){
             $('#filename').scrollLeft(0)
             $('#mainText').val(data.data.text)
             updateToolbar()
-            $('#mainText').attr('placeholder', !permEdit ? "" : (filename == "README" ? 'Este arquivo é uma introdução à coleção "' + name + '". Você pode criar novos arquivos na barra de busca acima e criar uma senha para proteger esta coleção, mas este arquivo de introdução poderá sempre ser visto por todos.' : 'Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens")))
+            $('#mainText').attr('placeholder', !permEdit ? "" : (filename == "README" ? 'Este arquivo é uma introdução à coleção "' + name + '". Você pode criar novos arquivos na barra de busca acima e criar uma senha para proteger esta coleção. Por ser um arquivo de introdução, ele estará sempre visível para todos.' : (!visitant_view_perm ? "Só você pode visualizar este arquivo." : (!visitant_edit_perm ? "Todos podem visualizar este arquivo, mas só você pode editá-lo." : "Todos podem editar este arquivo.")) + ' Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens") + "."))
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
@@ -1061,14 +1061,14 @@ function loadConfig(){
     .done(function(data){
         auto_save = data.auto_save == "true" ? true : false
         auto_wrap = data.auto_wrap == "true" ? true : false
-        view_perm = data.view_perm
-        edit_perm = data.edit_perm
-        setup_perm = data.setup_perm
+        visitant_view_perm = data.view_perm
+        visitant_edit_perm = data.edit_perm
+        visitant_setup_perm = data.setup_perm
         $('#autoSaveCheckbox').prop('checked', auto_save)
         $('#wrapTextCheckbox').prop('checked', auto_wrap)
-        $('#viewPermission').prop('checked', view_perm)
-        $('#editPermission').prop('checked', edit_perm)
-        $('#visitante-perms').html(view_perm ? "Visitantes podem " + (edit_perm ? "editar" : "visualizar") : "Visitantes não podem visualizar")
+        $('#viewPermission').prop('checked', visitant_view_perm)
+        $('#editPermission').prop('checked', visitant_edit_perm)
+        $('#visitante-perms').html(visitant_view_perm ? "Visitantes podem " + (visitant_edit_perm ? "editar" : "visualizar") : "Visitantes não podem visualizar")
         loadConfigFromCheckboxes()
     })
 }
