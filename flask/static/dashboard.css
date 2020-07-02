@@ -6,7 +6,12 @@
   box-shadow: none;
 }
 
-.btn-toolbar-hover{color:#fff;background-color:#6c757d;border-color:#6c757d}
+.toolbarButton:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.btn-toolbar-hover{color:#fff;background-color:#6c757d;border-color:#6c757d;}
 
 a:hover {
   color:inherit;
