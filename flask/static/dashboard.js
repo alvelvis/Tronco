@@ -976,7 +976,7 @@ function loadFile(filename){
             $('#filename').scrollLeft(0)
             $('#mainText').val(data.data.text)
             updateToolbar()
-            $('#mainText').attr('placeholder', !permEdit ? "" : (filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução à coleção "' + name + '" e poderá ser visualizado por todos, mesmo que você crie uma senha para proteger a coleção. Crie novos arquivos na barra de busca no topo da página.' : 'Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens")))
+            $('#mainText').attr('placeholder', !permEdit ? "" : (filename == "README" ? 'Este arquivo é uma introdução à coleção "' + name + '". Você pode criar novos arquivos na barra de busca acima e criar uma senha para proteger esta coleção, mas este arquivo de introdução poderá sempre ser visto por todos.' : 'Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens")))
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
