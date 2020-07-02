@@ -1228,7 +1228,7 @@ $(document).ready(function(){
         formData.append("name", name)
         formData.append("tronco_token", getTroncoToken())
     })
-    $(document).on("click touchstart", function(){
+    $(document).on("click touchmove", function(){
         $("#context-menu-checklist, #context-menu-file").removeClass("show").hide()
     })
     triggerResize(true)
