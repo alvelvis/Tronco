@@ -500,7 +500,7 @@ function validatePassword (name){
         permSetup = permissions.indexOf("configurar") >= 0
         if (permSetup) { permEdit = true }
         if (!permEdit) { permSetup = false }
-        $('#conected').html(!data.has_password && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não tem permissões"))))
+        $('#conected').html(!data.has_password && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não pode visualizar"))))
         $('#permissionsSettings').toggle(!data.has_password ? false : (permSetup ? true : false))
         $('#uploadTextDiv').toggle(permEdit)
         if (isMobile) {
@@ -976,7 +976,7 @@ function loadFile(filename){
             $('#filename').scrollLeft(0)
             $('#mainText').val(data.data.text)
             updateToolbar()
-            $('#mainText').attr('placeholder', !permEdit ? "" : (filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução da coleção "' + name + '" e poderá ser visualizado por todos. Crie novos arquivos na barra de busca no topo da página e, se desejar, crie uma senha para proteger todos os arquivos desta coleção.' : 'Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens")))
+            $('#mainText').attr('placeholder', !permEdit ? "" : (filename == "README" ? 'Tudo o que você inserir aqui será salvo automaticamente, mas não insira dados confidenciais, pois este arquivo é apenas uma introdução à coleção "' + name + '" e poderá ser visualizado por todos, mesmo que você crie uma senha para proteger a coleção. Crie novos arquivos na barra de busca no topo da página.' : 'Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens")))
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
@@ -1068,7 +1068,7 @@ function loadConfig(){
         $('#wrapTextCheckbox').prop('checked', auto_wrap)
         $('#viewPermission').prop('checked', view_perm)
         $('#editPermission').prop('checked', edit_perm)
-        $('#visitante-perms').html(view_perm ? "Visitantes podem " + (edit_perm ? "editar" : "visualizar") : "Visitantes não têm permissões")
+        $('#visitante-perms').html(view_perm ? "Visitantes podem " + (edit_perm ? "editar" : "visualizar") : "Visitantes não podem visualizar")
         loadConfigFromCheckboxes()
     })
 }
@@ -1228,7 +1228,7 @@ $(document).ready(function(){
         formData.append("name", name)
         formData.append("tronco_token", getTroncoToken())
     })
-    $(document).click(function(){
+    $(document).on("click touchstart", function(){
         $("#context-menu-checklist, #context-menu-file").removeClass("show").hide()
     })
     triggerResize(true)

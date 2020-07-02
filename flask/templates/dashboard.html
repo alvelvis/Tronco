@@ -236,10 +236,22 @@
                   </a>
                 
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item insertDate" href="#">Data</a>
-                    <a class="dropdown-item insertChecklist" href="#">Checklist</a>
-                    <a class="dropdown-item insertImage" href="#">Imagem</a>
-                    <a class="dropdown-item insertDocument" href="#">Documento</a>
+                    <a class="dropdown-item insertDate" href="#">
+                      <span data-feather="calendar"></span>
+                      Data
+                    </a>
+                    <a class="dropdown-item insertChecklist" href="#">
+                      <span data-feather="check-square"></span>
+                      Checklist
+                    </a>
+                    <a class="dropdown-item insertImage" href="#">
+                      <span data-feather="image"></span>
+                      Imagem
+                    </a>
+                    <a class="dropdown-item insertDocument" href="#">
+                      <span data-feather="file"></span>
+                      Documento
+                    </a>
                   </div>
                 </div>
 
@@ -317,7 +329,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=3"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=46"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=47"></script>
   
   </body>
 </html>
