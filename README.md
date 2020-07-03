@@ -14,9 +14,9 @@ Acesse pelo endereço: [tronco.ga](https://tronco.ga)
 
 #### Conectado à nuvem (on-line)
 
-<a href="https://tronco.ga"><img width="48" alt="Chromium" style="padding:10px" src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Chromium_Material_Icon.png"></a> <a href="https://tronco.ga/app"><img width="48" style="padding:10px" alt="Android" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/APK_format_icon.png/600px-APK_format_icon.png"></a> <a href="https://tronco.ga/app"><img width="48" style="padding:10px" alt="iOS" src="https://i.ya-webdesign.com/images/ios-android-icon-png-5.png"></a>
+<a href="https://tronco.ga"><img width="48" alt="Chromium" style="padding:10px" src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Chromium_Material_Icon.png"></a> <a href="https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Android-PWA.apk"><img width="48" style="padding:10px" alt="Android" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/APK_format_icon.png/600px-APK_format_icon.png"></a> <a href="https://tronco.ga/app"><img width="48" style="padding:10px" alt="iOS" src="https://i.ya-webdesign.com/images/ios-android-icon-png-5.png"></a>
 
-A partir de qualquer dispositivo conectado à internet você pode acessar nosso endereço [tronco.ga](https://tronco.ga). O [aplicativo para Android ou iOS](https://tronco.ga/app) também se conecta ao mesmo site. Nele, suas coleções ficarão guardadas na nuvem. Não esqueça de adicionar senha nos arquivos importantes!
+A partir de qualquer dispositivo conectado à internet você pode acessar nosso endereço [tronco.ga](https://tronco.ga). O aplicativo para [Android](https://github.com/alvelvis/Tronco/raw/master/dist/Tronco-Android-PWA.apk) ou [iOS](https://tronco.ga/app) também se conecta ao mesmo site. Nele, suas coleções ficarão guardadas na nuvem. Não esqueça de adicionar senha nos arquivos importantes!
 
 Para instalar o Tronco em um servidor próprio, veja [Como fazer deploy](#Como-fazer-deploy).
 
