@@ -5,7 +5,7 @@ import app
 import re
 import sys
 
-tronco_version = 1.0
+tronco_version = 1.1
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 all_permissions = ["visualizar", "editar", "configurar"]
