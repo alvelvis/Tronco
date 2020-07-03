@@ -281,7 +281,7 @@ def load_file():
     name = request.values.get('name')
     password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
     filename = request.values.get('filename')
-    if filename != "README" and not tronco_config.has_permission(name, password, "visualizar"):
+    if not tronco_config.has_permission(name, password, "visualizar"):#filename != "README" and 
         return {'error': 2}
     text = functions.load_file(name, filename)
     if text:

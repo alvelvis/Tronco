@@ -949,6 +949,10 @@ function textModified(state){
 
 var whoClaimedAccess = ""
 
+function updateMainTextPlaceholder(){
+    $('#mainText').attr('placeholder', !permEdit ? "" : (!visitant_view_perm ? "Só você pode visualizar este arquivo." : (!visitant_edit_perm ? "Todos podem visualizar este arquivo, mas só você pode editá-lo." : "Todos podem editar este arquivo.")) + ' Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens") + ".")
+}
+
 function loadFile(filename){
     
     name = $('#name').html()
@@ -976,7 +980,6 @@ function loadFile(filename){
             $('#filename').scrollLeft(0)
             $('#mainText').val(data.data.text)
             updateToolbar()
-            $('#mainText').attr('placeholder', !permEdit ? "" : (filename == "README" ? 'Este arquivo é uma introdução à coleção "' + name + '". Você pode criar novos arquivos na barra de busca acima e criar uma senha para proteger esta coleção. Por ser um arquivo de introdução, ele estará sempre visível para todos.' : (!visitant_view_perm ? "Só você pode visualizar este arquivo." : (!visitant_edit_perm ? "Todos podem visualizar este arquivo, mas só você pode editá-lo." : "Todos podem editar este arquivo.")) + ' Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens") + "."))
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
@@ -985,9 +988,9 @@ function loadFile(filename){
             }
         } else {
             if (data.error == 2) {
-                alert("Você não tem permissão para visualizar esta coleção")
-                window.location.href = "/?load=false"
-                return false
+                //alert("Você não tem permissão para visualizar esta coleção")
+                //$('[file="README"].files').click()
+                //return false
             } else {
                 if (data.error == 3){
                     alert("Este arquivo não existe")
@@ -1070,6 +1073,7 @@ function loadConfig(){
         $('#editPermission').prop('checked', visitant_edit_perm)
         $('#visitante-perms').html(visitant_view_perm ? "Visitantes podem " + (visitant_edit_perm ? "editar" : "visualizar") : "Visitantes não podem visualizar")
         loadConfigFromCheckboxes()
+        updateMainTextPlaceholder()
     })
 }
 
