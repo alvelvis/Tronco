@@ -950,7 +950,7 @@ function textModified(state){
 var whoClaimedAccess = ""
 
 function updateMainTextPlaceholder(){
-    $('#mainText').attr('placeholder', !permEdit ? "" : (!visitant_view_perm ? "Só você pode visualizar este arquivo." : (!visitant_edit_perm ? "Todos podem visualizar este arquivo, mas só você pode editá-lo." : "Todos podem editar este arquivo.")) + ' Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens") + ".")
+    $('#mainText').attr('placeholder', !permEdit ? "" : (!visitant_view_perm ? "Só você pode visualizar os arquivos desta coleção." : (!visitant_edit_perm ? "Todos podem visualizar esta coleção, mas só você pode editar seus arquivos." : "Todos podem editar os arquivos desta coleção.")) + ' Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens") + ".")
 }
 
 function loadFile(filename){
