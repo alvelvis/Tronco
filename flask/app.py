@@ -17,6 +17,10 @@ session_tokens = objects.SessionTokens()
 tronco_tokens = objects.TroncoTokens()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
+@app.route("/.well-known/assetlinks.json")
+def get_asset():
+    return send_from_directory(app.root_path, "assetlinks.json")
+
 @app.route("/media/<filename>", methods=["GET"])
 def get_uploads(filename):
     return send_from_directory(os.path.join(app.root_path, "uploads"), filename)
