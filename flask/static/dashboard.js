@@ -1191,14 +1191,20 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
-    elements = "#main, .row, #recentFiles, #mainText, #sidebar, #toolbarRow, html"
+    elements = "#main, .row, #recentFiles, #mainText, #sidebar, html"
     elements2 = "#corpusSettings, #mainHeadbar, #troncoHomeBar"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
         $(elements2).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
+        if (isMobile) {
+            $('#search').toggleClass("form-control-dark", false).css("background-color", "#343a40").css("color", "white").css("border-style", "none")
+        }
     } else {
         $(elements).css("background-color", "white").css("color", "")
         $(elements2).css("background-color", "white").css("color", "").toggleClass("bg-dark", true)
+        if (isMobile) {
+            $('#search').toggleClass("form-control-dark", true).css("background-color", "white").css("color", "black").css("border-style", "")
+        }
     }
 }
 
