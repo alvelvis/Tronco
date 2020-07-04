@@ -58,7 +58,7 @@
     </div>
 
 
-    <div id="mainDiv" style="margin-top:auto">
+    <div id="mainDiv" style="margin-top:auto" class="pt-4">
       <div class="pricing-header px-3 pt-md-5 mx-auto text-center">
         {% if latest_version and latest_version > version %}
         <div class="alert alert-warning" role="alert">
@@ -124,7 +124,7 @@
     <script src="{{url_for('static', filename='popper.js')}}"></script>
     <script src="{{url_for('static', filename='bootstrap.js')}}"></script>
     <script src="{{url_for('static', filename='holder.js')}}"></script>
-    <script src="{{url_for('static', filename='index.js')}}?version=2"></script>
+    <script src="{{url_for('static', filename='index.js')}}?version=3"></script>
     <script src="{{url_for('static', filename='tronco.js')}}?version=6"></script>
     <script src="{{url_for('static', filename='feather.js')}}"></script>
     <script>

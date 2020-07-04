@@ -1191,14 +1191,14 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
-    elements = "#main, #mainText, #sidebar, #toolbarRow, html"
-    elements2 = "#corpusSettings"
+    elements = "#main, .row, #recentFiles, #mainText, #sidebar, #toolbarRow, html"
+    elements2 = "#corpusSettings, #mainHeadbar, #troncoHomeBar"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
         $(elements2).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
     } else {
-        $(elements).css("background-color", "").css("color", "")
-        $(elements2).css("background-color", "").css("color", "").toggleClass("bg-dark", true)
+        $(elements).css("background-color", "white").css("color", "")
+        $(elements2).css("background-color", "white").css("color", "").toggleClass("bg-dark", true)
     }
 }
 
