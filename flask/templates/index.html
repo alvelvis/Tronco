@@ -44,18 +44,21 @@
 
   <body>
 
-    <div style="color:white" class="bg-dark form-control-dark d-flex flex-column sticky-top flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom box-shadow">
+    <div style="color:white" class="bg-dark form-control-dark d-flex flex-column sticky-top flex-md-row align-items-center p-3 px-md-4 box-shadow">
       <h5 id="tronco" class="my-0 mr-md-auto font-weight-normal d-none d-lg-block"></h5>
       <nav class="my-2 my-md-0 mr-md-3">
         <a href="https://github.com/alvelvis/Tronco#Tronco" id="aboutTronco" style="display:none" target="_blank" class="p-2 text-light">Sobre o Tronco</a>
         <!--a href="#" class="p-2 text-dark">Carregar projeto</a-->
         <a href="https://github.com/alvelvis/Tronco#Dispositivos" id="downloadTronco" style="display:none" target="_blank" class="p-2 text-light">Baixe o aplicativo</a>
+        <a href="#" id="toggleTheme" style="display:none;" title="Ativar modo escuro" class="text-light">
+          <span data-feather="moon"></span>
+        </a>
       </nav>
       <!--a class="btn btn-outline-primary">Sign up</a-->
     </div>
 
 
-    <div style="margin-top:auto">
+    <div id="mainDiv" style="margin-top:auto">
       <div class="pricing-header px-3 pt-md-5 mx-auto text-center">
         {% if latest_version and latest_version > version %}
         <div class="alert alert-warning" role="alert">
@@ -104,7 +107,7 @@
 
       
 
-      <footer id="footer" class="bg-light px-5 py-4">
+      <footer id="footer" style="background-color:white" class="px-5 py-4">
         <div class="row">
           <div class="col-12 col-md ">
             <img class="mb-2" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24"><small class="mb-3 px-2 text-muted ">&copy; 2020 - Tronco é de código aberto. <a href="https://github.com/alvelvis/Tronco" target="_blank">Colabore!</a></small>
@@ -121,15 +124,15 @@
     <script src="{{url_for('static', filename='popper.js')}}"></script>
     <script src="{{url_for('static', filename='bootstrap.js')}}"></script>
     <script src="{{url_for('static', filename='holder.js')}}"></script>
-    <script src="{{url_for('static', filename='index.js')}}?version=1"></script>
-    <script src="{{url_for('static', filename='tronco.js')}}?version=5"></script>
+    <script src="{{url_for('static', filename='index.js')}}?version=2"></script>
+    <script src="{{url_for('static', filename='tronco.js')}}?version=6"></script>
+    <script src="{{url_for('static', filename='feather.js')}}"></script>
     <script>
       Holder.addTheme('thumb', {
         bg: '#55595c',
         fg: '#eceeef',
         text: 'Thumbnail'
-      });
-
+      })
     </script>
 
   </body>

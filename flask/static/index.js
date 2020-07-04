@@ -134,7 +134,28 @@ $('#filterOpenCorpus').on('keyup', function(e){
     }
 })
 
+function checkTheme(){
+    theme = document.cookie.split("theme=")[1].split("; ")[0]
+    elements = "#mainDiv, #footer, #filterOpenCorpus, html"
+    if (theme == "dark") {
+        $(elements).css("background-color", "#343a40").css("color", "white")
+    } else {
+        $(elements).css("background-color", "").css("color", "")
+    }
+}
+
+$('#toggleTheme').click(function(){
+    theme = document.cookie.split("theme=")[1].split("; ")[0]
+    if (theme == "dark") {
+        document.cookie = "theme=light; expires=" + expirationDate
+    } else {
+        document.cookie = "theme=dark; expires=" + expirationDate
+    }
+    checkTheme()
+})
+
 $(window).ready(function(){
+    feather.replace()
     domain = window.location.href.match(/https?:\/\/(.*?)\//)[1].replace(/\//g, "")
     $('#tronco').html(domain == "tronco.ga" ? "tronco.ga" : "Tronco")
     if ($('#tronco:hidden').length) {
@@ -153,7 +174,7 @@ $(window).ready(function(){
         $('#downloadTronco').toggleClass("h1", true)
         $('#downloadTronco').slideToggle(2000)
     } else {
-        $('#aboutTronco').show()
-        $('#downloadTronco').show()
+        $('#aboutTronco, #downloadTronco, #toggleTheme').show()
     }
+    checkTheme()
 })

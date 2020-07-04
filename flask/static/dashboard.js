@@ -1189,6 +1189,19 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
     $('#reloadPage').after($(this).css({position: "", left: "", top: ""}).detach())
 })
 
+function checkTheme(){
+    theme = document.cookie.split("theme=")[1].split("; ")[0]
+    elements = "#main, #mainText, #sidebar, #toolbarRow, html"
+    elements2 = "#corpusSettings"
+    if (theme == "dark") {
+        $(elements).css("background-color", "#343a40").css("color", "white")
+        $(elements2).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
+    } else {
+        $(elements).css("background-color", "").css("color", "")
+        $(elements2).css("background-color", "").css("color", "").toggleClass("bg-dark", true)
+    }
+}
+
 $(document).ready(function(){
     feather.replace()
     if (document.cookie.indexOf("tt=") == -1){
@@ -1236,4 +1249,5 @@ $(document).ready(function(){
         $("#context-menu-checklist, #context-menu-file").removeClass("show").hide()
     })
     triggerResize(true)
+    checkTheme()
 })

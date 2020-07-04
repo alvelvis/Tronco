@@ -1,3 +1,7 @@
+if (document.cookie.indexOf("theme=") == -1){
+    document.cookie = "theme=light; expires=" + expirationDate
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 
     if (window.location.href.match(/127.0.0.1|localhost/)) {
