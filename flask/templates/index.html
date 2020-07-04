@@ -58,7 +58,7 @@
     </div>
 
 
-    <div id="mainDiv" style="margin-top:auto" class="pt-4">
+    <div id="mainDiv" style="margin-top:auto" class="pt-2">
       <div class="pricing-header px-3 pt-md-5 mx-auto text-center">
         {% if latest_version and latest_version > version %}
         <div class="alert alert-warning" role="alert">
@@ -71,12 +71,12 @@
         <p class="lead">Você cria uma coleção, organiza seus arquivos pessoais ou de trabalho, acessa de onde quiser e compartilha com quem quiser. Crie uma senha apenas se assim desejar.<br><br>Vamos começar?</p>
       </div>
 
-      <div class="container">
-        <div class="card-deck mb-3 text-center">
+      <div class="container pt-0 mt-0 px-0">
+        <div class="pt-0 mt-0 card-deck mb-3 text-center">
           <!--div class="card mb-4 box-shadow"-->
             <div class="card-body pt-0 mt-0">
               <!--h1 class="card-title pricing-card-title"><small class="text-muted">Hoje eu quero...</small></h1-->
-              <input class="p-2 mb-3 mt-0 form-control" id="filterOpenCorpus" type="text" placeholder="Digite aqui para criar uma coleção">
+              <input class="mb-3 mt-0 form-control" id="filterOpenCorpus" type="text" placeholder="Digite aqui para criar uma coleção">
               <span class="text-muted" id="randomTip"></span><!--{{ random_tip }}-->
               <ul class="list-unstyled mt-3 mb-4">
                 <div id="openCorpus" style="overflow:auto; margin-bottom:40px">
