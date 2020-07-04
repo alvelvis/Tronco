@@ -96,7 +96,7 @@ function loadCorpora(key = ""){
             }
             $("#openCorpus").append(new_data)
         }
-        $('#filterOpenCorpus').toggleClass("is-invalid", data.data.length ? false : true)
+        //$('#filterOpenCorpus').toggleClass("is-invalid", data.data.length ? false : true)
         $('.openCorpus').click(function(){
             addRecent($(this).attr('corpus'))
         })
