@@ -163,6 +163,7 @@ class TroncoConfig:
                 'settings': {
                     'auto_wrap': "true",
                     'auto_save': "true",
+                    'advanced_editing': "false",
                     }
                 }
             self.save()

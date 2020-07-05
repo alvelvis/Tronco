@@ -28,6 +28,10 @@
 
   <body>
 
+    <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px" id="context-menu-metadata">
+      <a class="dropdown-item removeMetadata" href="#">Remover</a>
+    </div>
+
     <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px" id="context-menu-file">
       <a class="dropdown-item renameFileContext" href="#">Renomear</a>
       <a class="dropdown-item deleteFileContext" href="#">Excluir</a>
@@ -100,6 +104,14 @@
                               </div>
                           </div>                        
                       </div>
+                      <div class="form-row align-items-left">
+                        <div class="col-auto my-1">
+                            <div class="custom-control custom-checkbox mr-sm-2">
+                            <input type="checkbox" class="custom-control-input" id="advancedEditingCheckbox">
+                            <label class="custom-control-label" style="cursor:pointer" title="Habilitar opções avançadas de edição" for="advancedEditingCheckbox">Editor avançado</label>
+                            </div>
+                        </div>                        
+                    </div>
                     </a>
                     <a id="renameCorpus" class="nav-link">
                         <span data-feather="delete"></span>
@@ -151,10 +163,15 @@
 
                 <div id="corpusSidebar" class="mt-3">
 
-                  <li class="nav-item">
-                    <a class="nav-link files" file="README">
-                      <span data-feather="home"></span>
-                      {{name}}
+                  <li class="nav-item" id="advancedSearch" style="display:none">
+                    <a class="nav-link" title="Realizar buscas avançadas">
+                      <span data-feather="search"></span>
+                      Busca avançada
+                    </a>
+                  </li><li class="nav-item" id="advancedSearch" style="display:none">
+                    <a class="nav-link" title="Realizar buscas avançadas">
+                      <span data-feather="search"></span>
+                      Busca avançada
                     </a>
                   </li>
 
@@ -190,6 +207,7 @@
                   Integrations
                 </a>
               </li-->
+              
             </ul>
 
             
@@ -199,6 +217,14 @@
                 <span data-feather="plus-circle"></span>
               </a>
             </h6>
+
+            <li class="nav-item">
+              <a class="nav-link files" file="README">
+                <span data-feather="home"></span>
+                {{name}}
+              </a>
+            </li>
+            
             <ul id="files" class="nav flex-column mb-2 pb-4">
 
             </ul>
@@ -215,11 +241,15 @@
             </ol>
           </nav>
 
-          <div id="filename-div" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-4">
+          <div class="progress mx-5 my-2" style="display:none;" id="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+          </div>
+
+          <div id="filename-div" style="display:none" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-4">
             <h1 class="h2 filename" style="max-width:100%; display:inline-block; white-space: nowrap;" file="{{filename}}" id="filename"></h1>
           </div>
 
-          <div id="toolbarRow">
+          <div id="toolbarRow" style="display:none">
             <div class="btn-toolbar">
               <div class="btn-group" id="toolbar-group">
                 <button id="reloadPage" style="display:none" class="btn btn-sm btn-danger" title="Recarregar">
@@ -229,7 +259,6 @@
 
                 <input id="upload-image" class="uploadFile" style="display:none" type="file" accept="image/*">
                 <input id="upload-document" class="uploadFile" style="display:none" type="file" accept=".zip, .rar, .pdf, .rtf, .txt, .htm, .html, .doc, .docx, .tsv, .csv, .xls, .xlsx">
-
                 <div id="dropdown" class="pr-1 dropdown" style="display:none">
                   <a class="btn btn-sm btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="insertLabel">Inserir</span>
@@ -271,6 +300,10 @@
                   <span data-feather="link-2"></span>
                   <span id="linksLabel"></span>
                 </button>
+                <button id="metadata" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Metadados">
+                  <span data-feather="calendar"></span>
+                  <span id="metadataLabel"></span>
+                </button>
                 <button id="shareText" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste arquivo">
                   <span data-feather="share-2"></span>
                   <input style="border:none; display:none; padding-right:10px" id="shareLink" readonly>
@@ -293,7 +326,21 @@
 
           </div>
 
-          <div id="toolbar" class="my-3">
+          <div id="toolbar" class="my-3" style="display:none">
+
+            <div toolbar="metadata" style="display:none" class="toolbar">
+              <button type="button" id="newMetadata" class="btn btn-sm btn-dark">
+                <span data-feather="plus-square"></span>
+                Novo metadado
+              </button>
+              <button type="button" id="saveMetadata" class="btn btn-sm btn-dark">
+                <span data-feather="save"></span>
+                <span id="saveMetadataLabel">Salvar metadados</span>
+              </button>
+              <div id="metadataItems" class="mt-3">
+
+              </div>
+            </div>
 
             <div toolbar="links" style="display:none" class="toolbar">
             </div>

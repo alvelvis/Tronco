@@ -1,3 +1,71 @@
+$('#saveMetadata').click(function(){
+    metadata = {}
+    $('.metadataItem').each(function(){
+        metadata[$(this).attr('key')] = $(this).val()
+    })
+    $.ajax({
+        url: "/api/saveMetadata",
+        method: "POST",
+        data: {
+            "name": $('#name').html(),
+            "filename": $('#filename').attr('file'),
+            "metadata": JSON.stringify(metadata),
+            "tronco_token": getTroncoToken(),
+        }
+    })
+    .done(function(){
+        $('#saveMetadata').toggleClass("btn-success").toggleClass("btn-dark")
+        $('#saveMetadataLabel').html("Salvo!")
+        setTimeout(function(){
+            $('#saveMetadata').toggleClass("btn-success").toggleClass("btn-dark")
+            $('#saveMetadataLabel').html("Salvar metadados")
+        }, 2000)
+    })
+    .fail(function(){
+        alert("Falha na sincronização")
+    })
+})
+
+function updateMetadataRemove() {
+    $('.removeMetadata').unbind("click").click(function(){
+        value = $(this).parents(".metadataDiv").children('.metadataItem').val()
+        key = $(this).parents(".metadataDiv").children(".metadataItem").attr('key')
+        if(confirm("Deseja remover o metadado " + key + "?")) {
+            $(this).parents(".metadataDiv").remove()
+        }
+    })
+}
+
+$('#newMetadata').click(function(){
+    newKey = prompt("Dê um nome ao novo metadado:")
+    if (newKey.length) {
+        if (newKey == "first_seen" || newKey == "last_seen" || newKey == "times_seen" || $('[key="' + newKey + '"]').length) {
+            alert("Metadado já existe!")
+        } else {
+            $('#metadataItems').append('<div class="input-group mb-3 metadataDiv"><div class="input-group-prepend"><a class="metadataKey removeMetadata input-group-text"><span title="Remover metadado" class="removeMetadata" data-feather="x"></a>' + newKey + '</span></div><input type="text" class="metadataItem form-control" key="' + newKey + '"></div>')
+            checkTheme()
+            updateMetadataRemove()
+            feather.replace()
+        }
+    }
+})
+
+function loadMetadata(metadata, first_seen) {
+    $('#metadataLabel').html(first_seen)
+    metadataItems = ""
+    for (key of Object.keys(metadata)) {
+        if (key != "first_seen" && key != "last_seen" && key != "times_seen")
+        metadataItems = metadataItems + '<div class="input-group mb-3 metadataDiv"><div class="input-group-prepend"><a class="metadataKey removeMetadata input-group-text"><span title="Remover metadado" data-feather="x"></span>' + key + '</a></div><input type="text" class="metadataItem form-control" key="' + key + '"></div>'
+    }
+    $('#metadataItems').html(metadataItems)
+    $('.metadataItem').each(function(){
+        $(this).val(metadata[$(this).attr("key")])
+    })
+    checkTheme()
+    updateMetadataRemove()
+    feather.replace()
+}
+
 $('.renameFileContext').click(function(){
     renameFile(filedivcontext.attr('file'))
 })
@@ -135,6 +203,7 @@ $('.insertDocument').click(function(){
 
 $('.uploadFile').change(function(){    
     formdata = new FormData()
+    $('#progress').show()
     if($(this).prop('files').length > 0)
     {
         file = $(this).prop('files')[0]
@@ -163,6 +232,9 @@ $('.uploadFile').change(function(){
                         }
                     }
                 }
+            })
+            .done(function(){
+                $('#progress').hide()
             })
         }
     }
@@ -253,13 +325,14 @@ function updateToolbar(){
                 left: left
             }).addClass("show")
             return false //blocks default Webbrowser right click menu
-            }).on("click", function() {
-                $("#context-menu-checklist").removeClass("show").hide()
-            })
+        })
+        .on("click", function() {
+            $("#context-menu-checklist").removeClass("show").hide()
+        })
 
-            $("#context-menu-checklist a").on("click", function() {
-                $(this).parent().removeClass("show").hide()
-            })
+        $("#context-menu-checklist a").on("click", function() {
+            $(this).parent().removeClass("show").hide()
+        })
 
     } else {
         $('#checklist').toggle(false)
@@ -974,11 +1047,13 @@ function loadFile(filename){
             $('#deleteFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
             textModified(false)
             $('#search').val('')
+            $('#filename-div, #mainText, #toolbarRow, #toolbar, #hr').toggle(true)
             $('#filename').html(filename == "README" ? name : filename)
             $('.filename').html(filename == "README" ? name : filename)
             $('#filename').attr('file', filename)
             $('#filename').scrollLeft(0)
             $('#mainText').val(data.data.text)
+            loadMetadata(data.data.metadata, data.data.first_seen)
             updateToolbar()
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
@@ -1011,6 +1086,20 @@ function loadFile(filename){
     })
 }
             
+$('#advancedEditingCheckbox').on('change', function(){
+    name = $('#name').html()
+    advancedEditing = $(this).prop('checked')
+    $.ajax({
+        url: '/api/changeTroncoConfig',
+        method: 'POST',
+        data: {
+            'name': name,
+            'advanced_editing': advancedEditing,
+            "tronco_token": getTroncoToken()
+        }
+    })
+    loadConfigFromCheckboxes()
+})
 
 $('#autoSaveCheckbox').on('change', function(){
     name = $('#name').html()
@@ -1046,6 +1135,7 @@ $('#wrapTextCheckbox').on('change', function(){
 })
 
 function loadConfigFromCheckboxes(){
+    $('#metadata, #advancedSearch').toggle($('#advancedEditingCheckbox').prop('checked') && permView)
     $('#saveModifications').toggle(!$('#autoSaveCheckbox').prop('checked'))
     $('#mainText').attr('wrap', $('#wrapTextCheckbox').prop('checked') ? 'on' : 'off')
     $('#mainText').css('overflow', $('#wrapTextCheckbox').prop('checked') ? "hidden" : "auto")
@@ -1064,14 +1154,16 @@ function loadConfig(){
     .done(function(data){
         auto_save = data.auto_save == "true" ? true : false
         auto_wrap = data.auto_wrap == "true" ? true : false
+        advanced_editing = data.advanced_editing == "true" ? true : false
         visitant_view_perm = data.view_perm
         visitant_edit_perm = data.edit_perm
         visitant_setup_perm = data.setup_perm
         $('#autoSaveCheckbox').prop('checked', auto_save)
         $('#wrapTextCheckbox').prop('checked', auto_wrap)
+        $('#advancedEditingCheckbox').prop('checked', advanced_editing)
         $('#viewPermission').prop('checked', visitant_view_perm)
         $('#editPermission').prop('checked', visitant_edit_perm)
-        $('#visitante-perms').html(visitant_view_perm ? "Visitantes podem " + (visitant_edit_perm ? "editar" : "visualizar") : "Visitantes não podem visualizar")
+        $('#visitante-perms').html(visitant_view_perm ? "Todos podem " + (visitant_edit_perm ? "editar" : "visualizar") : "Só você pode visualizar")
         loadConfigFromCheckboxes()
         updateMainTextPlaceholder()
     })
@@ -1191,7 +1283,7 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
-    elements = "#main, .row, #recentFiles, #mainText, #sidebar, html"
+    elements = "#main, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
     elements2 = "#corpusSettings, #mainHeadbar, #troncoHomeBar"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
@@ -1228,10 +1320,12 @@ $(document).ready(function(){
     })
     .on("queuecomplete", function(){
         updateFiles("", "README")
+        $('#progress').hide()
     })
     .on("sending", function(file, xhr, formData){
         formData.append("name", name)
         formData.append("tronco_token", getTroncoToken())
+        $('#progress').show()
     })
 
     var mainTextDropzone = new Dropzone("#mainText", { url: "/api/uploadDrop", clickable: false })
@@ -1250,9 +1344,13 @@ $(document).ready(function(){
     .on("sending", function(file, xhr, formData) {
         formData.append("name", name)
         formData.append("tronco_token", getTroncoToken())
+        $('#progress').show()
+    })
+    .on("queuecomplete", function(){
+        $('#progress').hide()
     })
     $(document).on("click touchmove", function(){
-        $("#context-menu-checklist, #context-menu-file").removeClass("show").hide()
+        $("#context-menu-checklist, #context-menu-file, #context-menu-metadata").removeClass("show").hide()
     })
     triggerResize(true)
     checkTheme()

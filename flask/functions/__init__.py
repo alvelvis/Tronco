@@ -5,6 +5,24 @@ import sys
 import time
 import shutil
 import objects
+import datetime
+
+def save_metadata(name, filename, metadata):
+    filename_dir = os.path.join(app.root_path, "corpora", name, filename)
+    with open(filename_dir) as f:
+        text = f.read().splitlines()
+    text_metadata = {
+        x.split("# ", 1)[1].split(" = ", 1)[0]: x.split(" = ")[1]
+        for x in text if x.startswith("# ") and " = " in x
+    }
+    text = "\n".join([x for x in text if not x.startswith("# ")])
+    for item in metadata:
+        if not item in text_metadata:
+            text_metadata[item] = ""
+        text_metadata[item] = metadata[item]
+    with open(filename_dir, "w") as f:
+        f.write("\n".join(["# " + x + " = " + y for x, y in text_metadata.items()]) + "\n" + text)
+    return {'error': '0'}
 
 def upload_file(uploading, filename, corpus=False):
     filename = secure_filename(filename.replace(" ", "_"))
@@ -135,12 +153,20 @@ def save_file(name, filename, text):
 
 def load_file(name, filename):
     filename_dir = os.path.join(app.root_path, "corpora", name, filename)
+    readme_dir = os.path.join(app.root_path, "corpora", name, "README")
     
     if filename.upper().strip() == "README":
         create_new_file(name, filename)
     else:
         if not os.path.isfile(filename_dir):
             return False
+
+    with open(readme_dir) as f:
+        readme = f.read()
+        readme_metadata = {
+            x.split("# ")[1].split(" = ", 1)[0]: x.split(" = ", 1)[1]
+            for x in readme.splitlines() if x.startswith("# ") and " = " in x
+        }
 
     with open(filename_dir) as f:
         texto = f.read()
@@ -150,6 +176,10 @@ def load_file(name, filename):
         texto = "# last_seen = 0\n" + texto
     if not '# first_seen = ' in texto:
         texto = f"# first_seen = {time.time()}\n" + texto
+    for metadata in readme_metadata:
+        if metadata not in ["first_seen", "times_seen", "last_seen"]:
+            if not '# ' + metadata + " = " in texto:
+                texto = f"# {metadata} = {readme_metadata[metadata]}\n" + texto
     times_seen = int(texto.split("# times_seen = ")[1].split("\n")[0].strip())
     last_seen = texto.split('# last_seen = ')[1].split("\n")[0].strip()
     texto = texto.replace(f'# times_seen = {times_seen}', f'# times_seen = {times_seen + 1}')
@@ -159,12 +189,15 @@ def load_file(name, filename):
 
     with open(filename_dir) as f:
         text = f.read()
+        first_seen_date = datetime.datetime.fromtimestamp(float(text.split("# first_seen = ")[1].split("\n")[0]))
+        first_seen = f"{first_seen_date.day}/{first_seen_date.month}/{first_seen_date.year} {first_seen_date.hour}:{first_seen_date.minute}"
         return {
             "text": "\n".join([x for x in text.splitlines() if not (x.strip().startswith("# ") and " = " in x)]),
             "metadata": {
-                y.split(" = ")[0]: y.split(" = ", 1)[1] 
+                y.split(" = ")[0].split("# ")[1]: y.split(" = ", 1)[1] 
                 for y in [x for x in text.splitlines() if x.strip().startswith("# ") and " = " in x]
-                }
+                },
+            "first_seen": first_seen,
             }
 
 def create_new_file(name, filename, text=""):

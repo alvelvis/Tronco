@@ -1,6 +1,7 @@
 import os, sys
 import requests
 import random
+import json
 from flask import Flask, redirect, render_template, request, url_for, send_from_directory
 from flaskwebgui import FlaskUI
 from uuid import uuid4
@@ -16,6 +17,18 @@ tronco_config = objects.TroncoConfig()
 session_tokens = objects.SessionTokens()
 tronco_tokens = objects.TroncoTokens()
 app.jinja_env.globals.update(tronco_config=tronco_config)
+
+@app.route("/api/saveMetadata", methods=["POST"])
+def save_metadata():
+    name = request.values.get("name")
+    filename = request.values.get("filename")
+    metadata = json.loads(request.values.get("metadata"))
+    if metadata:
+        password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+        if not tronco_config.has_permission(name, password, "editar"): return None
+        return functions.save_metadata(name, filename, metadata)
+    else:
+        return {'error': '0'}
 
 @app.route("/.well-known/assetlinks.json")
 def get_asset():
@@ -136,6 +149,7 @@ def load_config():
     return {
         'auto_save': tronco_config.corpora[name]['settings']['auto_save'],
         'auto_wrap': tronco_config.corpora[name]['settings']['auto_wrap'],
+        'advanced_editing': tronco_config.corpora[name]['settings']['advanced_editing'] if 'advanced_editing' in tronco_config.corpora[name]['settings'] else "false",
         'view_perm': "visualizar" in tronco_config.corpora[name]['permissions']['disconnected'],
         'edit_perm': "editar" in tronco_config.corpora[name]['permissions']['disconnected'],
         'setup_perm': "configurar" in tronco_config.corpora[name]['permissions']['disconnected']
