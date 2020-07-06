@@ -56,6 +56,9 @@ function toggleMain(panel) {
                 break
         }
     }
+    if (isMobile && $('#sidebar:visible').length) {
+        $('.toggleSettings')[0].click()
+    }
 }
 
 $('#addAdvancedSearchMetadata').click(function(){
@@ -1114,9 +1117,6 @@ function updateFiles(key = "", click = ""){
                 $('title').html($(this).attr('file') + " - Tronco")
             } else {
                 $('title').html(name + " - Tronco")
-            }
-            if (isMobile && $('#sidebar:visible').length) {
-                $('.toggleSettings')[0].click()
             }
         })
 

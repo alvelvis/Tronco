@@ -220,12 +220,14 @@
               </a>
             </h6>
 
-            <li class="nav-item py-1">
-              <a class="nav-link files" file="README">
-                <span data-feather="home"></span>
-                {{name}}
-              </a>
-            </li>
+            <ul class="nav flex-column">
+              <li class="nav-item py-1">
+                <a class="nav-link files" file="README">
+                  <span data-feather="home"></span>
+                  {{name}}
+                </a>
+              </li>
+            </ul>
             
             <ul id="files" class="nav flex-column mb-2 pb-4">
 
@@ -428,7 +430,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=5"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=59"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=60"></script>
   
   </body>
 </html>
