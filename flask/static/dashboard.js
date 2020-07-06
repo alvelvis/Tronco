@@ -124,33 +124,33 @@ $('#advancedSearchGo').click(function(){
             switch (data.error) {
                 case '0':
                     $('#searchResults').html("<div class='h5'>" + data.data.sentences + " frases, " + data.data.occurrences + " ocorrências</div>" + `
-                        <table class="searchTable table">
+                        <table class="searchTable table" style="word-break:break-all">
                             <tr>
-                                <th style="cursor:pointer" onclick="sortTable(0, 'float')" scope="col">#</th>
-                                <th style="cursor:pointer" onclick="sortTable(0, 'string')" scope="col">Arquivo</th>
-                                <th style="cursor:pointer" onclick="sortTable(0, 'string')" scope="col">Frase</th>
+                                <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
+                                <th style="cursor:pointer; min-width:80px;" onclick="sortTable(0, 'string')" scope="col">Arquivo</th>
+                                <th style="cursor:pointer;" onclick="sortTable(0, 'string')" scope="col">Frase</th>
                             </tr>
                         </table>
                     `)
 
                     $('#wordDistribution').html("<div class='h5'>" + data.data.word_distribution.different + " palavras diferentes, " + data.data.word_distribution.total + " ocorrências</div>" + `
-                    <table class="searchTable table">
+                    <table class="searchTable table" style="word-break:break-all">
                         <tr>
-                            <th style="cursor:pointer" onclick="sortTable(0, 'float')" scope="col">#</th>
+                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                             <th style="cursor:pointer" onclick="sortTable(0, 'string')" scope="col">Palavra</th>
-                            <th style="cursor:pointer" onclick="sortTable(0, 'float')" scope="col">Ocorrências</th>
-                            <th style="cursor:pointer" onclick="sortTable(0, 'float')" scope="col">Dispersão</th>
+                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">Ocorrências</th>
+                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">Dispersão</th>
                         </tr>
                     </table>
                     `)
 
                     $('#lemmaDistribution').html("<div class='h5'>" + data.data.lemma_distribution.different + " lemas diferentes, " + data.data.lemma_distribution.total + " ocorrências</div>" + `
-                    <table class="searchTable table">
+                    <table class="searchTable table" style="word-break:break-all">
                         <tr>
-                            <th style="cursor:pointer" onclick="sortTable(0, 'float')" scope="col">#</th>
+                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                             <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Lema</th>
-                            <th style="cursor:pointer" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
-                            <th style="cursor:pointer" onclick="sortTable(3, 'float')" scope="col">Dispersão</th>
+                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(3, 'float')" scope="col">Dispersão</th>
                         </tr>
                     </table>
                     `)
@@ -1108,10 +1108,10 @@ function updateFiles(key = "", click = ""){
         }
 
         $('.files').click(function(){
+            loadFile($(this).attr('file'))
             $('.files').toggleClass('active', false)
             $('#advancedSearch').find('a').toggleClass("active", false)
             $(this).toggleClass('active', true)
-            loadFile($(this).attr('file'))
             this.scrollIntoView();
             if ($(this).attr('file') != "README") {
                 $('title').html($(this).attr('file') + " - Tronco")
