@@ -109,7 +109,9 @@ $('#addAdvancedSearchMetadata').click(function(){
 
 function toggleProgress(label=false){
     if (label) {
-        $('title').html("(" + label + ") " + $('title').html())
+        if ($('title').html().indexOf(label) == -1) {
+            $('title').html("(" + label + ") " + $('title').html())
+        }
         $('#progress-label').html(label)
         $('#progress-div').show()
     } else {
