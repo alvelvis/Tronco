@@ -1,3 +1,278 @@
+function indexCorpus(force=false) {
+    toggleMain(false)
+    toggleProgress("Indexando coleção...")
+    $.ajax({
+        url: "/api/loadAdvancedCorpus",
+        method: "POST",
+        data: {
+            "name": $('#name').html(),
+            "tronco_token": getTroncoToken(),
+            "force": force,
+        }
+    })
+    .done(function(data){
+        switch (data.error) {
+            case '0':
+                toggleMain("search")
+                $('.files').toggleClass('active', false)
+                $('#advancedSearch').find("a").toggleClass("active", true)
+                if (!isMobile) {
+                    $('#advancedSearchInput').focus()
+                    $('#advancedSearchInput').select()
+                }
+                toggleProgress(false)
+                $('#advancedSearchSentences').html(" em " + data.data + " frases")
+                allMetadata = data.metadata
+                break
+            case '1':
+                toggleProgress(false)
+                alert("Você não tem permissão")
+                break
+        }
+    })
+}
+
+$('#reindexCorpus').click(function(){
+    indexCorpus(true)
+})
+
+$('.toggleSearch').click(function(){
+    $('.toggleSearch').toggleClass("active", false)
+    $(this).toggleClass("active", true)
+    $('.searchPanel').toggle(false)
+    $('#' + $(this).attr('panel')).toggle(true)
+})
+
+function toggleMain(panel) {
+    $('#filename-div, #filename, #mainText, #toolbarRow, #toolbar, #hr').toggle(false)
+    $('#searchMain').toggle(false)
+    if (panel) {
+        switch (panel) {
+            case "file":
+                $('#filename-div, #filename, #mainText, #toolbarRow, #toolbar, #hr').toggle(true)
+                break
+            case "search":
+                $('#searchMain').toggle(true)
+                break
+        }
+    }
+}
+
+$('#addAdvancedSearchMetadata').click(function(){
+    newMetadata = `<div class="advancedSearchMetadataItem input-group mb-3">
+                        <div class="input-group-prepend">
+                            <select class="custom-select">`
+    for (metadata of allMetadata) {
+        newMetadata = newMetadata + '<option>' + metadata + '</option>'
+    }
+    newMetadata = newMetadata + `</select>
+                        </div>
+                        <input type="text" class="form-control">
+                    </div>`
+    $('#advancedSearchMetadata').append(newMetadata)
+    checkTheme()
+})
+
+function toggleProgress(label=false){
+    if (label) {
+        $('#progress-label').html(label)
+        $('#progress-div').show()
+    } else {
+        $('#progress-div').hide()
+    }
+}
+
+function metadataItemUpdate() {
+    $('.metadataItem').unbind('keyup').on('keyup', function(e){
+        if (e.which == 13) {
+            $('#saveMetadata').click()
+        }
+    })
+}
+
+$('#advancedSearchGo').click(function(){
+    if ($('#advancedSearchInput').val().length) {
+        $('#advancedSearchInput').toggleClass("is-invalid", false)
+        metadata = []
+        metadata_dic = {}
+        $('.advancedSearchMetadataItem').each(function(){
+            if (!$(this).find("input").val().length){
+                $(this).remove()
+            } else {
+                metadata.push(encodeURIComponent($(this).find("select").val()) + "=" + encodeURIComponent($(this).find("input").val()))
+                metadata_dic[$(this).find("select").val()] = $(this).find("input").val()
+            }
+        })
+        window.history.pushState("", "", '/corpus/' + name + "?search=" + encodeURIComponent($('#advancedSearchInput').val()) + "&" + metadata.join("&"))
+        //$('[panel="searchResults"].toggleSearch').click()
+        toggleProgress("Buscando...")
+        $.ajax({
+            url: "/api/query",
+            method: "POST",
+            data: {
+                "name": $('#name').html(),
+                "tronco_token": getTroncoToken(),
+                "params": $('#advancedSearchInput').val(),
+                "metadata": JSON.stringify(metadata_dic)
+            }
+        })
+        .done(function(data){
+            $('#navSearchPanels').show()
+            switch (data.error) {
+                case '0':
+                    $('#searchResults').html("<div class='h5'>" + data.data.sentences + " frases, " + data.data.occurrences + " ocorrências</div>" + `
+                        <table class="searchTable table">
+                            <tr>
+                                <th style="cursor:pointer" onclick="sortTable(0, 'float')" scope="col">#</th>
+                                <th style="cursor:pointer" onclick="sortTable(0, 'string')" scope="col">Arquivo</th>
+                                <th style="cursor:pointer" onclick="sortTable(0, 'string')" scope="col">Frase</th>
+                            </tr>
+                        </table>
+                    `)
+
+                    $('#wordDistribution').html("<div class='h5'>" + data.data.word_distribution.different + " palavras diferentes, " + data.data.word_distribution.total + " ocorrências</div>" + `
+                    <table class="searchTable table">
+                        <tr>
+                            <th style="cursor:pointer" onclick="sortTable(0, 'float')" scope="col">#</th>
+                            <th style="cursor:pointer" onclick="sortTable(0, 'string')" scope="col">Palavra</th>
+                            <th style="cursor:pointer" onclick="sortTable(0, 'float')" scope="col">Ocorrências</th>
+                            <th style="cursor:pointer" onclick="sortTable(0, 'float')" scope="col">Dispersão</th>
+                        </tr>
+                    </table>
+                    `)
+
+                    $('#lemmaDistribution').html("<div class='h5'>" + data.data.lemma_distribution.different + " lemas diferentes, " + data.data.lemma_distribution.total + " ocorrências</div>" + `
+                    <table class="searchTable table">
+                        <tr>
+                            <th style="cursor:pointer" onclick="sortTable(0, 'float')" scope="col">#</th>
+                            <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Lema</th>
+                            <th style="cursor:pointer" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+                            <th style="cursor:pointer" onclick="sortTable(3, 'float')" scope="col">Dispersão</th>
+                        </tr>
+                    </table>
+                    `)
+
+                    n = 1
+                    for (sentence of data.data.results) {
+                        $('#searchResults').find("table").append("<tr><td>" + n + "</td><td><a title='Ir para arquivo' class='gotoFile'>" + sentence[0].rsplit("-", 1)[0] + "</td><td>" + sentence[1] + "</td></tr>")
+                        n ++
+                    }
+
+                    n = 1
+                    for (word of data.data.word_distribution.list) {
+                        $('#wordDistribution').find("table").append("<tr><td>" + n + "</td><td><a title='Buscar esta palavra' class='gotoWord'>" + word[0] + "</td><td>" + word[1] + "</td><td title='" + data.data.word_distribution.dispersion[word[0]].join("|") + "'>" + data.data.word_distribution.dispersion[word[0]].length + "</td></tr>")
+                        n ++
+                    }
+
+                    n = 1
+                    for (lemma of data.data.lemma_distribution.list) {
+                        $('#lemmaDistribution').find("table").append("<tr><td>" + n + "</td><td><a title='Buscar este lema' class='gotoLemma'>" + lemma[0] + "</td><td>" + lemma[1] + "</td><td title='" + data.data.lemma_distribution.dispersion[lemma[0]].join("|") + "'>" + data.data.lemma_distribution.dispersion[lemma[0]].length + "</td></tr>")
+                        n ++
+                    }
+
+                    $('.gotoWord').click(function(){
+                        $('#advancedSearchInput').val('word = "' + $(this).text() + '"')
+                        $('#advancedSearchGo').click()
+                    })
+
+                    $('.gotoLemma').click(function(){
+                        $('#advancedSearchInput').val('lemma = "' + $(this).text() + '"')
+                        $('#advancedSearchGo').click()
+                    })
+
+                    $('.gotoFile').click(function(){
+                        $('[file="' + $(this).text() + '"].files').click()
+                    })
+                    break
+                case '1':
+                    alert("Você não permissão para realizar a busca")
+                    break
+            }
+            toggleProgress(false)
+        })
+        .fail(function(){
+            toggleProgress(false)
+            alert("A busca retornou um erro")
+        })
+    } else {
+        $('#advancedSearchInput').toggleClass("is-invalid", true)
+    }
+})
+
+$('#advancedSearch').click(function(){
+    indexCorpus()
+})
+
+$('#saveMetadata').click(function(){
+    metadata = {}
+    $('.metadataItem').each(function(){
+        metadata[$(this).attr('key')] = $(this).val()
+    })
+    $.ajax({
+        url: "/api/saveMetadata",
+        method: "POST",
+        data: {
+            "name": $('#name').html(),
+            "filename": $('#filename').attr('file'),
+            "metadata": JSON.stringify(metadata),
+            "tronco_token": getTroncoToken(),
+        }
+    })
+    .done(function(){
+        $('#saveMetadata').toggleClass("btn-success").toggleClass("btn-dark")
+        $('#saveMetadataLabel').html("Salvo!")
+        setTimeout(function(){
+            $('#saveMetadata').toggleClass("btn-success").toggleClass("btn-dark")
+            $('#saveMetadataLabel').html("Salvar metadados")
+        }, 2000)
+    })
+    .fail(function(){
+        alert("Falha na sincronização")
+    })
+})
+
+function updateMetadataRemove() {
+    $('.removeMetadata').unbind("click").click(function(){
+        value = $(this).parents(".metadataDiv").children('.metadataItem').val()
+        key = $(this).parents(".metadataDiv").children(".metadataItem").attr('key')
+        if(confirm("Deseja remover o metadado " + key + "?")) {
+            $(this).parents(".metadataDiv").remove()
+        }
+    })
+}
+
+$('#newMetadata').click(function(){
+    newKey = prompt("Dê um nome ao novo metadado:", "")
+    if (newKey && newKey.length) {
+        if (newKey == "first_seen" || newKey == "last_seen" || newKey == "times_seen" || $('[key="' + newKey + '"]').length) {
+            alert("Metadado já existe!")
+        } else {
+            $('#metadataItems').append('<div class="input-group mb-3 metadataDiv"><div class="input-group-prepend"><a class="metadataKey removeMetadata input-group-text"><span title="Remover metadado" class="removeMetadata" data-feather="x"></span>' + newKey + '</a></div><input type="text" class="metadataItem form-control" key="' + newKey + '"></div>')
+            checkTheme()
+            updateMetadataRemove()
+            metadataItemUpdate()
+            feather.replace()
+        }
+    }
+})
+
+function loadMetadata(metadata, first_seen) {
+    $('#metadataLabel').html(first_seen)
+    metadataItems = ""
+    for (key of Object.keys(metadata)) {
+        if (key != "first_seen" && key != "last_seen" && key != "times_seen")
+        metadataItems = metadataItems + '<div class="input-group mb-3 metadataDiv"><div class="input-group-prepend"><a class="metadataKey removeMetadata input-group-text"><span title="Remover metadado" data-feather="x"></span>' + key + '</a></div><input type="text" class="metadataItem form-control" key="' + key + '"></div>'
+    }
+    $('#metadataItems').html(metadataItems)
+    $('.metadataItem').each(function(){
+        $(this).val(metadata[$(this).attr("key")])
+    })
+    checkTheme()
+    updateMetadataRemove()
+    metadataItemUpdate()
+    feather.replace()
+}
+
 $('.renameFileContext').click(function(){
     renameFile(filedivcontext.attr('file'))
 })
@@ -135,6 +410,7 @@ $('.insertDocument').click(function(){
 
 $('.uploadFile').change(function(){    
     formdata = new FormData()
+    toggleProgress("Enviando...")
     if($(this).prop('files').length > 0)
     {
         file = $(this).prop('files')[0]
@@ -163,6 +439,9 @@ $('.uploadFile').change(function(){
                         }
                     }
                 }
+            })
+            .done(function(){
+                toggleProgress(false)
             })
         }
     }
@@ -253,13 +532,14 @@ function updateToolbar(){
                 left: left
             }).addClass("show")
             return false //blocks default Webbrowser right click menu
-            }).on("click", function() {
-                $("#context-menu-checklist").removeClass("show").hide()
-            })
+        })
+        .on("click", function() {
+            $("#context-menu-checklist").removeClass("show").hide()
+        })
 
-            $("#context-menu-checklist a").on("click", function() {
-                $(this).parent().removeClass("show").hide()
-            })
+        $("#context-menu-checklist a").on("click", function() {
+            $(this).parent().removeClass("show").hide()
+        })
 
     } else {
         $('#checklist').toggle(false)
@@ -570,6 +850,12 @@ function revokePassword(name){
     })
 }
 
+$('#advancedSearchInput').on('keyup', function(e){
+    if (e.which == 13){
+        $('#advancedSearchGo').click()
+    }
+})
+
 $('#search').on('keyup', function(e){
     filename = $(this).val()
     recentFiles(filename, filename)
@@ -577,6 +863,61 @@ $('#search').on('keyup', function(e){
         returnSearch()
     }
 })
+
+function sortTable(n, type="float") {
+    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0
+    table = $(".searchTable:visible").get(0)
+    switching = true;
+    // Set the sorting direction to ascending:
+    dir = "asc"
+    /* Make a loop that will continue until
+    no switching has been done: */
+    while (switching) {
+        // Start by saying: no switching is done:
+        switching = false
+        rows = table.rows
+        /* Loop through all table rows (except the
+        first, which contains table headers): */
+        for (i = 1; i < (rows.length - 1); i++) {
+            // Start by saying there should be no switching:
+            shouldSwitch = false
+            /* Get the two elements you want to compare,
+            one from current row and one from the next: */
+            x = rows[i].getElementsByTagName("TD")[n]
+            y = rows[i + 1].getElementsByTagName("TD")[n]
+            /* Check if the two rows should switch place,
+            based on the direction, asc or desc: */
+            if (dir == "asc") {
+                if ((type == "string" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) || (type == "float" && parseFloat(x.innerHTML) > parseFloat(y.innerHTML))) {
+                    // If so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                }
+            } else if (dir == "desc") {
+                if ((type == "string" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) || (type == "float" && parseFloat(x.innerHTML) < parseFloat(y.innerHTML))) {
+                    // If so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+        if (shouldSwitch) {
+            /* If a switch has been marked, make the switch
+            and mark that a switch has been done: */
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            // Each time a switch is done, increase this count by 1:
+            switchcount ++;
+        } else {
+            /* If no switching has been done AND the direction is "asc",
+            set the direction to "desc" and run the while loop again. */
+            if (switchcount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+}
 
 function recentFiles(key = "", typing = ""){
     $('#search').val(key)
@@ -765,6 +1106,7 @@ function updateFiles(key = "", click = ""){
 
         $('.files').click(function(){
             $('.files').toggleClass('active', false)
+            $('#advancedSearch').find('a').toggleClass("active", false)
             $(this).toggleClass('active', true)
             loadFile($(this).attr('file'))
             this.scrollIntoView();
@@ -797,10 +1139,34 @@ function updateFiles(key = "", click = ""){
         })
 
         feather.replace()
-        if (click.length) {
-            $('[file="' + click + '"].files').toggleClass('active', true).click()
+
+        search = window.location.href.match(/\?search=(.*)/)
+        if (!search) {
+            if (click.length) {
+                $('[file="' + click + '"].files').toggleClass('active', true).click()
+            } else {
+                $('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active')
+            }
         } else {
-            $('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active')
+            if (search[1] != "true") {
+                $('#advancedSearchInput').val(decodeURIComponent(search[1].split("&")[0]))
+                for (metadata of window.location.href.split("&")){
+                    if (metadata.indexOf("=") > 0 && metadata.indexOf("?search=") == -1) {
+                        $('#advancedSearchMetadata').append(`
+                        <div class="advancedSearchMetadataItem input-group mb-3">
+                            <div class="input-group-prepend">
+                                <select class="custom-select">
+                                    <option value="` + decodeURIComponent(metadata.split("=")[0]) + `">` + decodeURIComponent(metadata.split("=")[0]) + `</option>
+                                </select>
+                            </div>
+                            <input type="text" class="form-control" value="` + decodeURIComponent(metadata.split("=")[1]) + `">
+                        </div>
+                        `)
+                    }
+                }
+            }
+            checkTheme()
+            $('#advancedSearch').click()
         }
     })
 }
@@ -958,7 +1324,7 @@ function loadFile(filename){
     name = $('#name').html()
         
     $('#breadcrumb-nav').toggle(false)//filename == "README" && permView
-    window.history.pushState("", "", '/corpus/' + name + "?file=" + filename);
+    window.history.pushState("", "", '/corpus/' + name + "?file=" + filename)
     $.ajax({
         url: '/api/loadFile',
         data: {
@@ -974,11 +1340,13 @@ function loadFile(filename){
             $('#deleteFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
             textModified(false)
             $('#search').val('')
+            toggleMain("file")
             $('#filename').html(filename == "README" ? name : filename)
             $('.filename').html(filename == "README" ? name : filename)
             $('#filename').attr('file', filename)
             $('#filename').scrollLeft(0)
             $('#mainText').val(data.data.text)
+            loadMetadata(data.data.metadata, data.data.first_seen)
             updateToolbar()
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
@@ -1010,7 +1378,36 @@ function loadFile(filename){
         }
     })
 }
-            
+
+$('#corpusLanguage').on('change', function(){
+    name = $('#name').html()
+    language = $(this).val()
+    $.ajax({
+        url: '/api/changeTroncoConfig',
+        method: 'POST',
+        data: {
+            'name': name,
+            'corpus_language': language,
+            "tronco_token": getTroncoToken()
+        }
+    })
+    loadConfigFromCheckboxes()
+})
+
+$('#advancedEditingCheckbox').on('change', function(){
+    name = $('#name').html()
+    advancedEditing = $(this).prop('checked')
+    $.ajax({
+        url: '/api/changeTroncoConfig',
+        method: 'POST',
+        data: {
+            'name': name,
+            'advanced_editing': advancedEditing,
+            "tronco_token": getTroncoToken()
+        }
+    })
+    loadConfigFromCheckboxes()
+})
 
 $('#autoSaveCheckbox').on('change', function(){
     name = $('#name').html()
@@ -1046,6 +1443,7 @@ $('#wrapTextCheckbox').on('change', function(){
 })
 
 function loadConfigFromCheckboxes(){
+    $('#metadata, #corpusLanguageDiv, #advancedSearch').toggle($('#advancedEditingCheckbox').prop('checked') && permView)
     $('#saveModifications').toggle(!$('#autoSaveCheckbox').prop('checked'))
     $('#mainText').attr('wrap', $('#wrapTextCheckbox').prop('checked') ? 'on' : 'off')
     $('#mainText').css('overflow', $('#wrapTextCheckbox').prop('checked') ? "hidden" : "auto")
@@ -1064,14 +1462,17 @@ function loadConfig(){
     .done(function(data){
         auto_save = data.auto_save == "true" ? true : false
         auto_wrap = data.auto_wrap == "true" ? true : false
+        advanced_editing = data.advanced_editing == "true" ? true : false
         visitant_view_perm = data.view_perm
         visitant_edit_perm = data.edit_perm
         visitant_setup_perm = data.setup_perm
+        $('#corpusLanguage').val(data.corpus_language)
         $('#autoSaveCheckbox').prop('checked', auto_save)
         $('#wrapTextCheckbox').prop('checked', auto_wrap)
+        $('#advancedEditingCheckbox').prop('checked', advanced_editing)
         $('#viewPermission').prop('checked', visitant_view_perm)
         $('#editPermission').prop('checked', visitant_edit_perm)
-        $('#visitante-perms').html(visitant_view_perm ? "Visitantes podem " + (visitant_edit_perm ? "editar" : "visualizar") : "Visitantes não podem visualizar")
+        $('#visitante-perms').html(visitant_view_perm ? "Todos podem " + (visitant_edit_perm ? "editar" : "visualizar") : "Só você pode visualizar")
         loadConfigFromCheckboxes()
         updateMainTextPlaceholder()
     })
@@ -1137,7 +1538,7 @@ function triggerResize(first=false){
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
         $('#troncoLogo').toggleClass("mb-3", true)
         $('.navbar-brand').hide()
-        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
+        $('#toolbar-group, #searchMain, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow').css('overflow-x', "scroll")
@@ -1146,7 +1547,7 @@ function triggerResize(first=false){
             clearInterval(mobileInterval)
         }
         isMobile = false
-        $('#toolbar-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
+        $('#toolbar-group, #searchMain, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').toggleClass("mb-3", false)
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
@@ -1191,8 +1592,8 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
-    elements = "#main, .row, #recentFiles, #mainText, #sidebar, html"
-    elements2 = "#corpusSettings, #mainHeadbar, #troncoHomeBar"
+    elements = "#main, .prepend, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
+    elements2 = "#corpusSettings, #corpusLanguageDiv, #corpusLanguage, #mainHeadbar, #troncoHomeBar"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
         $(elements2).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
@@ -1228,10 +1629,12 @@ $(document).ready(function(){
     })
     .on("queuecomplete", function(){
         updateFiles("", "README")
+        toggleProgress(false)
     })
     .on("sending", function(file, xhr, formData){
         formData.append("name", name)
         formData.append("tronco_token", getTroncoToken())
+        toggleProgress("Enviando...")
     })
 
     var mainTextDropzone = new Dropzone("#mainText", { url: "/api/uploadDrop", clickable: false })
@@ -1250,9 +1653,13 @@ $(document).ready(function(){
     .on("sending", function(file, xhr, formData) {
         formData.append("name", name)
         formData.append("tronco_token", getTroncoToken())
+        toggleProgress("Enviando...")
+    })
+    .on("queuecomplete", function(){
+        toggleProgress(false)
     })
     $(document).on("click touchmove", function(){
-        $("#context-menu-checklist, #context-menu-file").removeClass("show").hide()
+        $("#context-menu-checklist, #context-menu-file, #context-menu-metadata").removeClass("show").hide()
     })
     triggerResize(true)
     checkTheme()

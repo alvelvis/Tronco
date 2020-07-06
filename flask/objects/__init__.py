@@ -1,13 +1,23 @@
 import time
 import json
 import os
-import app
+from app import root_path
 import re
 import sys
+import estrutura_ud
+import threading
+import pickle
+from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.1
+tronco_version = 1.2
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
+
+udpipe_models = {
+    'pt': os.path.join(root_path, "udpipe", "portuguese-bosque-ud-2.5-191206.udpipe"),
+    'en': os.path.join(root_path, "udpipe", "english-ewt-ud-2.5-191206.udpipe")
+}
+
 all_permissions = ["visualizar", "editar", "configurar"]
 startup_salutations = [
     "Saudações,",
@@ -56,6 +66,67 @@ _windows_device_files = (
     "NUL",
 )
 
+class AdvancedCorpora:
+
+    def load_model(self, lang):
+        self.models.update({lang: Model.load(udpipe_models[lang])})
+        return True
+
+    def load_corpus(self, name, lang):
+        if name in self.corpora:
+            del self.corpora[name]
+        corpus_dir = os.path.join(root_path, "corpora", name)
+        corpus_language = lang
+        if not corpus_language in self.models:
+            self.load_model(corpus_language)
+        pipeline = Pipeline(self.models[corpus_language], "tokenize", Pipeline.DEFAULT, Pipeline.DEFAULT, "conllu")
+        corpus = estrutura_ud.Corpus(recursivo=True)
+        all_metadata = {'filename': ''}
+        for filename in os.listdir(corpus_dir):
+            if filename != "README":
+                with open(corpus_dir + "/" + filename) as f:
+                    text = f.read().splitlines()
+                raw_text = []
+                metadata = {}
+                [raw_text.append(x) if not x.startswith("# ") and not " = " in x else metadata.update({x.split(" = ", 1)[0].split("# ", 1)[1]: x.split(" = ", 1)[1]}) for x in text]
+                all_metadata.update(metadata)
+                processed = pipeline.process("\n".join(raw_text)).replace("# newdoc\n", "").replace("# newpar\n", "")
+                temp_corpus = estrutura_ud.Corpus(recursivo=False)
+                temp_corpus.build(processed)
+                for sent_id, sentence in temp_corpus.sentences.items():
+                    for metadado in metadata:
+                        sentence.metadados[metadado] = metadata[metadado]
+                    sentence.sent_id = filename + '-' + sent_id
+                    sentence.metadados['sent_id'] = filename + '-' + sent_id
+                    sentence.metadados['filename'] = filename
+                    corpus.sentences[filename + '-' + sent_id] = sentence
+        
+        self.corpora[name] = {'corpus': corpus, 'metadata': list(all_metadata.keys())}
+        self.save()
+        return True
+
+    def remove_corpus(self, name):
+        if name in self.corpora:
+            del self.corpora[name]
+            self.save()
+
+    def save(self):
+        with open(self.config_file, "wb") as f:
+            pickle.dump(self.corpora, f)
+
+    def get_number_sentences_or_load(self, name, lang):
+        if not name in self.corpora:
+            self.load_corpus(name, lang)
+        return len(self.corpora[name]['corpus'].sentences)
+
+    def __init__(self):
+        self.corpora = {}
+        self.models = {}
+        self.config_file = os.path.join(root_path, "advanced_corpora.p")
+        if os.path.isfile(self.config_file):
+            with open(self.config_file, "rb") as f:
+                self.corpora = pickle.load(f)
+
 class TroncoTokens:
 
     def load(self):
@@ -87,7 +158,7 @@ class TroncoTokens:
 
     def __init__(self):
         self.tokens = {}
-        self.tokens_file = os.path.join(app.root_path, "tronco_tokens.json")
+        self.tokens_file = os.path.join(root_path, "tronco_tokens.json")
         self.load()
 
 class SessionTokens:
@@ -148,6 +219,9 @@ class TroncoConfig:
         if os.path.isfile(self.config_file):
             with open(self.config_file, "rb") as f:
                 self.corpora = json.load(f)
+        for corpus in os.listdir(os.path.join(root_path, "corpora")):
+            if not corpus in self.corpora:
+                self.add_corpus(corpus)
         
     def save(self):
         with open(self.config_file, "w") as f:
@@ -163,12 +237,14 @@ class TroncoConfig:
                 'settings': {
                     'auto_wrap': "true",
                     'auto_save': "true",
+                    'corpus_language': 'pt',
+                    'advanced_editing': "false",
                     }
                 }
             self.save()
 
     def __init__(self):
         self.corpora = {}
-        self.config_file = os.path.join(app.root_path, "tronco.json")
+        self.config_file = os.path.join(root_path, "tronco.json")
         self.load()
 
