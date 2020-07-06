@@ -4,7 +4,7 @@
 
 Tronco te ajuda a organizar coleções de texto. Elas ficam salvas na nuvem, podendo ser acessadas de qualquer dispositivo ou apenas em sua máquina.
 
-<!--Diversas ferramentas de processamento de linguagem natural compõem o arsenal do Tronco. Veja X.-->
+Diversas ferramentas de processamento automático de linguagem natural compõem o arsenal do Tronco. Veja [PLN](#PLN).
 
 Tronco é desenvolvido em Python/Javascript (framework Flask).
 
@@ -34,6 +34,10 @@ Em um ambiente Linux, você poderá ainda [Executar o framework Flask](#Executar
 
 - Ctrl+E: Tela inicial
 - Ctrl+P: Criar/pesquisar coleção/arquivo
+
+### PLN
+
+Em breve.
 
 ### Como fazer deploy
 
