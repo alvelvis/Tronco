@@ -83,13 +83,15 @@ def upload_file(uploading, filename, corpus=False):
         return {'filename': filename, 'error': "1"}
     if corpus:
         text = ""
-        try:
-            text = textract.process(uploaded_dir)
-        except:
-            try:
-                text = textract.process(uploaded_dir, extension="txt")
-            except:
-                pass
+        for encoding in ["utf-8", "latin-1"]:
+            if not text:
+                try:
+                    text = textract.process(uploaded_dir, encoding=encoding)
+                except:
+                    try:
+                        text = textract.process(uploaded_dir, extension="txt", encoding=encoding)
+                    except:
+                        pass
         if text:
             with open(uploaded_dir + (".txt" if not uploaded_dir.endswith(".txt") else ""), "wb") as f:
                 f.write(text)
@@ -99,17 +101,7 @@ def upload_file(uploading, filename, corpus=False):
             if not uploaded_dir.endswith(".txt"):
                 os.remove(uploaded_dir)
             return {'filename': filename, 'error': '2'}
-        #if filename.lower().endswith(".pdf"):
             
-        #for encoding in ["utf-8", "latin-1"]:
-            #try:
-                #with open(upload_dir, encoding=encoding) as f:
-                    #with open(upload_dir, "w") as w:
-                        #w.write(f.read())
-            #except:
-                #continue
-            #finally:
-                #break
     return {
         'filename': filename,
         'error': "0",

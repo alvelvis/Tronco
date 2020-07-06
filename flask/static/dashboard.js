@@ -1662,6 +1662,10 @@ $(document).ready(function(){
     uploadText.on("success", function(file, result){
         if (result.error == "1") {
             alert(result.filename + " é pesado demais!")
+        } else {
+            if (result.error == "2") {
+                alert("Não foi possível extrair texto do arquivo " + result.filename)
+            }
         }
     })
     .on("queuecomplete", function(){
