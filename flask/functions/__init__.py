@@ -23,15 +23,16 @@ def query(name, params, corpus, metadata={}, sent_cap=500):
     occurrences = query['casos']
     results = []
     for sentence in output:
-        results.append([interrogar_UD.cleanEstruturaUD(sentence['resultado'].split("# sent_id = ")[1].split("\n")[0]), interrogar_UD.fromInterrogarToHtml(sentence['resultado'].split("# text = ")[1].split("\n")[0])])
-    word_distribution = interrogar_UD.getDistribution(new_corpus, params, "word")
+        if "# sent_id = " in sentence['resultado'] and '# text = ' in sentence['resultado']:
+            results.append([interrogar_UD.cleanEstruturaUD(sentence['resultado'].split("# sent_id = ")[1].split("\n")[0]), interrogar_UD.fromInterrogarToHtml(sentence['resultado'].split("# text = ")[1].split("\n")[0])])
+    word_distribution = interrogar_UD.getDistribution(query, params, "word")
     word_distribution = {
         'different': word_distribution['dist'], 
         'total': sum(list(word_distribution['lista'].values())), 
         'list': sorted(list(word_distribution['lista'].items()), key=lambda x: (-x[1], x[0].lower())),
         'dispersion': word_distribution['dispersion_files']
     }
-    lemma_distribution = interrogar_UD.getDistribution(new_corpus, params, "lemma")
+    lemma_distribution = interrogar_UD.getDistribution(query, params, "lemma")
     lemma_distribution = {
         'different': lemma_distribution['dist'], 
         'total': sum(list(lemma_distribution['lista'].values())), 

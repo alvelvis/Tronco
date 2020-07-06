@@ -18,6 +18,10 @@ $('.toggleAdvancedSearchToolbar').click(function(){
 })
 
 function indexCorpus(force=false) {
+    if (force) {
+        $('#navSearchPanels').hide()
+        $('.searchPanel').html("")
+    }
     toggleMain(false)
     toggleProgress("Indexando coleção...")
     $.ajax({
