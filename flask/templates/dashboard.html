@@ -111,7 +111,14 @@
                             <label class="custom-control-label" style="cursor:pointer" title="Habilitar opções avançadas de edição" for="advancedEditingCheckbox">Editor avançado</label>
                             </div>
                         </div>                        
-                    </div>
+                      </div>
+                      <div id="corpusLanguageDiv" style="display:none" class="my-1">
+                        Língua da coleção:
+                        <select id="corpusLanguage" class="custom-select mt-1">
+                          <option value="pt">Português</option>
+                          <option value="en">Inglês</option>
+                        </select>
+                      </div>
                     </a>
                     <a id="renameCorpus" class="nav-link">
                         <span data-feather="delete"></span>
@@ -168,11 +175,6 @@
                       <span data-feather="search"></span>
                       Busca avançada
                     </a>
-                  </li><li class="nav-item" id="advancedSearch" style="display:none">
-                    <a class="nav-link" title="Realizar buscas avançadas">
-                      <span data-feather="search"></span>
-                      Busca avançada
-                    </a>
                   </li>
 
                   <li class="nav-item">
@@ -218,7 +220,7 @@
               </a>
             </h6>
 
-            <li class="nav-item">
+            <li class="nav-item py-1">
               <a class="nav-link files" file="README">
                 <span data-feather="home"></span>
                 {{name}}
@@ -240,9 +242,58 @@
                 
             </ol>
           </nav>
+          
+          <div class="progress mx-5 my-3" style="display:none" id="progress-div">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-label" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+          </div>
 
-          <div class="progress mx-5 my-2" style="display:none;" id="progress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+          <div id="searchMain" style="display:none">
+
+            <div class="h2 my-3">Busca avançada <span id="advancedSearchSentences"></span></div>
+            
+            <div class="input-group">
+              <input type="text" id="advancedSearchInput" class="form-control" placeholder="Expressão de busca">
+            </div>
+
+            <div class="my-3">
+              <button type="button" id="reindexCorpus" class="btn btn-sm btn-outline-secondary">
+                <span data-feather="refresh-ccw"></span>
+                Reindexar
+              </button>
+              <button type="button" id="addAdvancedSearchMetadata" class="btn btn-sm btn-outline-secondary">
+                <span data-feather="plus-square"></span>
+                Metadados
+              </button>
+              <button class="btn btn-sm btn-outline-primary" id="advancedSearchGo" type="button">
+                <span data-feather="search"></span>
+                Buscar
+              </button>
+            </div>
+
+            <div id="advancedSearchMetadata">
+
+            </div>
+
+            <hr>
+
+            <nav id="navSearchPanels" style="display:none" class="nav nav-pills justify-content-center mb-3">
+              <a panel="searchResults" class="nav-item toggleSearch nav-link active">Resultados</a>
+              <a panel="wordDistribution" class="nav-item toggleSearch nav-link">Palavras</a>
+              <a panel="lemmaDistribution" class="nav-item toggleSearch nav-link">Lemas</a>
+            </nav>
+
+            <div class="searchPanel" id="searchResults">
+
+            </div>
+            
+            <div class="searchPanel" id="wordDistribution" style="display:none">
+
+            </div>
+
+            <div class="searchPanel" id="lemmaDistribution" style="display:none">
+
+            </div>
+
           </div>
 
           <div id="filename-div" style="display:none" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-4">
@@ -302,6 +353,7 @@
                 </button>
                 <button id="metadata" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Metadados">
                   <span data-feather="calendar"></span>
+                  Criado em 
                   <span id="metadataLabel"></span>
                 </button>
                 <button id="shareText" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste arquivo">
@@ -329,11 +381,11 @@
           <div id="toolbar" class="my-3" style="display:none">
 
             <div toolbar="metadata" style="display:none" class="toolbar">
-              <button type="button" id="newMetadata" class="btn btn-sm btn-dark">
+              <button type="button" id="newMetadata" class="btn btn-sm btn-outline-secondary">
                 <span data-feather="plus-square"></span>
                 Novo metadado
               </button>
-              <button type="button" id="saveMetadata" class="btn btn-sm btn-dark">
+              <button type="button" id="saveMetadata" class="btn btn-sm btn-success">
                 <span data-feather="save"></span>
                 <span id="saveMetadataLabel">Salvar metadados</span>
               </button>
@@ -375,8 +427,8 @@
     <script src="{{url_for('static', filename='feather.js')}}"></script>
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
-    <script src="{{url_for('static', filename='tronco.js')}}?version=4"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=58"></script>
+    <script src="{{url_for('static', filename='tronco.js')}}?version=5"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=59"></script>
   
   </body>
 </html>

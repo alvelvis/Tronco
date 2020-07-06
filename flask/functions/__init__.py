@@ -1,14 +1,58 @@
 import os
 import re
-import app
+from app import root_path
 import sys
 import time
 import shutil
-import objects
+from objects import _filename_ascii_strip_re, _windows_device_files, tronco_metadata
 import datetime
+import interrogar_UD
+import estrutura_ud
+
+def query(name, params, corpus, metadata={}, sent_cap=500):
+    if metadata:
+        new_corpus = estrutura_ud.Corpus(recursivo=True)
+        for sent_id, sentence in list(corpus.sentences.items()):
+            if all(metadado in sentence.metadados and re.search(metadata[metadado], sentence.metadados[metadado], flags=re.I) for metadado in metadata):
+                new_corpus.sentences[sent_id] = sentence
+    else:
+        new_corpus = corpus
+    criterio = 5 if ' = ' in params and len(params.split('"')) >= 3 else 1
+    query = interrogar_UD.main(new_corpus, criterio, params, fastSearch=True)
+    output = query['output']
+    sentences = len(output)
+    occurrences = query['casos']
+    results = []
+    for sentence in output:
+        results.append([interrogar_UD.cleanEstruturaUD(sentence['resultado'].split("# sent_id = ")[1].split("\n")[0]), interrogar_UD.fromInterrogarToHtml(sentence['resultado'].split("# text = ")[1].split("\n")[0])])
+    word_distribution = interrogar_UD.getDistribution(new_corpus, params, "word")
+    word_distribution = {
+        'different': word_distribution['dist'], 
+        'total': sum(list(word_distribution['lista'].values())), 
+        'list': sorted(list(word_distribution['lista'].items()), key=lambda x: (-x[1], x[0].lower())),
+        'dispersion': word_distribution['dispersion_files']
+    }
+    lemma_distribution = interrogar_UD.getDistribution(new_corpus, params, "lemma")
+    lemma_distribution = {
+        'different': lemma_distribution['dist'], 
+        'total': sum(list(lemma_distribution['lista'].values())), 
+        'list': sorted(list(lemma_distribution['lista'].items()), key=lambda x: (-x[1], x[0].lower())),
+        'dispersion': lemma_distribution['dispersion_files']
+    }
+
+    return {
+        'data': {
+            'results': results[:sent_cap],
+            'word_distribution': word_distribution,
+            'lemma_distribution': lemma_distribution,
+            'sentences': sentences,
+            'occurrences': occurrences,
+        },
+        'error': '0',
+    }
 
 def save_metadata(name, filename, metadata):
-    filename_dir = os.path.join(app.root_path, "corpora", name, filename)
+    filename_dir = os.path.join(root_path, "corpora", name, filename)
     with open(filename_dir) as f:
         text = f.read().splitlines()
     text_metadata = {
@@ -26,14 +70,14 @@ def save_metadata(name, filename, metadata):
 
 def upload_file(uploading, filename, corpus=False):
     filename = secure_filename(filename.replace(" ", "_"))
-    upload_dir = os.path.join(app.root_path, "uploads") if not corpus else os.path.join(app.root_path, "corpora", corpus)
+    upload_dir = os.path.join(root_path, "uploads") if not corpus else os.path.join(root_path, "corpora", corpus)
     if not os.path.isdir(upload_dir):
         os.mkdir(upload_dir)
     files_in_folder = [x.lower() for x in os.listdir(upload_dir)]
     n_files = len(files_in_folder)
     if filename.lower() in files_in_folder:
         filename = "{}_{}{}".format(filename.rsplit(".", 1)[0], n_files, "." + filename.rsplit(".", 1)[1] if "." in filename else "")
-    uploaded_dir = os.path.join(app.root_path, "uploads", filename) if not corpus else os.path.join(app.root_path, "corpora", corpus, filename)
+    uploaded_dir = os.path.join(root_path, "uploads", filename) if not corpus else os.path.join(root_path, "corpora", corpus, filename)
     uploading.save(uploaded_dir)
     if os.stat(uploaded_dir).st_size > 5000000:
         os.remove(uploaded_dir)
@@ -44,7 +88,7 @@ def upload_file(uploading, filename, corpus=False):
     }
 
 def find_or_create_file(name, filename, create):
-    name_dir = os.path.join(app.root_path, "corpora", name)
+    name_dir = os.path.join(root_path, "corpora", name)
     filename = secure_filename(filename)
     for item in os.listdir(name_dir):
         if item.lower().strip() == filename.lower().strip():
@@ -55,7 +99,7 @@ def find_or_create_file(name, filename, create):
         return None
 
 def recent_files(name, key="", max_results=30):
-    name_dir = os.path.join(app.root_path, "corpora", name)
+    name_dir = os.path.join(root_path, "corpora", name)
     files = {}
     for item in os.listdir(name_dir):
         #if item != "README":
@@ -63,7 +107,7 @@ def recent_files(name, key="", max_results=30):
             'stats': [0, 0],
             'text': ""
         }
-        item_dir = os.path.join(app.root_path, "corpora", name, item)
+        item_dir = os.path.join(root_path, "corpora", name, item)
         with open(item_dir) as f:
             try:
                 text = f.read()
@@ -77,10 +121,10 @@ def recent_files(name, key="", max_results=30):
     return [x for x in sorted(files, key=lambda y: -files[y]['stats'][0]) if not key or (key and all((k.lower() in x.lower() or k.lower() in files[x]['text'].lower()) for k in key.split()))][:max_results]
 
 def rename_file(name, filename, new_filename):
-    name_dir = os.path.join(app.root_path, "corpora", name)
-    filename_dir = os.path.join(app.root_path, "corpora", name, filename)
+    name_dir = os.path.join(root_path, "corpora", name)
+    filename_dir = os.path.join(root_path, "corpora", name, filename)
     new_filename = secure_filename(new_filename)
-    new_filename_dir = os.path.join(app.root_path, "corpora", name, new_filename)
+    new_filename_dir = os.path.join(root_path, "corpora", name, new_filename)
     for item in os.listdir(name_dir):
         if item.lower().strip() == new_filename.lower().strip():
             return False
@@ -96,7 +140,7 @@ def secure_filename(filename):
     for sep in os.path.sep, os.path.altsep:
         if sep:
             filename = filename.replace(sep, " ")
-    filename = str(objects._filename_ascii_strip_re.sub("", filename)).strip(
+    filename = str(_filename_ascii_strip_re.sub("", filename)).strip(
         "._"
     )
 
@@ -106,16 +150,16 @@ def secure_filename(filename):
     if (
         os.name == "nt"
         and filename
-        and filename.split(".")[0].upper() in objects._windows_device_files
+        and filename.split(".")[0].upper() in _windows_device_files
     ):
         filename = f"_{filename}"
 
     return filename
 
 def find_or_create_corpus(name):
-    corpora_dir = os.path.join(app.root_path, "corpora")
+    corpora_dir = os.path.join(root_path, "corpora")
     name = secure_filename(name)
-    name_dir = os.path.join(app.root_path, "corpora", name)
+    name_dir = os.path.join(root_path, "corpora", name)
     for item in os.listdir(corpora_dir):
         if item.lower() == name.lower():
             return item
@@ -123,13 +167,13 @@ def find_or_create_corpus(name):
     return name
 
 def delete_corpus(name):
-    shutil.rmtree(os.path.join(app.root_path, "corpora", name))
+    shutil.rmtree(os.path.join(root_path, "corpora", name))
 
 def rename_corpus(name, new_name):
     new_name = secure_filename(new_name)
-    corpora_dir = os.path.join(app.root_path, 'corpora')
-    name_dir = os.path.join(app.root_path, 'corpora', name)
-    new_name_dir = os.path.join(app.root_path, 'corpora', new_name)
+    corpora_dir = os.path.join(root_path, 'corpora')
+    name_dir = os.path.join(root_path, 'corpora', name)
+    new_name_dir = os.path.join(root_path, 'corpora', new_name)
     if not any(x.lower().strip() == new_name.lower().strip() for x in os.listdir(corpora_dir)):
         shutil.move(name_dir, new_name_dir)
         return new_name
@@ -137,14 +181,14 @@ def rename_corpus(name, new_name):
         return False
 
 def delete_file(name, filename):
-    os.remove(os.path.join(app.root_path, "corpora", name, filename))
+    os.remove(os.path.join(root_path, "corpora", name, filename))
 
 def update_files(name):
-    corpus_dir = os.path.join(app.root_path, "corpora", name)
+    corpus_dir = os.path.join(root_path, "corpora", name)
     return sorted([x for x in os.listdir(corpus_dir) if x != "README"], key=lambda y: y.lower().strip())
 
 def save_file(name, filename, text):
-    filename_dir = os.path.join(app.root_path, "corpora", name, filename)
+    filename_dir = os.path.join(root_path, "corpora", name, filename)
     with open(filename_dir) as f:
         previous_text = f.read()
     metadata = [x for x in previous_text.splitlines() if x.startswith("# ") and " = " in x]
@@ -152,8 +196,8 @@ def save_file(name, filename, text):
         f.write("\n".join(metadata) + "\n" + text)
 
 def load_file(name, filename):
-    filename_dir = os.path.join(app.root_path, "corpora", name, filename)
-    readme_dir = os.path.join(app.root_path, "corpora", name, "README")
+    filename_dir = os.path.join(root_path, "corpora", name, filename)
+    readme_dir = os.path.join(root_path, "corpora", name, "README")
     
     if filename.upper().strip() == "README":
         create_new_file(name, filename)
@@ -177,7 +221,7 @@ def load_file(name, filename):
     if not '# first_seen = ' in texto:
         texto = f"# first_seen = {time.time()}\n" + texto
     for metadata in readme_metadata:
-        if metadata not in ["first_seen", "times_seen", "last_seen"]:
+        if metadata not in tronco_metadata:
             if not '# ' + metadata + " = " in texto:
                 texto = f"# {metadata} = {readme_metadata[metadata]}\n" + texto
     times_seen = int(texto.split("# times_seen = ")[1].split("\n")[0].strip())
@@ -190,7 +234,7 @@ def load_file(name, filename):
     with open(filename_dir) as f:
         text = f.read()
         first_seen_date = datetime.datetime.fromtimestamp(float(text.split("# first_seen = ")[1].split("\n")[0]))
-        first_seen = f"{first_seen_date.day}/{first_seen_date.month}/{first_seen_date.year} {first_seen_date.hour}:{first_seen_date.minute}"
+        first_seen = f"{first_seen_date.day}/{first_seen_date.month}/{first_seen_date.year} às {first_seen_date.hour}:{first_seen_date.minute}"
         return {
             "text": "\n".join([x for x in text.splitlines() if not (x.strip().startswith("# ") and " = " in x)]),
             "metadata": {
@@ -202,8 +246,8 @@ def load_file(name, filename):
 
 def create_new_file(name, filename, text=""):
     filename = secure_filename(filename)
-    filename_dir = os.path.join(app.root_path, "corpora", name, filename)
-    if not any(x.lower().strip() == filename.lower().strip() for x in os.listdir(os.path.join(app.root_path, "corpora", name))):
+    filename_dir = os.path.join(root_path, "corpora", name, filename)
+    if not any(x.lower().strip() == filename.lower().strip() for x in os.listdir(os.path.join(root_path, "corpora", name))):
         if filename == "README":
             text = f'''# times_seen = 0
 # last_seen = 0
@@ -216,7 +260,7 @@ def create_new_file(name, filename, text=""):
         return False
 
 def load_corpora(key="", max_results=20, recent=""):
-    corpora_dir = os.path.join(app.root_path, "corpora")
+    corpora_dir = os.path.join(root_path, "corpora")
     if not os.path.isdir(corpora_dir):
         os.mkdir(corpora_dir)
     corpora = {}
@@ -232,8 +276,8 @@ def load_corpora(key="", max_results=20, recent=""):
 
     for item in corpora_list:
         if item.lower() not in recent_lower:        
-            item_dir = os.path.join(app.root_path, "corpora", item)
-            readme_dir = os.path.join(app.root_path, "corpora", item, "README")
+            item_dir = os.path.join(root_path, "corpora", item)
+            readme_dir = os.path.join(root_path, "corpora", item, "README")
             stats = (0, 0)
             if os.path.isfile(readme_dir):
                 with open(readme_dir) as f:
