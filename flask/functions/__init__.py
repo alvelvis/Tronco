@@ -5,8 +5,8 @@ import sys
 import time
 import shutil
 import datetime
-import interrogar_UD
 import estrutura_ud
+import interrogar_UD
 
 def query(name, params, corpus, metadata={}, sent_cap=500):
     if metadata:
