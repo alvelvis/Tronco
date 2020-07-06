@@ -8,10 +8,10 @@ from uuid import uuid4
 
 app = Flask(__name__)
 ui = FlaskUI(app, port=5240, maximized=True)
-root_path = app.root_path
 
 import objects
 import functions
+objects.root_path = app.root_path
 tronco_config = objects.TroncoConfig()
 session_tokens = objects.SessionTokens()
 tronco_tokens = objects.TroncoTokens()
@@ -52,11 +52,11 @@ def save_metadata():
 
 @app.route("/.well-known/assetlinks.json")
 def get_asset():
-    return send_from_directory(app.root_path, "assetlinks.json")
+    return send_from_directory(objects.root_path, "assetlinks.json")
 
 @app.route("/media/<filename>", methods=["GET"])
 def get_uploads(filename):
-    return send_from_directory(os.path.join(app.root_path, "uploads"), filename)
+    return send_from_directory(os.path.join(objects.root_path, "uploads"), filename)
 
 @app.route("/api/uploadText", methods=["POST"])
 def upload_text():
@@ -334,10 +334,10 @@ def load_file():
 
 @app.route('/corpus/<name>')
 def load_corpus(name):
-    corpus_dir = os.path.join(app.root_path, "corpora", name)
+    corpus_dir = os.path.join(objects.root_path, "corpora", name)
     if os.path.isdir(corpus_dir):
         filename = request.args.get("file", None)
-        if filename and filename != "README" and not os.path.isfile(os.path.join(app.root_path, "corpora", name, filename)):
+        if filename and filename != "README" and not os.path.isfile(os.path.join(objects.root_path, "corpora", name, filename)):
             return redirect("/?load=false")
         return render_template('dashboard.html',
             name=name,

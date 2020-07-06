@@ -138,8 +138,8 @@ $('#advancedSearchGo').click(function(){
                         <tr>
                             <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                             <th style="cursor:pointer" onclick="sortTable(0, 'string')" scope="col">Palavra</th>
-                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">Ocorrências</th>
-                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">Dispersão</th>
+                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(0, 'float')" scope="col">Ocorrências</th>
+                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(0, 'float')" scope="col">Dispersão</th>
                         </tr>
                     </table>
                     `)
@@ -149,8 +149,8 @@ $('#advancedSearchGo').click(function(){
                         <tr>
                             <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                             <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Lema</th>
-                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
-                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(3, 'float')" scope="col">Dispersão</th>
+                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(3, 'float')" scope="col">Dispersão</th>
                         </tr>
                     </table>
                     `)

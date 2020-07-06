@@ -1,17 +1,16 @@
 import time
 import json
 import os
-from app import root_path
 import re
 import sys
 import estrutura_ud
-import threading
 import pickle
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.2
+tronco_version = 1.3
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
+root_path = ""
 
 udpipe_models = {
     'pt': os.path.join(root_path, "udpipe", "portuguese-bosque-ud-2.5-191206.udpipe"),
