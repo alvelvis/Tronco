@@ -7,7 +7,7 @@ import estrutura_ud
 import pickle
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.3
+tronco_version = 1.31
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 root_path = ""

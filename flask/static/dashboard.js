@@ -1,3 +1,22 @@
+$('#clearAdvancedSearchMetadata').click(function(){
+    $('#advancedSearchMetadataCount').html("0")
+    $('.advancedSearchMetadataItem').remove()
+})
+
+$('.toggleAdvancedSearchToolbar').click(function(){
+    $(".advanced-toolbar-panel").toggle(false)
+    if ($(this).hasClass("btn-primary")) {
+        $("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']").toggle(true)
+    }
+    $('.toggleAdvancedSearchToolbar').toggleClass("btn-primary", false).toggleClass("btn-outline-secondary", true)
+    if ($("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']") && $("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']").length) {
+        $("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']").toggle()
+    }
+    if ($("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']:visible").length) {
+        $(this).toggleClass("btn-primary", true).toggleClass("btn-outline-secondary", false)
+    }
+})
+
 function indexCorpus(force=false) {
     toggleMain(false)
     toggleProgress("Indexando coleção...")
@@ -62,11 +81,19 @@ function toggleMain(panel) {
 }
 
 $('#addAdvancedSearchMetadata').click(function(){
+    if ($('#advancedSearchMetadataCount').html()) {
+        count = parseInt($('#advancedSearchMetadataCount').html())
+    } else {
+        count = 0
+    }
+    $('#advancedSearchMetadataCount').html(count + 1)
     newMetadata = `<div class="advancedSearchMetadataItem input-group mb-3">
                         <div class="input-group-prepend">
                             <select class="custom-select">`
     for (metadata of allMetadata) {
-        newMetadata = newMetadata + '<option>' + metadata + '</option>'
+        if (["last_seen", "first_seen", "times_seen"].indexOf(metadata) == -1){
+            newMetadata = newMetadata + '<option>' + metadata + '</option>'
+        }
     }
     newMetadata = newMetadata + `</select>
                         </div>
@@ -78,9 +105,13 @@ $('#addAdvancedSearchMetadata').click(function(){
 
 function toggleProgress(label=false){
     if (label) {
+        $('title').html("(" + label + ") " + $('title').html())
         $('#progress-label').html(label)
         $('#progress-div').show()
     } else {
+        if ($('title').html().indexOf(") ") >= 0) {
+            $('title').html($('title').html().rsplit(") ", 1)[1])
+        }
         $('#progress-div').hide()
     }
 }
@@ -126,9 +157,9 @@ $('#advancedSearchGo').click(function(){
                     $('#searchResults').html("<div class='h5'>" + data.data.sentences + " frases, " + data.data.occurrences + " ocorrências</div>" + `
                         <table class="searchTable table" style="word-break:break-all">
                             <tr>
-                                <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
-                                <th style="cursor:pointer; min-width:80px;" onclick="sortTable(0, 'string')" scope="col">Arquivo</th>
-                                <th style="cursor:pointer;" onclick="sortTable(0, 'string')" scope="col">Frase</th>
+                                <th style="cursor:pointer; min-width:40px; ` + ($('#advancedSearchShowId').prop('checked') ? "" : "display:none") + `" onclick="sortTable(0, 'float')" scope="col">#</th>
+                                <th style="cursor:pointer; min-width:80px; ` + ($('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
+                                <th style="cursor:pointer;" onclick="sortTable(2, 'string')" scope="col">Frase</th>
                             </tr>
                         </table>
                     `)
@@ -137,9 +168,9 @@ $('#advancedSearchGo').click(function(){
                     <table class="searchTable table" style="word-break:break-all">
                         <tr>
                             <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
-                            <th style="cursor:pointer" onclick="sortTable(0, 'string')" scope="col">Palavra</th>
-                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(0, 'float')" scope="col">Ocorrências</th>
-                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(0, 'float')" scope="col">Dispersão</th>
+                            <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Palavra</th>
+                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(3, 'float')" scope="col">Dispersão</th>
                         </tr>
                     </table>
                     `)
@@ -157,8 +188,11 @@ $('#advancedSearchGo').click(function(){
 
                     n = 1
                     for (sentence of data.data.results) {
-                        $('#searchResults').find("table").append("<tr><td>" + n + "</td><td><a title='Ir para arquivo' class='gotoFile'>" + sentence[0].rsplit("-", 1)[0] + "</td><td>" + sentence[1] + "</td></tr>")
+                        $('#searchResults').find("table").append("<tr>" + "<td " + ($('#advancedSearchShowId').prop("checked") ? "" : "style='display:none'") + ">" + n + "</td>" + "<td " + ($('#advancedSearchShowFilename').prop("checked") ? "" : "style='display:none'") + "><a title='Ir para arquivo' class='gotoFile'>" + sentence[0].rsplit("-", 1)[0] + "</td>" + "<td>" + sentence[1] + "</td></tr>")
                         n ++
+                    }
+                    if ($('#advancedSearchShowGaps').prop('checked')) {
+                        $('#searchResults').find("b").html("________________")
                     }
 
                     n = 1
@@ -222,11 +256,11 @@ $('#saveMetadata').click(function(){
         }
     })
     .done(function(){
-        $('#saveMetadata').toggleClass("btn-success").toggleClass("btn-dark")
+        $('#saveMetadata').toggleClass("btn-primary").toggleClass("btn-success")
         $('#saveMetadataLabel').html("Salvo!")
         setTimeout(function(){
-            $('#saveMetadata').toggleClass("btn-success").toggleClass("btn-dark")
-            $('#saveMetadataLabel').html("Salvar metadados")
+            $('#saveMetadata').toggleClass("btn-primary").toggleClass("btn-success")
+            $('#saveMetadataLabel').html("")
         }, 2000)
     })
     .fail(function(){
@@ -259,9 +293,12 @@ $('#newMetadata').click(function(){
     }
 })
 
-function loadMetadata(metadata, first_seen) {
-    $('#metadataLabel').html(first_seen)
-    metadataItems = ""
+function loadMetadata(metadata, readme=false) {
+    if (readme) {
+        metadataItems = "Dica: Metadados de arquivos de introdução se aplicam a todos os outros arquivos da coleção."
+    } else {
+        metadataItems = ""
+    }
     for (key of Object.keys(metadata)) {
         if (key != "first_seen" && key != "last_seen" && key != "times_seen")
         metadataItems = metadataItems + '<div class="input-group mb-3 metadataDiv"><div class="input-group-prepend"><a class="metadataKey removeMetadata input-group-text"><span title="Remover metadado" data-feather="x"></span>' + key + '</a></div><input type="text" class="metadataItem form-control" key="' + key + '"></div>'
@@ -495,9 +532,9 @@ function updateToolbar(){
         if (file[1]) {
             files.push(file[2] + ":" + file[1])
         }
-        if ($('[file="' + file[2] + '"]').length) {
+        /*if ($('[file="' + file[2] + '"]').length) {
             files.push(file[2])
-        }
+        }*/
     }
 
     list_links = $('#mainText').val().matchAll(/(https?:\/\/(www\.)?(.*?)(\/|$|\n)(.*\/)?(.*?))(\s|\n|$)/gi)
@@ -1346,7 +1383,7 @@ function loadFile(filename){
             $('#filename').attr('file', filename)
             $('#filename').scrollLeft(0)
             $('#mainText').val(data.data.text)
-            loadMetadata(data.data.metadata, data.data.first_seen)
+            loadMetadata(data.data.metadata, filename == "README")
             updateToolbar()
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
@@ -1541,7 +1578,7 @@ function triggerResize(first=false){
         $('#toolbar-group, #searchMain, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
-        $('#toolbarRow').css('overflow-x', "scroll")
+        $('#toolbarRow, #advancedSearchToolbarRow').css('overflow-x', "scroll")
     } else {
         if (mobileInterval) {
             clearInterval(mobileInterval)
@@ -1553,7 +1590,7 @@ function triggerResize(first=false){
         $('.navbar-brand').show()
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "").css("white-space", "")
-        $('#toolbarRow').css('overflow-x', "")
+        $('#toolbarRow, #advancedSearchToolbarRow').css('overflow-x', "")
         //$('#editingPanel').css("z-index", "1200").toggleClass("sticky-top", true)
         toggleMobile(false)
     }
@@ -1593,7 +1630,7 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
     elements = "#main, .prepend, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
-    elements2 = "#corpusSettings, #corpusLanguageDiv, #corpusLanguage, #mainHeadbar, #troncoHomeBar"
+    elements2 = "#corpusSettings, #mainHeadbar, #troncoHomeBar"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
         $(elements2).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
@@ -1647,6 +1684,10 @@ $(document).ready(function(){
         } else {
             if (result.error == "1") {
                 alert(result.filename + " é pesado demais!")
+            } else {
+                if (result.error == "2") {
+                    alert("Não foi possível extrair texto do arquivo " + result.filename)
+                }
             }
         }
     })

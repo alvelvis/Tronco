@@ -434,7 +434,7 @@ def main(arquivoUD, criterio, parametros, limit=0, sent_id="", fastSearch=False,
 		for sentence in corpus.sentences.values():
 			if limit and limit == len(output):
 				break
-			condition = "global sim; global sentence2; sim = 0; sentence2 = copy.copy(sentence); sentence2.print = sentence2.tokens_to_str();"
+			condition = "global sim; global sentence2; sim = 0; sentence2 = copy.deepcopy(sentence); sentence2.print = sentence2.tokens_to_str();"
 			
 			condition += '''
 for ''' + identificador + ''' in sentence.tokens:

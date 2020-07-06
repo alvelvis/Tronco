@@ -7,15 +7,15 @@ import shutil
 import datetime
 import estrutura_ud
 import interrogar_UD
+import textract
 
 def query(name, params, corpus, metadata={}, sent_cap=500):
+    new_corpus = corpus
     if metadata:
-        new_corpus = estrutura_ud.Corpus(recursivo=True)
-        for sent_id, sentence in list(corpus.sentences.items()):
-            if all(metadado in sentence.metadados and re.search(metadata[metadado], sentence.metadados[metadado], flags=re.I) for metadado in metadata):
-                new_corpus.sentences[sent_id] = sentence
-    else:
-        new_corpus = corpus
+        for sent_id, sentence in list(new_corpus.sentences.items()):
+            if not all(metadado in sentence.metadados and re.search(metadata[metadado], sentence.metadados[metadado], flags=re.I) for metadado in metadata):
+                #sys.stderr.write("deletado")
+                del new_corpus.sentences[sent_id]
     criterio = 5 if ' = ' in params and len(params.split('"')) >= 3 else 1
     query = interrogar_UD.main(new_corpus, criterio, params, fastSearch=True)
     output = query['output']
@@ -74,13 +74,42 @@ def upload_file(uploading, filename, corpus=False):
         os.mkdir(upload_dir)
     files_in_folder = [x.lower() for x in os.listdir(upload_dir)]
     n_files = len(files_in_folder)
-    if filename.lower() in files_in_folder:
+    if filename.lower() in files_in_folder or filename.lower() + ".txt" in files_in_folder:
         filename = "{}_{}{}".format(filename.rsplit(".", 1)[0], n_files, "." + filename.rsplit(".", 1)[1] if "." in filename else "")
     uploaded_dir = os.path.join(objects.root_path, "uploads", filename) if not corpus else os.path.join(objects.root_path, "corpora", corpus, filename)
     uploading.save(uploaded_dir)
     if os.stat(uploaded_dir).st_size > 5000000:
         os.remove(uploaded_dir)
         return {'filename': filename, 'error': "1"}
+    if corpus:
+        text = ""
+        try:
+            text = textract.process(uploaded_dir)
+        except:
+            try:
+                text = textract.process(uploaded_dir, extension="txt")
+            except:
+                pass
+        if text:
+            with open(uploaded_dir + (".txt" if not uploaded_dir.endswith(".txt") else ""), "wb") as f:
+                f.write(text)
+            if not uploaded_dir.endswith(".txt"):
+                os.remove(uploaded_dir)
+        if not text:
+            if not uploaded_dir.endswith(".txt"):
+                os.remove(uploaded_dir)
+            return {'filename': filename, 'error': '2'}
+        #if filename.lower().endswith(".pdf"):
+            
+        #for encoding in ["utf-8", "latin-1"]:
+            #try:
+                #with open(upload_dir, encoding=encoding) as f:
+                    #with open(upload_dir, "w") as w:
+                        #w.write(f.read())
+            #except:
+                #continue
+            #finally:
+                #break
     return {
         'filename': filename,
         'error': "0",
@@ -232,15 +261,12 @@ def load_file(name, filename):
 
     with open(filename_dir) as f:
         text = f.read()
-        first_seen_date = datetime.datetime.fromtimestamp(float(text.split("# first_seen = ")[1].split("\n")[0]))
-        first_seen = f"{first_seen_date.day}/{first_seen_date.month}/{first_seen_date.year} às {first_seen_date.hour}:{first_seen_date.minute}"
         return {
             "text": "\n".join([x for x in text.splitlines() if not (x.strip().startswith("# ") and " = " in x)]),
             "metadata": {
                 y.split(" = ")[0].split("# ")[1]: y.split(" = ", 1)[1] 
                 for y in [x for x in text.splitlines() if x.strip().startswith("# ") and " = " in x]
                 },
-            "first_seen": first_seen,
             }
 
 def create_new_file(name, filename, text=""):
