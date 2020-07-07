@@ -105,7 +105,8 @@ class AdvancedCorpora:
         corpus_dir = os.path.join(root_path, "corpora", name)
         corpus_language = lang
         model = Model.load(udpipe_models[corpus_language])
-        pipeline = Pipeline(model, "tokenize", Pipeline.DEFAULT, Pipeline.DEFAULT, "conllu")
+        self.models[corpus_language] = model
+        pipeline = Pipeline(self.models[corpus_language], "tokenize", Pipeline.DEFAULT, Pipeline.DEFAULT, "conllu")
         corpus = estrutura_ud.Corpus(recursivo=True)
         all_metadata = {'filename': ''}
         for filename in os.listdir(corpus_dir):
@@ -147,6 +148,7 @@ class AdvancedCorpora:
 
     def __init__(self):
         self.corpora = {}
+        self.models = {}
         self.config_file = os.path.join(root_path, "advanced_corpora.p")
         if os.path.isfile(self.config_file):
             with open(self.config_file, "rb") as f:
