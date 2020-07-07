@@ -135,8 +135,8 @@ function updateSearchTables(data, tables) {
         $('#query_results').find('.dynamic').html(`
         <table class="searchTable table" style="word-break:break-all">
             <tr>
-                <th style="cursor:pointer; min-width:40px; ` + ($('#advancedSearchShowId').prop('checked') ? "" : "display:none") + `" onclick="sortTable(0, 'float')" scope="col">#</th>
-                <th style="cursor:pointer; min-width:80px; ` + ($('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
+                <th style="cursor:pointer; min-width:80px; ` + ($('#advancedSearchShowId').prop('checked') ? "" : "display:none") + `" onclick="sortTable(0, 'float')" scope="col">#</th>
+                <th style="cursor:pointer; min-width:100px; ` + ($('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
                 <th style="cursor:pointer;" onclick="sortTable(2, 'string')" scope="col">Frase</th>
             </tr>
         </table>
@@ -161,9 +161,9 @@ function updateSearchTables(data, tables) {
         $('#word_distribution').find('.dynamic').html(`
         <table class="searchTable table" style="word-break:break-all">
             <tr>
-                <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
+                <th style="cursor:pointer; min-width:80px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                 <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Palavra</th>
-                <th style="cursor:pointer; min-width:80px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+                <th style="cursor:pointer; min-width:100px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
             </tr>
         </table>
         `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.word_distribution ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Próximo</a></li></ul></nav>')
@@ -184,9 +184,9 @@ function updateSearchTables(data, tables) {
         $('#lemma_distribution').find('.dynamic').html(`
         <table class="searchTable table" style="word-break:break-all">
             <tr>
-                <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
+                <th style="cursor:pointer; min-width:80px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                 <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Lema</th>
-                <th style="cursor:pointer; min-width:80px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+                <th style="cursor:pointer; min-width:100px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
             </tr>
         </table>
         `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.lemma_distribution ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Próximo</a></li></ul></nav>')
@@ -457,6 +457,7 @@ function returnSearch(){
         //recentFiles("", filename)
         updateFiles("", data.data)
         $('#search').val('')
+        $('#search').blur()
     })
 }
 
