@@ -99,18 +99,13 @@ class TemporaryObjects:
 
 class AdvancedCorpora:
 
-    def load_model(self, lang):
-        self.models.update({lang: Model.load(udpipe_models[lang])})
-        return True
-
     def load_corpus(self, name, lang):
         if name in self.corpora:
             del self.corpora[name]
         corpus_dir = os.path.join(root_path, "corpora", name)
         corpus_language = lang
-        if not corpus_language in self.models:
-            self.load_model(corpus_language)
-        pipeline = Pipeline(self.models[corpus_language], "tokenize", Pipeline.DEFAULT, Pipeline.DEFAULT, "conllu")
+        model = Model.load(udpipe_models[corpus_language])
+        pipeline = Pipeline(model, "tokenize", Pipeline.DEFAULT, Pipeline.DEFAULT, "conllu")
         corpus = estrutura_ud.Corpus(recursivo=True)
         all_metadata = {'filename': ''}
         for filename in os.listdir(corpus_dir):
@@ -152,7 +147,6 @@ class AdvancedCorpora:
 
     def __init__(self):
         self.corpora = {}
-        self.models = {}
         self.config_file = os.path.join(root_path, "advanced_corpora.p")
         if os.path.isfile(self.config_file):
             with open(self.config_file, "rb") as f:
