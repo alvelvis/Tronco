@@ -140,7 +140,7 @@ function updateSearchTables(data, tables) {
                 <th style="cursor:pointer;" onclick="sortTable(2, 'string')" scope="col">Frase</th>
             </tr>
         </table>
-        `).append('<nav><ul class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="query_results" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.query_results ? "disabled" : "") + '"><a table="query_results" class="page-link">Próximo</a></li></ul></nav>')
+        `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="query_results" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.query_results ? "disabled" : "") + '"><a table="query_results" class="page-link">Próximo</a></li></ul></nav>')
 
         for (i of Array(data.data.pages.query_results).keys()) {
             $('#query_results').find('.page-item-next').before('<li class="page-item ' + (data.data.page == i+1 ? "active" : "") + '"><a class="page-link" table="query_results">' + parseInt(i+1).toString() + '</a></li>')
@@ -166,7 +166,7 @@ function updateSearchTables(data, tables) {
                 <th style="cursor:pointer; min-width:80px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
             </tr>
         </table>
-        `).append('<nav><ul class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.word_distribution ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Próximo</a></li></ul></nav>')
+        `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.word_distribution ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Próximo</a></li></ul></nav>')
 
         for (i of Array(data.data.pages.word_distribution).keys()) {
             $('#word_distribution').find('.page-item-next').before('<li class="page-item ' + (data.data.page == i+1 ? "active" : "") + '"><a class="page-link" table="word_distribution">' + parseInt(i+1).toString() + '</a></li>')
@@ -189,7 +189,7 @@ function updateSearchTables(data, tables) {
                 <th style="cursor:pointer; min-width:80px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
             </tr>
         </table>
-        `).append('<nav><ul class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.lemma_distribution ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Próximo</a></li></ul></nav>')
+        `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.lemma_distribution ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Próximo</a></li></ul></nav>')
 
         for (i of Array(data.data.pages.lemma_distribution).keys()) {
             $('#lemma_distribution').find('.page-item-next').before('<li class="page-item ' + (data.data.page == i+1 ? "active" : "") + '"><a class="page-link" table="lemma_distribution">' + parseInt(i+1).toString() + '</a></li>')
@@ -359,7 +359,7 @@ $('#newMetadata').click(function(){
 
 function loadMetadata(metadata, readme=false) {
     if (readme) {
-        metadataItems = "Dica: Metadados de arquivos de introdução se aplicam a todos os outros arquivos da coleção."
+        metadataItems = "Dica: Os metadados deste arquivo serão aplicados a todos os outros arquivos da coleção."
     } else {
         metadataItems = ""
     }
@@ -596,9 +596,9 @@ function updateToolbar(){
         if (file[1]) {
             files.push(file[2] + ":" + file[1])
         }
-        /*if ($('[file="' + file[2] + '"]').length) {
+        if (file[2].indexOf('"') == -1 && file[2].indexOf("'") == -1 && $('[file="' + file[2] + '"]').length) {
             files.push(file[2])
-        }*/
+        }
     }
 
     list_links = $('#mainText').val().matchAll(/(https?:\/\/(www\.)?(.*?)(\/|$|\n)(.*\/)?(.*?))(\s|\n|$)/gi)
@@ -1693,7 +1693,7 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
-    elements = "#main, .prepend, .page-link, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
+    elements = "#main, .prepend, .page-link, .page-item.active, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
     elements2 = "#corpusSettings, #mainHeadbar, #troncoHomeBar"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
@@ -1702,7 +1702,7 @@ function checkTheme(){
             $('#search').toggleClass("form-control-dark", false).css("background-color", "#343a40").css("color", "white").css("border-style", "none")
         }
     } else {
-        $(elements).css("background-color", "white").css("color", "")
+        $(elements).css("background-color", "white").css("color", "black")
         $(elements2).css("background-color", "white").css("color", "").toggleClass("bg-dark", true)
         if (isMobile) {
             $('#search').toggleClass("form-control-dark", true).css("background-color", "white").css("color", "black").css("border-style", "")
