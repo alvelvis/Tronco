@@ -19,8 +19,7 @@ $('.toggleAdvancedSearchToolbar').click(function(){
 
 function indexCorpus(force=false) {
     if (force) {
-        $('#navSearchPanels').hide()
-        $('.searchPanel').html("")
+        $('#navSearchPanels, #query_results').hide()
     }
     toggleMain(false)
     toggleProgress("Indexando coleção...")
@@ -130,6 +129,123 @@ function metadataItemUpdate() {
     })
 }
 
+function updateSearchTables(data, tables) {
+
+    if (tables.indexOf("query_results") >= 0) {
+        $('#query_results').find('.dynamic').html(`
+        <table class="searchTable table" style="word-break:break-all">
+            <tr>
+                <th style="cursor:pointer; min-width:40px; ` + ($('#advancedSearchShowId').prop('checked') ? "" : "display:none") + `" onclick="sortTable(0, 'float')" scope="col">#</th>
+                <th style="cursor:pointer; min-width:80px; ` + ($('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
+                <th style="cursor:pointer;" onclick="sortTable(2, 'string')" scope="col">Frase</th>
+            </tr>
+        </table>
+        `).append('<nav><ul class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="query_results" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.query_results ? "disabled" : "") + '"><a table="query_results" class="page-link">Próximo</a></li></ul></nav>')
+
+        for (i of Array(data.data.pages.query_results).keys()) {
+            $('#query_results').find('.page-item-next').before('<li class="page-item ' + (data.data.page == i+1 ? "active" : "") + '"><a class="page-link" table="query_results">' + parseInt(i+1).toString() + '</a></li>')
+        }
+
+        n = 1
+        for (sentence of data.data.query_results) {
+            $('#query_results').find("table").append("<tr>" + "<td " + ($('#advancedSearchShowId').prop("checked") ? "" : "style='display:none'") + ">" + parseInt(n+((data.data.page-1)*100)).toString() + "</td>" + "<td " + ($('#advancedSearchShowFilename').prop("checked") ? "" : "style='display:none'") + "><a title='Ir para arquivo' class='gotoFile'>" + sentence[0].rsplit("-", 1)[0] + "</td>" + "<td>" + sentence[1] + "</td></tr>")
+            n ++
+        }
+        if ($('#advancedSearchShowGaps').prop('checked')) {
+            $('#query_results').find("b").html("________________")
+        }
+    }
+
+    if (tables.indexOf("word_distribution") >= 0) {
+
+        $('#word_distribution').find('.dynamic').html(`
+        <table class="searchTable table" style="word-break:break-all">
+            <tr>
+                <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
+                <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Palavra</th>
+                <th style="cursor:pointer; min-width:80px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+            </tr>
+        </table>
+        `).append('<nav><ul class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.word_distribution ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Próximo</a></li></ul></nav>')
+
+        for (i of Array(data.data.pages.word_distribution).keys()) {
+            $('#word_distribution').find('.page-item-next').before('<li class="page-item ' + (data.data.page == i+1 ? "active" : "") + '"><a class="page-link" table="word_distribution">' + parseInt(i+1).toString() + '</a></li>')
+        }
+
+        n = 1
+        for (word of data.data.word_distribution) {
+            $('#word_distribution').find("table").append("<tr><td>" + parseInt(n+((data.data.page-1)*100)).toString() + "</td><td><a title='Buscar esta palavra' class='gotoWord'>" + word[0] + "</td><td>" + word[1] + "</td></tr>")
+            n ++
+        }
+    }
+
+    if (tables.indexOf("lemma_distribution") >= 0) {
+
+        $('#lemma_distribution').find('.dynamic').html(`
+        <table class="searchTable table" style="word-break:break-all">
+            <tr>
+                <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
+                <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Lema</th>
+                <th style="cursor:pointer; min-width:80px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+            </tr>
+        </table>
+        `).append('<nav><ul class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.lemma_distribution ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Próximo</a></li></ul></nav>')
+
+        for (i of Array(data.data.pages.lemma_distribution).keys()) {
+            $('#lemma_distribution').find('.page-item-next').before('<li class="page-item ' + (data.data.page == i+1 ? "active" : "") + '"><a class="page-link" table="lemma_distribution">' + parseInt(i+1).toString() + '</a></li>')
+        }
+
+        n = 1
+        for (lemma of data.data.lemma_distribution) {
+            $('#lemma_distribution').find("table").append("<tr><td>" + parseInt(n+((data.data.page-1)*100)).toString() + "</td><td><a title='Buscar este lema' class='gotoLemma'>" + lemma[0] + "</td><td>" + lemma[1] + "</td></tr>")
+            n ++
+        }
+    }
+
+    $('.gotoWord').click(function(){
+        $('#advancedSearchInput').val('word = "' + $(this).text() + '"')
+        $('#advancedSearchGo').click()
+    })
+
+    $('.gotoLemma').click(function(){
+        $('#advancedSearchInput').val('lemma = "' + $(this).text() + '"')
+        $('#advancedSearchGo').click()
+    })
+
+    $('.gotoFile').click(function(){
+        $('[file="' + $(this).text() + '"].files').click()
+    })
+
+    $('[table="query_results"], [table="word_distribution"], [table="lemma_distribution"]').unbind('click').click(function(){
+        page = $(this).html()
+        table = $(this).attr('table')
+        switch (page) {
+            case 'Anterior':
+                page = parseInt($('#' + table).find('.active').find('.page-link').html())-1
+                break
+            case 'Próximo':
+                page = parseInt($('#' + table).find('.active').find('.page-link').html())+1
+                break
+        }
+        $.ajax({
+            url: "/api/queryPagination",
+            method: "POST",
+            data: {
+                'name': $('#name').html(),
+                'tronco_token': getTroncoToken(),
+                'table': table,
+                'page': page,
+                'session_token': getSessionToken()
+            }
+        })
+        .done(function(data){
+            updateSearchTables(data, [table])
+        })
+    })
+    window.scrollTo(0,0)
+    checkTheme()
+}
+
 $('#advancedSearchGo').click(function(){
     if ($('#advancedSearchInput').val().length) {
         $('#advancedSearchInput').toggleClass("is-invalid", false)
@@ -152,80 +268,22 @@ $('#advancedSearchGo').click(function(){
             data: {
                 "name": $('#name').html(),
                 "tronco_token": getTroncoToken(),
+                "session_token": getSessionToken(),
                 "params": $('#advancedSearchInput').val(),
                 "metadata": JSON.stringify(metadata_dic)
             }
         })
         .done(function(data){
-            $('#navSearchPanels').show()
+            $('#navSearchPanels, #query_results').show()
             switch (data.error) {
                 case '0':
-                    $('#searchResults').html("<div class='h5'>" + data.data.sentences + " frases, " + data.data.occurrences + " ocorrências</div>" + `
-                        <table class="searchTable table" style="word-break:break-all">
-                            <tr>
-                                <th style="cursor:pointer; min-width:40px; ` + ($('#advancedSearchShowId').prop('checked') ? "" : "display:none") + `" onclick="sortTable(0, 'float')" scope="col">#</th>
-                                <th style="cursor:pointer; min-width:80px; ` + ($('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
-                                <th style="cursor:pointer;" onclick="sortTable(2, 'string')" scope="col">Frase</th>
-                            </tr>
-                        </table>
-                    `)
-
-                    $('#wordDistribution').html("<div class='h5'>" + data.data.word_distribution.different + " palavras diferentes, " + data.data.word_distribution.total + " ocorrências</div>" + `
-                    <table class="searchTable table" style="word-break:break-all">
-                        <tr>
-                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
-                            <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Palavra</th>
-                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
-                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(3, 'float')" scope="col">Dispersão</th>
-                        </tr>
-                    </table>
-                    `)
-
-                    $('#lemmaDistribution').html("<div class='h5'>" + data.data.lemma_distribution.different + " lemas diferentes, " + data.data.lemma_distribution.total + " ocorrências</div>" + `
-                    <table class="searchTable table" style="word-break:break-all">
-                        <tr>
-                            <th style="cursor:pointer; min-width:40px;" onclick="sortTable(0, 'float')" scope="col">#</th>
-                            <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Lema</th>
-                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
-                            <th style="cursor:pointer; min-width:80px;" onclick="sortTable(3, 'float')" scope="col">Dispersão</th>
-                        </tr>
-                    </table>
-                    `)
-
-                    n = 1
-                    for (sentence of data.data.results) {
-                        $('#searchResults').find("table").append("<tr>" + "<td " + ($('#advancedSearchShowId').prop("checked") ? "" : "style='display:none'") + ">" + n + "</td>" + "<td " + ($('#advancedSearchShowFilename').prop("checked") ? "" : "style='display:none'") + "><a title='Ir para arquivo' class='gotoFile'>" + sentence[0].rsplit("-", 1)[0] + "</td>" + "<td>" + sentence[1] + "</td></tr>")
-                        n ++
-                    }
-                    if ($('#advancedSearchShowGaps').prop('checked')) {
-                        $('#searchResults').find("b").html("________________")
-                    }
-
-                    n = 1
-                    for (word of data.data.word_distribution.list) {
-                        $('#wordDistribution').find("table").append("<tr><td>" + n + "</td><td><a title='Buscar esta palavra' class='gotoWord'>" + word[0] + "</td><td>" + word[1] + "</td><td title='" + data.data.word_distribution.dispersion[word[0]].join("|") + "'>" + data.data.word_distribution.dispersion[word[0]].length + "</td></tr>")
-                        n ++
-                    }
-
-                    n = 1
-                    for (lemma of data.data.lemma_distribution.list) {
-                        $('#lemmaDistribution').find("table").append("<tr><td>" + n + "</td><td><a title='Buscar este lema' class='gotoLemma'>" + lemma[0] + "</td><td>" + lemma[1] + "</td><td title='" + data.data.lemma_distribution.dispersion[lemma[0]].join("|") + "'>" + data.data.lemma_distribution.dispersion[lemma[0]].length + "</td></tr>")
-                        n ++
-                    }
-
-                    $('.gotoWord').click(function(){
-                        $('#advancedSearchInput').val('word = "' + $(this).text() + '"')
-                        $('#advancedSearchGo').click()
-                    })
-
-                    $('.gotoLemma').click(function(){
-                        $('#advancedSearchInput').val('lemma = "' + $(this).text() + '"')
-                        $('#advancedSearchGo').click()
-                    })
-
-                    $('.gotoFile').click(function(){
-                        $('[file="' + $(this).text() + '"].files').click()
-                    })
+                    $('#query_results').find('.sentences').html(data.data.sentences)
+                    $('#query_results').find('.occurrences').html(data.data.occurrences)
+                    $('#word_distribution').find('.words').html(data.data.words)
+                    $('#word_distribution').find('.occurrences').html(data.data.word_occurrences)
+                    $('#lemma_distribution').find('.lemmas').html(data.data.lemmas)
+                    $('#lemma_distribution').find('.occurrences').html(data.data.lemma_occurrences)
+                    updateSearchTables(data, ["query_results", "word_distribution", "lemma_distribution"])
                     break
                 case '1':
                     alert("Você não permissão para realizar a busca")
@@ -1635,7 +1693,7 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
-    elements = "#main, .prepend, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
+    elements = "#main, .prepend, .page-link, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
     elements2 = "#corpusSettings, #mainHeadbar, #troncoHomeBar"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")

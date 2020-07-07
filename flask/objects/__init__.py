@@ -3,11 +3,12 @@ import json
 import os
 import re
 import sys
+import functions
 import estrutura_ud
 import pickle
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.33
+tronco_version = 1.34
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 root_path = ""
@@ -64,6 +65,37 @@ _windows_device_files = (
     "PRN",
     "NUL",
 )
+
+class TemporaryObjects:
+
+    def __init__(self):
+        self.objects = {
+            'query_results': {},
+            'word_distribution': {},
+            'lemma_distribution': {},
+        }
+        self.temp = {}
+
+    def claim_alive(self, session_token):
+        self.temp[session_token] = time.time()
+        self.clean_timed_out()
+
+    def clean_timed_out(self):
+        for session_token in list(self.temp.keys()):
+            if time.time() - self.temp[session_token] > 300:
+                del self.temp[session_token]
+                for key in list(self.objects.keys()):
+                    if session_token in self.objects[key]:
+                        del self.objects[key][session_token]
+
+    def push_objects(self, key, full_list, session_token, max_objects_each_page=100):
+        self.claim_alive(session_token)
+        self.objects[key][session_token] = [x for x in functions.chunkIt(full_list, len(full_list)/max_objects_each_page if len(full_list)/max_objects_each_page > 0 else 1) if x]
+        return self.objects[key][session_token][0] if self.objects[key][session_token] else []
+
+    def get_page(self, key, page, session_token):
+        self.claim_alive(session_token)
+        return self.objects[key][session_token][page]
 
 class AdvancedCorpora:
 

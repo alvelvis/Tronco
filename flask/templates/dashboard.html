@@ -315,21 +315,24 @@
               <hr>
 
               <nav id="navSearchPanels" style="display:none" class="nav nav-pills justify-content-center mb-3">
-                <a panel="searchResults" class="nav-item toggleSearch nav-link active">Resultados</a>
-                <a panel="wordDistribution" class="nav-item toggleSearch nav-link">Palavras</a>
-                <a panel="lemmaDistribution" class="nav-item toggleSearch nav-link">Lemas</a>
+                <a panel="query_results" class="nav-item toggleSearch nav-link active">Resultados</a>
+                <a panel="word_distribution" class="nav-item toggleSearch nav-link">Palavras</a>
+                <a panel="lemma_distribution" class="nav-item toggleSearch nav-link">Lemas</a>
               </nav>
 
-              <div class="searchPanel" id="searchResults">
-
+              <div class="searchPanel" id="query_results" style="display:none">
+                <div class="h5"><span class="sentences">X</span> frases, <span class="occurrences">Y</span> ocorrências</div>
+                <div class="dynamic"></div>
               </div>
               
-              <div class="searchPanel" id="wordDistribution" style="display:none">
-
+              <div class="searchPanel" id="word_distribution" style="display:none">
+                <div class="h5"><span class="words">X</span> palavras, <span class="occurrences">Y</span> ocorrências</div>
+                <div class="dynamic"></div>
               </div>
 
-              <div class="searchPanel" id="lemmaDistribution" style="display:none">
-
+              <div class="searchPanel" id="lemma_distribution" style="display:none">
+                <div class="h5"><span class="lemmas">X</span> lemas, <span class="occurrences">Y</span> ocorrências</div>
+                <div class="dynamic"></div>
               </div>
             </div>
 
@@ -465,7 +468,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=5"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=68"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=69"></script>
   
   </body>
 </html>

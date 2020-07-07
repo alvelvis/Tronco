@@ -16,16 +16,46 @@ tronco_config = objects.TroncoConfig()
 session_tokens = objects.SessionTokens()
 tronco_tokens = objects.TroncoTokens()
 advanced_corpora = objects.AdvancedCorpora()
+temporary_objects = objects.TemporaryObjects()
 app.jinja_env.globals.update(tronco_config=tronco_config)
+
+@app.route("/api/queryPagination", methods=["POST"])
+def query_pagination():
+    session_token = request.values.get("session_token")
+    page = int(request.values.get("page"))
+    table = request.values.get("table")
+    name = request.values.get("name")
+    password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "visualizar"): return None
+    return {
+        'data': {
+            table: temporary_objects.get_page(table, page-1, session_token),
+            'pages': {
+                table: len(temporary_objects.objects[table][session_token])
+            },
+            'page': page,
+        }
+    }
 
 @app.route("/api/query", methods=["POST"])
 def query():
     name = request.values.get("name")
+    session_token = request.values.get("session_token")
     password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
     if not tronco_config.has_permission(name, password, "visualizar"): return {'error': '1'}
     params = request.values.get("params")
     metadata = json.loads(request.values.get("metadata"))
-    return functions.query(name, params, advanced_corpora.corpora[name]['corpus'], metadata)
+    query = functions.query(name, session_token, params, advanced_corpora.corpora[name]['corpus'], metadata)
+    query['data']['query_results'] = temporary_objects.push_objects('query_results', query['data']['results'], session_token)
+    query['data']['word_distribution'] = temporary_objects.push_objects('word_distribution', query['data']['word_distribution'], session_token)
+    query['data']['lemma_distribution'] = temporary_objects.push_objects('lemma_distribution', query['data']['lemma_distribution'], session_token)
+    query['data']['pages'] = {
+        'query_results': len(temporary_objects.objects['query_results'][session_token]),
+        'word_distribution': len(temporary_objects.objects['word_distribution'][session_token]),
+        'lemma_distribution': len(temporary_objects.objects['lemma_distribution'][session_token]),
+    }
+    query['data']['page'] = 1
+    return query
 
 @app.route("/api/loadAdvancedCorpus", methods=["POST"])
 def load_advanced_corpus():
