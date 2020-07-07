@@ -135,7 +135,7 @@ function updateSearchTables(data, tables) {
         $('#query_results').find('.dynamic').html(`
         <table class="searchTable table" style="word-break:break-all">
             <tr>
-                <th style="cursor:pointer; min-width:80px; ` + ($('#advancedSearchShowId').prop('checked') ? "" : "display:none") + `" onclick="sortTable(0, 'float')" scope="col">#</th>
+                <th style="cursor:pointer; min-width:60px; ` + ($('#advancedSearchShowId').prop('checked') ? "" : "display:none") + `" onclick="sortTable(0, 'float')" scope="col">#</th>
                 <th style="cursor:pointer; min-width:100px; ` + ($('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
                 <th style="cursor:pointer;" onclick="sortTable(2, 'string')" scope="col">Frase</th>
             </tr>
@@ -161,7 +161,7 @@ function updateSearchTables(data, tables) {
         $('#word_distribution').find('.dynamic').html(`
         <table class="searchTable table" style="word-break:break-all">
             <tr>
-                <th style="cursor:pointer; min-width:80px;" onclick="sortTable(0, 'float')" scope="col">#</th>
+                <th style="cursor:pointer; min-width:60px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                 <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Palavra</th>
                 <th style="cursor:pointer; min-width:100px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
             </tr>
@@ -184,7 +184,7 @@ function updateSearchTables(data, tables) {
         $('#lemma_distribution').find('.dynamic').html(`
         <table class="searchTable table" style="word-break:break-all">
             <tr>
-                <th style="cursor:pointer; min-width:80px;" onclick="sortTable(0, 'float')" scope="col">#</th>
+                <th style="cursor:pointer; min-width:60px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                 <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Lema</th>
                 <th style="cursor:pointer; min-width:100px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
             </tr>
