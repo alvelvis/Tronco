@@ -1,6 +1,5 @@
 import os
 import re
-import objects
 import sys
 import time
 import shutil
@@ -8,6 +7,7 @@ import datetime
 import estrutura_ud
 import interrogar_UD
 import textract
+import objects
 
 def chunkIt(seq, num):
     avg = len(seq) / float(num)

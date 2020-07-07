@@ -5,12 +5,12 @@ import json
 from flask import Flask, redirect, render_template, request, url_for, send_from_directory
 from flaskwebgui import FlaskUI
 from uuid import uuid4
+import objects
+import functions
 
 app = Flask(__name__)
 ui = FlaskUI(app, port=5240, maximized=True)
 
-import objects
-import functions
 objects.root_path = app.root_path
 tronco_config = objects.TroncoConfig()
 session_tokens = objects.SessionTokens()

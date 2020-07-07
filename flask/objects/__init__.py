@@ -3,12 +3,12 @@ import json
 import os
 import re
 import sys
-import functions
 import estrutura_ud
 import pickle
+import functions
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.36
+tronco_version = 1.37
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 root_path = ""
