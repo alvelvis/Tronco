@@ -124,7 +124,7 @@ class AdvancedCorpora:
                         continue
                 raw_text = []
                 metadata = {}
-                [metadata.update({x.split(" = ", 1)[0].split("# ", 1)[1]: x.split(" = ", 1)[1]}) if x.startswith("# ") and " = " in x else raw_text.append(x) for x in text]
+                [metadata.update({x.split(" = ", 1)[0].split("# ", 1)[1]: x.split(" = ", 1)[1]}) if x.strip().startswith("# ") and " = " in x else raw_text.append(x) for x in text]
                 all_metadata.update(metadata)
                 processed = pipeline.process("\n".join(raw_text)).replace("# newdoc\n", "").replace("# newpar\n", "")
                 temp_corpus = estrutura_ud.Corpus(recursivo=False)

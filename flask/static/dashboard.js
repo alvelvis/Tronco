@@ -75,6 +75,7 @@ function toggleMain(panel) {
                 break
             case "search":
                 $('#searchMain').toggle(true)
+                $('#advancedSearchToolbarRow').scrollLeft(0)
                 break
         }
     }
@@ -136,7 +137,7 @@ function updateSearchTables(data, tables) {
         <table class="searchTable table" style="word-break:break-all">
             <tr>
                 <th style="cursor:pointer; min-width:50px; ` + ($('#advancedSearchShowId').prop('checked') ? "" : "display:none") + `" onclick="sortTable(0, 'float')" scope="col">#</th>
-                <th style="cursor:pointer; min-width:110px; ` + ($('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
+                <th style="cursor:pointer; min-width:100px; ` + ($('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
                 <th style="cursor:pointer;" onclick="sortTable(2, 'string')" scope="col">Frase</th>
             </tr>
         </table>
@@ -163,7 +164,7 @@ function updateSearchTables(data, tables) {
             <tr>
                 <th style="cursor:pointer; min-width:50px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                 <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Palavra</th>
-                <th style="cursor:pointer; min-width:110px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+                <th style="cursor:pointer; min-width:50px;" onclick="sortTable(2, 'float')" scope="col">Oc.</th>
             </tr>
         </table>
         `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.word_distribution ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Próximo</a></li></ul></nav>')
@@ -186,7 +187,7 @@ function updateSearchTables(data, tables) {
             <tr>
                 <th style="cursor:pointer; min-width:50px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                 <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Lema</th>
-                <th style="cursor:pointer; min-width:110px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+                <th style="cursor:pointer; min-width:50px;" onclick="sortTable(2, 'float')" scope="col">Oc.</th>
             </tr>
         </table>
         `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.lemma_distribution ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Próximo</a></li></ul></nav>')
@@ -1218,7 +1219,7 @@ function updateFiles(key = "", click = ""){
             $('.files').toggleClass('active', false)
             $('#advancedSearch').find('a').toggleClass("active", false)
             $(this).toggleClass('active', true)
-            this.scrollIntoView();
+            //this.scrollIntoView();
             if ($(this).attr('file') != "README") {
                 $('title').html($(this).attr('file') + " - Tronco")
             } else {
@@ -1556,7 +1557,7 @@ function loadConfigFromCheckboxes(){
     $('#mainText').css('overflow', $('#wrapTextCheckbox').prop('checked') ? "hidden" : "auto")
 }
 
-var default_metadata = []
+var default_metadata = ["times_seen", "last_seen", "first_seen"]
 
 function loadConfig(){
     name = $('#name').html()
@@ -1648,8 +1649,8 @@ function triggerResize(first=false){
             $('#sidebar').css("max-width", "")
         }
         isMobile = true
-        $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
-        $('#troncoLogo').toggleClass("mb-3", true)
+        $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:85vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
+        $('#troncoLogo').hide()
         $('.navbar-brand').hide()
         $('#toolbar-group, #searchHeader, #searchBody, #advancedSearchToolbarRow .btn-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
         $('#hr').show()
@@ -1661,7 +1662,7 @@ function triggerResize(first=false){
         }
         isMobile = false
         $('#toolbar-group, #searchHeader, #advancedSearchToolbarRow .btn-group, #searchBody, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
-        $('#troncoLogo').toggleClass("mb-3", false)
+        $('#troncoLogo').show()
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
         $('#hr').show()
@@ -1677,7 +1678,7 @@ function triggerResize(first=false){
         $('#afterSearch').before($('#search').detach().toggleClass("mt-3 mx-4", false).css("color", ""))
     }
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
-    $('#troncoHomeBar').toggleClass("mt-0", isMobile)
+    $('#troncoHomeBar').toggleClass("mt-0", isMobile).toggleClass("mb-3 ml-3", isMobile)
     $('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "58px" : '54px') : '10px')
     $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")
     //$('#main').css('margin-left', !isMobile ? '260px' : '0px')

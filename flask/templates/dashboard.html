@@ -10,7 +10,7 @@
     <meta property="og:image" content="{{url_for('static', filename='favicon2.png')}}">
     <meta property="og:url" content="https://tronco.ga">
 
-    <link rel="manifest" href="{{url_for('static', filename='manifest.json')}}?version=3">
+    <link rel="manifest" href="{{url_for('static', filename='manifest.json')}}">
 
     <link rel="icon" href="{{url_for('static', filename='favicon.png')}}">
 
@@ -62,7 +62,7 @@
     <nav id="mainHeadbar" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
       <span id="troncoHomeBar" style="width:100%" class="mt-0 bg-dark form-control-dark">
         <a title="Voltar para coleções (Ctrl+E)" id="troncoHome">
-          <img class="ml-3 mr-3 mb-3" id="troncoLogo" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
+          <img class="ml-3 mr-3" style="display:none" id="troncoLogo" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
         </a>
         <span id="troncoHomeLabel" settings="corpusSettings" style="width:100%" class='toggleSettings'><a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / {{name}}</a></span>
       </span>

@@ -56,19 +56,46 @@ def query(name, session_token, params, corpus, metadata={}):
 
 def save_metadata(name, filename, metadata):
     filename_dir = os.path.join(objects.root_path, "corpora", name, filename)
+    corpus_dir = os.path.join(objects.root_path, "corpora", name)
+
     with open(filename_dir) as f:
         text = f.read().splitlines()
     text_metadata = {
         x.split("# ", 1)[1].split(" = ", 1)[0]: x.split(" = ")[1]
-        for x in text if x.startswith("# ") and " = " in x
+        for x in text if x.strip().startswith("# ") and " = " in x
     }
-    text = "\n".join([x for x in text if not x.startswith("# ")])
+    text = "\n".join([x for x in text if not x.strip().startswith("# ") and not ' = ' in x])
     
     for item in objects.tronco_metadata:
         metadata.update({item: text_metadata[item]})
 
     with open(filename_dir, "w") as f:
         f.write("\n".join(["# " + x + " = " + y for x, y in metadata.items()]) + "\n" + text)
+
+    if filename == "README":
+        for ordinary_file in os.listdir(corpus_dir):
+            ordinary_filename = os.path.join(objects.root_path, "corpora", name, ordinary_file)
+            with open(ordinary_filename) as f:
+                ordinary_text = f.read().splitlines()
+            ordinary_metadata = {
+                x.split("# ", 1)[1].split(" = ", 1)[0]: x.split(" = ")[1]
+                for x in ordinary_text if x.strip().startswith("# ") and " = " in x
+            }
+            ordinary_text = "\n".join([x for x in ordinary_text if not x.strip().startswith("# ") and not ' = ' in x])
+            for metadado in metadata:
+                if metadado not in objects.tronco_metadata:
+                    if metadado not in ordinary_metadata:
+                        ordinary_metadata[metadado] = metadata[metadado]
+                    elif metadado in ordinary_metadata and metadado in text_metadata and ordinary_metadata[metadado] == text_metadata[metadado]:
+                        ordinary_metadata[metadado] = metadata[metadado]
+            for metadado in text_metadata:
+                if metadado not in objects.tronco_metadata:
+                    if metadado in text_metadata and metadado in ordinary_metadata and metadado not in metadata and ordinary_metadata[metadado] == text_metadata[metadado]:
+                        del ordinary_metadata[metadado]
+
+            with open(ordinary_filename, "w") as f:
+                f.write("\n".join(["# " + x + " = " + y for x, y in ordinary_metadata.items()]) + "\n" + ordinary_text)
+                        
     return {'error': '0'}
 
 def upload_file(uploading, filename, corpus=False):
@@ -223,26 +250,18 @@ def save_file(name, filename, text):
     filename_dir = os.path.join(objects.root_path, "corpora", name, filename)
     with open(filename_dir) as f:
         previous_text = f.read()
-    metadata = [x for x in previous_text.splitlines() if x.startswith("# ") and " = " in x]
+    metadata = [x for x in previous_text.splitlines() if x.strip().startswith("# ") and " = " in x]
     with open(filename_dir, "w") as f:
         f.write("\n".join(metadata) + "\n" + text)
 
 def load_file(name, filename):
     filename_dir = os.path.join(objects.root_path, "corpora", name, filename)
-    readme_dir = os.path.join(objects.root_path, "corpora", name, "README")
     
     if filename.upper().strip() == "README":
         create_new_file(name, filename)
     else:
         if not os.path.isfile(filename_dir):
-            return False
-
-    with open(readme_dir) as f:
-        readme = f.read()
-        readme_metadata = {
-            x.split("# ")[1].split(" = ", 1)[0]: x.split(" = ", 1)[1]
-            for x in readme.splitlines() if x.startswith("# ") and " = " in x
-        }
+            return False        
 
     with open(filename_dir) as f:
         texto = f.read()
@@ -252,10 +271,6 @@ def load_file(name, filename):
         texto = "# last_seen = 0\n" + texto
     if not '# first_seen = ' in texto:
         texto = f"# first_seen = {time.time()}\n" + texto
-    for metadata in readme_metadata:
-        if metadata not in objects.tronco_metadata:
-            if not '# ' + metadata + " = " in texto:
-                texto = f"# {metadata} = {readme_metadata[metadata]}\n" + texto
     times_seen = int(texto.split("# times_seen = ")[1].split("\n")[0].strip())
     last_seen = texto.split('# last_seen = ')[1].split("\n")[0].strip()
     texto = texto.replace(f'# times_seen = {times_seen}', f'# times_seen = {times_seen + 1}')
