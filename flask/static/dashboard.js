@@ -890,7 +890,7 @@ function validatePassword (name){
         if (!permEdit) { permSetup = false }
         $('#conected').html(!data.has_password && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não pode visualizar"))))
         $('#permissionsSettings').toggle(!data.has_password ? false : (permSetup ? true : false))
-        $('#uploadTextDiv').toggle(permEdit)
+        $('#uploadTextDiv, #metadata').toggle(permEdit)
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
             $('#search').toggle(permView)
@@ -1549,7 +1549,7 @@ $('#wrapTextCheckbox').on('change', function(){
 })
 
 function loadConfigFromCheckboxes(){
-    $('#metadata, #corpusLanguageDiv, #advancedSearch').toggle($('#advancedEditingCheckbox').prop('checked') && permView)
+    $('#corpusLanguageDiv, #advancedSearch').toggle($('#advancedEditingCheckbox').prop('checked') && permView)
     $('#saveModifications').toggle(!$('#autoSaveCheckbox').prop('checked'))
     $('#mainText').attr('wrap', $('#wrapTextCheckbox').prop('checked') ? 'on' : 'off')
     $('#mainText').css('overflow', $('#wrapTextCheckbox').prop('checked') ? "hidden" : "auto")
