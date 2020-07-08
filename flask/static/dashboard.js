@@ -19,7 +19,7 @@ $('.toggleAdvancedSearchToolbar').click(function(){
 
 function indexCorpus(force=false) {
     if (force) {
-        $('#navSearchPanels, #query_results').hide()
+        $('#navSearchPanels, .searchPanel').hide()
     }
     toggleMain(false)
     toggleProgress("Indexando coleção... Pode demorar um pouco.")
