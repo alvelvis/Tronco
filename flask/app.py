@@ -199,7 +199,7 @@ def load_config():
     return {
         'auto_save': tronco_config.corpora[name]['settings']['auto_save'],
         'auto_wrap': tronco_config.corpora[name]['settings']['auto_wrap'],
-        'advanced_editing': tronco_config.corpora[name]['settings']['advanced_editing'] if 'advanced_editing' in tronco_config.corpora[name]['settings'] else "false",
+        'advanced_editing': tronco_config.corpora[name]['settings']['advanced_editing'] if 'advanced_editing' in tronco_config.corpora[name]['settings'] else "true",
         'corpus_language': tronco_config.corpora[name]['settings']['corpus_language'] if 'corpus_language' in tronco_config.corpora[name]['settings'] else "pt",
         'view_perm': "visualizar" in tronco_config.corpora[name]['permissions']['disconnected'],
         'edit_perm': "editar" in tronco_config.corpora[name]['permissions']['disconnected'],

@@ -339,6 +339,7 @@ function updateMetadataRemove() {
         key = $(this).parents(".metadataDiv").children(".metadataItem").attr('key')
         if(confirm("Deseja remover o metadado " + key + "?")) {
             $(this).parents(".metadataDiv").remove()
+            $('#saveMetadata').click()
         }
     })
 }
@@ -353,6 +354,7 @@ $('#newMetadata').click(function(){
             checkTheme()
             updateMetadataRemove()
             metadataItemUpdate()
+            $('#saveMetadata').click()
             feather.replace()
         }
     }
