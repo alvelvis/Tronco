@@ -22,7 +22,7 @@ function indexCorpus(force=false) {
         $('#navSearchPanels, #query_results').hide()
     }
     toggleMain(false)
-    toggleProgress("Indexando coleção...")
+    toggleProgress("Indexando coleção... Pode demorar um pouco.")
     $.ajax({
         url: "/api/loadAdvancedCorpus",
         method: "POST",
@@ -136,7 +136,7 @@ function updateSearchTables(data, tables) {
         <table class="searchTable table" style="word-break:break-all">
             <tr>
                 <th style="cursor:pointer; min-width:50px; ` + ($('#advancedSearchShowId').prop('checked') ? "" : "display:none") + `" onclick="sortTable(0, 'float')" scope="col">#</th>
-                <th style="cursor:pointer; min-width:100px; ` + ($('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
+                <th style="cursor:pointer; min-width:110px; ` + ($('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
                 <th style="cursor:pointer;" onclick="sortTable(2, 'string')" scope="col">Frase</th>
             </tr>
         </table>
@@ -163,7 +163,7 @@ function updateSearchTables(data, tables) {
             <tr>
                 <th style="cursor:pointer; min-width:50px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                 <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Palavra</th>
-                <th style="cursor:pointer; min-width:100px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+                <th style="cursor:pointer; min-width:110px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
             </tr>
         </table>
         `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.word_distribution ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Próximo</a></li></ul></nav>')
@@ -186,7 +186,7 @@ function updateSearchTables(data, tables) {
             <tr>
                 <th style="cursor:pointer; min-width:50px;" onclick="sortTable(0, 'float')" scope="col">#</th>
                 <th style="cursor:pointer" onclick="sortTable(1, 'string')" scope="col">Lema</th>
-                <th style="cursor:pointer; min-width:100px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
+                <th style="cursor:pointer; min-width:110px;" onclick="sortTable(2, 'float')" scope="col">Ocorrências</th>
             </tr>
         </table>
         `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.lemma_distribution ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Próximo</a></li></ul></nav>')

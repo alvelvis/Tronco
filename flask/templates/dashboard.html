@@ -269,15 +269,15 @@
                   </button>                  
                   <button type="button" advanced-toolbar="metadata" class="toggleAdvancedSearchToolbar btn btn-sm btn-outline-secondary">
                     <span data-feather="filter"></span>
-                    Filtrar metadados (<span id="advancedSearchMetadataCount">0</span>)
+                    Filtrar (<span id="advancedSearchMetadataCount">0</span>)
                   </button>
                   <button type="button" advanced-toolbar="customize" class="toggleAdvancedSearchToolbar btn btn-sm btn-outline-secondary">
                     <span data-feather="sliders"></span>
-                    Customizar resultados
+                    Customizar
                   </button>
                   <button type="button" id="reindexCorpus" class="btn btn-sm btn-outline-secondary">
                     <span data-feather="refresh-ccw"></span>
-                    Reindexar coleção
+                    Reindexar
                   </button>                  
                 </div>
               </div>
@@ -393,10 +393,6 @@
                   <span data-feather="link-2"></span>
                   <span id="linksLabel"></span>
                 </button>
-                <button id="metadata" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Metadados">
-                  <span data-feather="database"></span>
-                  Metadados
-                </button>
                 <button id="shareText" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste arquivo">
                   <span data-feather="share-2"></span>
                   <input style="border:none; display:none; padding-right:10px" id="shareLink" readonly>
@@ -413,6 +409,10 @@
                 <button id="deleteFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Exclua este arquivo">
                   <span data-feather="trash"></span>
                   <span>Excluir</span>
+                </button>
+                <button id="metadata" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Metadados">
+                  <span data-feather="database"></span>
+                  Metadados
                 </button>
               </div>
             </div>
@@ -468,7 +468,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=5"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=71"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=72"></script>
   
   </body>
 </html>

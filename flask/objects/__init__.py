@@ -8,7 +8,7 @@ import pickle
 import functions
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.37
+tronco_version = 1.38
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 root_path = ""
@@ -264,7 +264,7 @@ class TroncoConfig:
                     'auto_wrap': "true",
                     'auto_save': "true",
                     'corpus_language': 'pt',
-                    'advanced_editing': "false",
+                    'advanced_editing': "true",
                     }
                 }
             self.save()
