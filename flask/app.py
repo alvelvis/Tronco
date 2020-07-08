@@ -73,12 +73,9 @@ def save_metadata():
     name = request.values.get("name")
     filename = request.values.get("filename")
     metadata = json.loads(request.values.get("metadata"))
-    if metadata:
-        password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
-        if not tronco_config.has_permission(name, password, "editar"): return None
-        return functions.save_metadata(name, filename, metadata)
-    else:
-        return {'error': '0'}
+    password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "editar"): return None
+    return functions.save_metadata(name, filename, metadata)
 
 @app.route("/.well-known/assetlinks.json")
 def get_asset():

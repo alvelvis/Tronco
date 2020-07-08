@@ -362,7 +362,7 @@ $('#newMetadata').click(function(){
 
 function loadMetadata(metadata, readme=false) {
     if (readme) {
-        metadataItems = "Dica: Os metadados deste arquivo serão aplicados a todos os outros arquivos da coleção."
+        metadataItems = "<div class='pb-2'>Dica: Os metadados deste arquivo serão aplicados a todos os outros arquivos da coleção.</div>"
     } else {
         metadataItems = ""
     }
@@ -1676,7 +1676,7 @@ function triggerResize(first=false){
     //$('#main').css('margin-left', !isMobile ? '260px' : '0px')
     $('#main').toggleClass("col-md-9 ml-sm-auto col-lg-10", !isMobile)
 
-    $('#uploadTextLabel').html(isMobile ? "Enviar arquivos" : "Solte arquivos aqui")
+    $('#uploadTextLabel').html(isMobile ? "Enviar arquivos" : "Solte arquivos")
 
     feather.replace()
 }

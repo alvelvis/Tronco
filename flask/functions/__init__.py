@@ -63,12 +63,12 @@ def save_metadata(name, filename, metadata):
         for x in text if x.startswith("# ") and " = " in x
     }
     text = "\n".join([x for x in text if not x.startswith("# ")])
-    for item in metadata:
-        if not item in text_metadata:
-            text_metadata[item] = ""
-        text_metadata[item] = metadata[item]
+    
+    for item in objects.tronco_metadata:
+        metadata.update({item: text_metadata[item]})
+
     with open(filename_dir, "w") as f:
-        f.write("\n".join(["# " + x + " = " + y for x, y in text_metadata.items()]) + "\n" + text)
+        f.write("\n".join(["# " + x + " = " + y for x, y in metadata.items()]) + "\n" + text)
     return {'error': '0'}
 
 def upload_file(uploading, filename, corpus=False):
