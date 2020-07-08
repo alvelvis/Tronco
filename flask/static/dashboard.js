@@ -275,7 +275,8 @@ $('#advancedSearchGo').click(function(){
             }
         })
         .done(function(data){
-            $('#navSearchPanels, #query_results').show()
+            $('#navSearchPanels').show()
+            $('[panel="query_results"].toggleSearch').click()
             switch (data.error) {
                 case '0':
                     $('#query_results').find('.sentences').html(data.data.sentences)
