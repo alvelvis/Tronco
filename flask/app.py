@@ -63,7 +63,7 @@ def load_advanced_corpus():
     password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
     force = request.values.get("force")
     if not tronco_config.has_permission(name, password, "visualizar"): return {'error': '1'}
-    corpus_language = tronco_config.corpora[name]['settings']['corpus_language'] if 'corpus_language' in tronco_config.corpora[name]['settings'] else 'pt'
+    corpus_language = tronco_config.corpora[name]['settings']['corpus_language'] if 'corpus_language' in tronco_config.corpora[name]['settings'] else objects.tronco_default_language
     if force == "true":
         advanced_corpora.load_corpus(name, corpus_language)
     return {'error': '0', 'data': advanced_corpora.get_number_sentences_or_load(name, corpus_language), 'metadata': advanced_corpora.corpora[name]['metadata']}
@@ -197,10 +197,12 @@ def load_config():
         'auto_save': tronco_config.corpora[name]['settings']['auto_save'],
         'auto_wrap': tronco_config.corpora[name]['settings']['auto_wrap'],
         'advanced_editing': tronco_config.corpora[name]['settings']['advanced_editing'] if 'advanced_editing' in tronco_config.corpora[name]['settings'] else "true",
-        'corpus_language': tronco_config.corpora[name]['settings']['corpus_language'] if 'corpus_language' in tronco_config.corpora[name]['settings'] else "pt",
+        'corpus_language': tronco_config.corpora[name]['settings']['corpus_language'] if 'corpus_language' in tronco_config.corpora[name]['settings'] else objects.tronco_default_language,
         'view_perm': "visualizar" in tronco_config.corpora[name]['permissions']['disconnected'],
         'edit_perm': "editar" in tronco_config.corpora[name]['permissions']['disconnected'],
-        'setup_perm': "configurar" in tronco_config.corpora[name]['permissions']['disconnected']
+        'setup_perm': "configurar" in tronco_config.corpora[name]['permissions']['disconnected'],
+        'languages': objects.udpipe_models,
+        'default_metadata': objects.tronco_metadata,
         }
 
 @app.route("/api/validatePassword", methods=["POST"])

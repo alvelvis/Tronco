@@ -11,11 +11,18 @@ from ufal.udpipe import Model, Pipeline
 tronco_version = 1.38
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
+tronco_default_language = "pt"
 root_path = ""
 
 udpipe_models = {
-    'pt': "portuguese-bosque-ud-2.5-191206.udpipe",
-    'en': "english-ewt-ud-2.5-191206.udpipe"
+    'pt': {
+        'path': "portuguese-bosque-ud-2.5-191206.udpipe",
+        'label': "Português"
+    },
+    'en': {
+        'path': "english-ewt-ud-2.5-191206.udpipe",
+        'label': 'Inglês',
+    }
 }
 
 all_permissions = ["visualizar", "editar", "configurar"]
@@ -104,15 +111,17 @@ class AdvancedCorpora:
             del self.corpora[name]
         corpus_dir = os.path.join(root_path, "corpora", name)
         corpus_language = lang
-        model = Model.load(os.path.join(root_path, "udpipe", udpipe_models[corpus_language]))
-        sys.stderr.write(os.path.join(root_path, "udpipe", udpipe_models[corpus_language]))
+        model = Model.load(os.path.join(root_path, "udpipe", udpipe_models[corpus_language]['path']))
         pipeline = Pipeline(model, "tokenize", Pipeline.DEFAULT, Pipeline.DEFAULT, "conllu")
         corpus = estrutura_ud.Corpus(recursivo=True)
         all_metadata = {'filename': ''}
         for filename in os.listdir(corpus_dir):
             if filename != "README":
                 with open(corpus_dir + "/" + filename) as f:
-                    text = f.read().splitlines()
+                    try:
+                        text = f.read().splitlines()
+                    except:
+                        continue
                 raw_text = []
                 metadata = {}
                 [metadata.update({x.split(" = ", 1)[0].split("# ", 1)[1]: x.split(" = ", 1)[1]}) if x.startswith("# ") and " = " in x else raw_text.append(x) for x in text]
@@ -263,7 +272,7 @@ class TroncoConfig:
                 'settings': {
                     'auto_wrap': "true",
                     'auto_save': "true",
-                    'corpus_language': 'pt',
+                    'corpus_language': tronco_default_language,
                     'advanced_editing': "true",
                     }
                 }

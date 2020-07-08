@@ -2,7 +2,7 @@
     display: none;
 }  
 
-#filename, #sidebar a {
+ #sidebar, #filename, #mainHeadbar { /*#filename, #sidebar a*/
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

@@ -94,7 +94,7 @@ $('#addAdvancedSearchMetadata').click(function(){
                         <div class="input-group-prepend">
                             <select class="custom-select">`
     for (metadata of allMetadata) {
-        if (["last_seen", "first_seen", "times_seen"].indexOf(metadata) == -1){
+        if (default_metadata.indexOf(metadata) == -1){
             newMetadata = newMetadata + '<option>' + metadata + '</option>'
         }
     }
@@ -348,7 +348,7 @@ function updateMetadataRemove() {
 $('#newMetadata').click(function(){
     newKey = prompt("Dê um nome ao novo metadado:", "")
     if (newKey && newKey.length) {
-        if (newKey == "first_seen" || newKey == "last_seen" || newKey == "times_seen" || $('[key="' + newKey + '"]').length) {
+        if (default_metadata.indexOf(newKey) >= 0 || $('[key="' + newKey + '"]').length) {
             alert("Metadado já existe!")
         } else {
             $('#metadataItems').append('<div class="input-group mb-3 metadataDiv"><div class="input-group-prepend"><a class="metadataKey removeMetadata input-group-text"><span title="Remover metadado" class="removeMetadata" data-feather="x"></span>' + newKey + '</a></div><input type="text" class="metadataItem form-control" key="' + newKey + '"></div>')
@@ -368,7 +368,7 @@ function loadMetadata(metadata, readme=false) {
         metadataItems = ""
     }
     for (key of Object.keys(metadata)) {
-        if (key != "first_seen" && key != "last_seen" && key != "times_seen")
+        if (default_metadata.indexOf(key) == -1)
         metadataItems = metadataItems + '<div class="input-group mb-3 metadataDiv"><div class="input-group-prepend"><a class="metadataKey removeMetadata input-group-text"><span title="Remover metadado" data-feather="x"></span>' + key + '</a></div><input type="text" class="metadataItem form-control" key="' + key + '"></div>'
     }
     $('#metadataItems').html(metadataItems)
@@ -1556,6 +1556,8 @@ function loadConfigFromCheckboxes(){
     $('#mainText').css('overflow', $('#wrapTextCheckbox').prop('checked') ? "hidden" : "auto")
 }
 
+var default_metadata = []
+
 function loadConfig(){
     name = $('#name').html()
     $.ajax({
@@ -1573,6 +1575,10 @@ function loadConfig(){
         visitant_view_perm = data.view_perm
         visitant_edit_perm = data.edit_perm
         visitant_setup_perm = data.setup_perm
+        default_metadata = data.default_metadata
+        for (language in data.languages) {
+            $('#corpusLanguage').append("<option value='" + language + "'>" + data.languages[language].label + "</option>")
+        }
         $('#corpusLanguage').val(data.corpus_language)
         $('#autoSaveCheckbox').prop('checked', auto_save)
         $('#wrapTextCheckbox').prop('checked', auto_wrap)
