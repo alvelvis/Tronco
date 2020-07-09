@@ -401,7 +401,7 @@ def load_corpora():
     corpora = functions.load_corpora(key=key, recent=recent)
     return {
         'data': "|".join([x['name'] + (':l' if not 'visualizar' in tronco_config.corpora[x['name']]['permissions']['disconnected'] else '') for x in corpora['sorted_list']]),
-        'new_recent': "|".join([x + (':l' if not 'visualizar' in tronco_config.corpora[x]['permissions']['disconnected'] else '') for x in corpora['new_recent']])
+        'new_recent': "|".join([x + (':l' if not 'visualizar' in tronco_config.corpora[x]['permissions']['disconnected'] else '') for x in corpora['new_recent'] if x in tronco_config.corpora])
     }
 
 @app.route('/')
