@@ -521,7 +521,7 @@ function toggleMobile(el) {
 }
 
 $('#mobileTronco').click(function(){
-    $('#troncoHome').click()
+    window.location.href = '/?load=false'
 })
 
 $('#mobileSearch').click(function(){
