@@ -108,7 +108,7 @@ function loadCorpora(key = ""){
             $("#openCorpus").append(data.data.length ? new_data : new_data + "<span class='mt-3'>Nada encontrado.</span>")
         } else {
             let recent = data["new_recent"]
-            setRecent(recent.split(":l")[0])
+            setRecent(recent.replaceAll(":l", ""))
             for (name of recent.split("|").reverse()){
                 $('#openCorpus').append('<li class="list-group-item"><a class="openCorpus" corpus="' + name.split(":l")[0] + '" href="/corpus/' + name.split(":l")[0] + '?file=README">' + (name.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" title="Visitantes não podem visualizar" data-feather="lock"></span>' : "") + name.split(":l")[0] + '</a></li>')
             }
