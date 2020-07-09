@@ -87,10 +87,10 @@ function loadCorpora(key = ""){
         }
     })
     .done(function(data){
-        if (key.length && data.data.toLowerCase().split("|").indexOf(key.toLowerCase()) >= 0) {
+        if (key.length && data.data.toLowerCase().replaceAll(":l", "").split("|").indexOf(key.toLowerCase()) >= 0) {
             pre_list = "<a class='text-muted'>Abrir " + key + "?</a>"
         }
-        if (key.length && data.data.toLowerCase().split("|").indexOf(key.toLowerCase()) == -1) {
+        if (key.length && data.data.toLowerCase().replaceAll(":l", "").split("|").indexOf(key.toLowerCase()) == -1) {
             pre_list = "<a class='text-muted'>Criar " + key + "?</a>"
         }
         if (!key.length) {
