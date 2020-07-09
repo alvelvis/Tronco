@@ -1,3 +1,8 @@
+$('.quickSearch').click(function(){
+    $('#advancedSearchInput').val($(this).attr('params'))
+    $('#advancedSearchGo').click()
+})
+
 var max_update_files = 200
 
 var runningActivities = {}
@@ -171,7 +176,7 @@ function updateSearchTables(data, tables) {
                 <th style="cursor:pointer;" onclick="sortTable(2, 'string')" scope="col">Frase</th>
             </tr>
         </table>
-        `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="query_results" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.query_results ? "disabled" : "") + '"><a table="query_results" class="page-link">Próximo</a></li></ul></nav>')
+        `).append('<nav class="justify-content-center"><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="query_results" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.query_results ? "disabled" : "") + '"><a table="query_results" class="page-link">Próximo</a></li></ul></nav>')
 
         for (i of Array(data.data.pages.query_results).keys()) {
             $('#query_results').find('.page-item-next').before('<li class="page-item ' + (data.data.page == i+1 ? "active" : "") + '"><a class="page-link" table="query_results">' + parseInt(i+1).toString() + '</a></li>')
@@ -197,7 +202,7 @@ function updateSearchTables(data, tables) {
                 <th style="cursor:pointer; min-width:50px;" onclick="sortTable(2, 'float')" scope="col">Oc.</th>
             </tr>
         </table>
-        `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.word_distribution ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Próximo</a></li></ul></nav>')
+        `).append('<nav class="justify-content-center"><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.word_distribution ? "disabled" : "") + '"><a table="word_distribution" class="page-link">Próximo</a></li></ul></nav>')
 
         for (i of Array(data.data.pages.word_distribution).keys()) {
             $('#word_distribution').find('.page-item-next').before('<li class="page-item ' + (data.data.page == i+1 ? "active" : "") + '"><a class="page-link" table="word_distribution">' + parseInt(i+1).toString() + '</a></li>')
@@ -220,7 +225,7 @@ function updateSearchTables(data, tables) {
                 <th style="cursor:pointer; min-width:50px;" onclick="sortTable(2, 'float')" scope="col">Oc.</th>
             </tr>
         </table>
-        `).append('<nav><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination justify-content-center"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.lemma_distribution ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Próximo</a></li></ul></nav>')
+        `).append('<nav class="justify-content-center"><ul style="overflow-x:' + (isMobile ? 'scroll' : 'auto') + '" class="pagination"><li class="page-item ' + (data.data.page == 1 ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Anterior</a></li><li class="page-item page-item-next ' + (data.data.page == data.data.pages.lemma_distribution ? "disabled" : "") + '"><a table="lemma_distribution" class="page-link">Próximo</a></li></ul></nav>')
 
         for (i of Array(data.data.pages.lemma_distribution).keys()) {
             $('#lemma_distribution').find('.page-item-next').before('<li class="page-item ' + (data.data.page == i+1 ? "active" : "") + '"><a class="page-link" table="lemma_distribution">' + parseInt(i+1).toString() + '</a></li>')
@@ -244,7 +249,7 @@ function updateSearchTables(data, tables) {
     })
 
     $('.gotoFile').click(function(){
-        $('[file="' + $(this).text() + '"].files').click()
+        returnSearch($(this).text())
     })
 
     $('[table="query_results"], [table="word_distribution"], [table="lemma_distribution"]').unbind('click').click(function(){
@@ -478,19 +483,27 @@ function toggleInsertSuccess(){
     
 }
 
-function returnSearch(){
+function returnSearch(filename=$('#search').val()){
     $.ajax({
         url: '/api/findOrCreateFile',
         method: 'POST',
         data: {
             "name": $('#name').html(),
-            "filename": $('#search').val(),
+            "filename": filename,
             "tronco_token": getTroncoToken()
         }
     })
     .done(function(data){
-        //recentFiles("", filename)
-        updateFiles("", data.data)
+        updateFiles()
+        loadFile(data.data)
+        $('#advancedSearch').find('a').toggleClass("active", false)
+        //$(this).toggleClass('active', true)
+        //this.scrollIntoView();
+        if ($(this).attr('file') != "README") {
+            $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + data.data + " - Tronco"))
+        } else {
+            $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + name + " - Tronco"))
+        }
         $('#search').val('')
         $('#search').blur()
     })
@@ -937,7 +950,32 @@ function validatePassword (name){
             setTroncoToken(data.tronco_token)
         }
         loadConfig()
-        updateFiles("", $('#filename').attr('file'))
+        updateFiles()
+        search = window.location.href.match(/\?search=(.*)/)
+        if (search) {
+            if (search[1] != "true") {
+                $('#advancedSearchInput').val(decodeURIComponent(search[1].split("&")[0]))
+                for (metadata of window.location.href.split("&")){
+                    if (metadata.indexOf("=") > 0 && metadata.indexOf("?search=") == -1) {
+                        $('#advancedSearchMetadata').append(`
+                        <div class="advancedSearchMetadataItem input-group mb-3">
+                            <div class="input-group-prepend">
+                                <select class="custom-select">
+                                    <option value="` + decodeURIComponent(metadata.split("=")[0]) + `">` + decodeURIComponent(metadata.split("=")[0]) + `</option>
+                                </select>
+                            </div>
+                            <input type="text" class="form-control" value="` + decodeURIComponent(metadata.split("=")[1]) + `">
+                        </div>
+                        `)
+                    }
+                }
+                $('#advancedSearchMetadataCount').html($('.advancedSearchMetadataItem').length)
+            }
+            checkTheme()
+            $('#advancedSearch').click()
+        } else {
+            returnSearch($('#filename').attr('file'))
+        }
     })
     return true
 }
@@ -998,7 +1036,8 @@ $('#advancedSearchInput').on('keyup', function(e){
 
 $('#search').on('keyup', function(e){
     filename = $(this).val()
-    recentFiles(filename, filename)
+    clearTimeout(searchTimer)
+    searchTimer = setTimeout(doneSearch, doneSearchInterval)
     if (e.which == 13){
         returnSearch()
     }
@@ -1059,6 +1098,13 @@ function sortTable(n, type="float") {
     }
 }
 
+var searchTimer
+var doneSearchInterval = 200
+
+function doneSearch () {
+    recentFiles($('#search').val(), $('#search').val())
+}
+
 function recentFiles(key = "", typing = ""){
     $('#search').val(key)
     $.ajax({
@@ -1083,7 +1129,7 @@ function recentFiles(key = "", typing = ""){
         }
         $('#recentFiles').html(data.data.length ? new_data : new_data + 'Nenhum arquivo encontrado.')
         $('.recentFiles').click(function(){
-            $('[file="' + $(this).attr('file') + '"].files').click()
+            returnSearch($(this).attr('file'))
         })
     })
 }
@@ -1169,7 +1215,7 @@ function deleteFile(filename){
         })
         .done(function(){
             if ($('#filename').attr('file') == filename) {
-                updateFiles("", "README")
+                returnSearch("README")
             } else {
                 updateFiles()
             }
@@ -1197,7 +1243,7 @@ function renameFile(filename) {
         .done(function(data){
             if (data.data != "false") {
                 if ($('#filename').attr('file') == filename) {
-                    updateFiles("", data.data)
+                    returnSearch(data.data)
                 } else {
                     updateFiles()
                 }
@@ -1212,7 +1258,7 @@ $('#renameFile').click(function(){
     renameFile($('#filename').attr('file'))
 })
 
-function updateFiles(key = "", click = ""){
+function updateFiles(key = ""){
     name = $('#name').html()
     $.ajax({
         url: '/api/updateFiles',
@@ -1251,16 +1297,7 @@ function updateFiles(key = "", click = ""){
         }
 
         $('.files').click(function(){
-            loadFile($(this).attr('file'))
-            $('.files').toggleClass('active', false)
-            $('#advancedSearch').find('a').toggleClass("active", false)
-            $(this).toggleClass('active', true)
-            //this.scrollIntoView();
-            if ($(this).attr('file') != "README") {
-                $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + $(this).attr('file') + " - Tronco"))
-            } else {
-                $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + name + " - Tronco"))
-            }
+            returnSearch($(this).attr('file'))
         })
 
         $('[file!=README].files').on('contextmenu', function(e) {
@@ -1283,35 +1320,6 @@ function updateFiles(key = "", click = ""){
 
         feather.replace()
 
-        search = window.location.href.match(/\?search=(.*)/)
-        if (!search) {
-            if (click.length) {
-                $('[file="' + click + '"].files').toggleClass('active', true).click()
-            } else {
-                $('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active')
-            }
-        } else {
-            if (search[1] != "true") {
-                $('#advancedSearchInput').val(decodeURIComponent(search[1].split("&")[0]))
-                for (metadata of window.location.href.split("&")){
-                    if (metadata.indexOf("=") > 0 && metadata.indexOf("?search=") == -1) {
-                        $('#advancedSearchMetadata').append(`
-                        <div class="advancedSearchMetadataItem input-group mb-3">
-                            <div class="input-group-prepend">
-                                <select class="custom-select">
-                                    <option value="` + decodeURIComponent(metadata.split("=")[0]) + `">` + decodeURIComponent(metadata.split("=")[0]) + `</option>
-                                </select>
-                            </div>
-                            <input type="text" class="form-control" value="` + decodeURIComponent(metadata.split("=")[1]) + `">
-                        </div>
-                        `)
-                    }
-                }
-                $('#advancedSearchMetadataCount').html($('.advancedSearchMetadataItem').length)
-            }
-            checkTheme()
-            $('#advancedSearch').click()
-        }
     })
 }
 
@@ -1487,6 +1495,11 @@ function loadFile(filename){
             toggleMain("file")
             $('#filename').html(filename == "README" ? name : filename)
             $('.filename').html(filename == "README" ? name : filename)
+            $('.files').toggleClass("active", false)
+            if ($('[file="' + filename + '"].files')) {
+                $('[file="' + filename + '"].files').toggleClass('active', true)
+                $('#advancedSearch').find('a').toggleClass("active", false)
+            }
             $('#filename').attr('file', filename)
             $('#filename').scrollLeft(0)
             $('#mainText').val(data.data.text)
@@ -1506,7 +1519,7 @@ function loadFile(filename){
             } else {
                 if (data.error == 3){
                     alert("Este arquivo não existe")
-                    $('[file="README"].files').click()
+                    returnSearch("README")
                     return false
                 }
             }
@@ -1518,7 +1531,7 @@ function loadFile(filename){
             window.location.href = "/?load=false"
             return false
         } else {
-            $('[file=README].files').click()
+            returnSearch("README")
         }
     })
 }
@@ -1783,7 +1796,7 @@ $(document).ready(function(){
         }
     })
     .on("queuecomplete", function(){
-        updateFiles("", "README")
+        returnSearch("README")
         toggleProgress(false)
     })
     .on("sending", function(file, xhr, formData){

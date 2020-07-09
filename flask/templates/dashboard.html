@@ -17,12 +17,12 @@
     <title>Tronco</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="{{url_for('static', filename='bootstrap.css')}}?version=1" rel="stylesheet">
+    <link href="{{url_for('static', filename='bootstrap.css')}}?version=2" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="{{url_for('static', filename='dashboard.css')}}?version=4" rel="stylesheet">
+    <link href="{{url_for('static', filename='dashboard.css')}}?version=5" rel="stylesheet">
     <link href="{{url_for('static', filename='dropzone.css')}}" rel="stylesheet">
-    <link href="{{url_for('static', filename='tronco.css')}}?version=5" rel="stylesheet">
+    <link href="{{url_for('static', filename='tronco.css')}}?version=6" rel="stylesheet">
 
   </head>
 
@@ -265,7 +265,9 @@
               <div class="input-group">
                 <input type="text" id="advancedSearchInput" class="form-control" placeholder="Expressão de busca">
               </div>
+
             </div>
+
 
             <div class="my-3 mx-0 px-0" id="advancedSearchToolbarRow">
               <div class="btn-toolbar">
@@ -273,7 +275,11 @@
                   <button class="btn btn-sm btn-primary" id="advancedSearchGo" type="button">
                     <span data-feather="search"></span>
                     Buscar
-                  </button>                  
+                  </button>
+                  <button class="toggleAdvancedSearchToolbar btn btn-sm btn-outline-secondary" advanced-toolbar="builder" id="advancedSearchGo" type="button">
+                    <span data-feather="help-circle"></span>
+                    Ajuda
+                  </button>
                   <button type="button" advanced-toolbar="metadata" class="toggleAdvancedSearchToolbar btn btn-sm btn-outline-secondary">
                     <span data-feather="filter"></span>
                     Filtrar (<span id="advancedSearchMetadataCount">0</span>)
@@ -291,6 +297,22 @@
             </div>
 
             <div id="searchBody">
+
+              <div style="display:none" class="advanced-toolbar-panel" advanced-toolbar-panel="builder">
+                <div class="h5">Buscas rápidas</div>
+                <button type="button" title="Buscar todas as palavras da coleção" params='word = ".*"' class="quickSearch btn btn-sm btn-outline-secondary">
+                  Todas as palavras
+                </button>
+                <button type="button" title="Buscar todos os substantivos da coleção" params='upos = "NOUN"' class="quickSearch btn btn-sm btn-outline-secondary">
+                  Todos os substantivos
+                </button>
+                <button type="button" title="Buscar todos os adjetivos da coleção" params='upos = "ADJ"' class="quickSearch btn btn-sm btn-outline-secondary">
+                  Todos os adjetivos
+                </button>
+                <button type="button" title="Buscar todas as frases da coleção" params='# text = .*' class="quickSearch btn btn-sm btn-outline-secondary">
+                  Todas as frases
+                </button>
+              </div>
 
               <div style="display:none" class="advanced-toolbar-panel" advanced-toolbar-panel="customize">
                 <div class="custom-control custom-checkbox">
@@ -474,8 +496,8 @@
     <script src="{{url_for('static', filename='feather.js')}}"></script>
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
-    <script src="{{url_for('static', filename='tronco.js')}}?version=6"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=81"></script>
+    <script src="{{url_for('static', filename='tronco.js')}}?version=7"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=83"></script>
   
   </body>
 </html>

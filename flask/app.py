@@ -5,11 +5,12 @@ import json
 from flask import Flask, redirect, render_template, request, url_for, send_from_directory
 from flaskwebgui import FlaskUI
 from uuid import uuid4
-import objects
-import functions
 
 app = Flask(__name__)
 ui = FlaskUI(app, port=5240, maximized=True)
+sys.path.insert(0, os.path.join(app.root_path, "scripts"))
+import objects
+import functions
 
 objects.root_path = app.root_path
 tronco_config = objects.TroncoConfig()
@@ -79,7 +80,7 @@ def load_advanced_corpus():
         advanced_corpora.delete_corpus(name)
     if not name in advanced_corpora.corpora:
         n_files = len(os.listdir(corpus_dir))
-        temporary_objects.set_n_indexing_files('indexing', session_token, n_files-1)
+        temporary_objects.set_max_indexing_files('indexing', session_token, n_files-1)
         for filename in os.listdir(corpus_dir):
             advanced_corpora.load_file(name, filename, corpus_language)
             temporary_objects.decrease_n_indexing_files('indexing', session_token, 1)
