@@ -71,21 +71,22 @@ function indexCorpus(force=false) {
                     $('#advancedSearchInput').focus()
                     $('#advancedSearchInput').select()
                 }
-                toggleProgress(false)
                 clearInterval(runningActivities['indexing'])
+                toggleProgress(false)
                 $('#advancedSearchSentences').html(" em " + data.data + " frases")
                 allMetadata = data.metadata
                 break
             case '1':
-                toggleProgress(false)
                 clearInterval(runningActivities['indexing'])
+                toggleProgress(false)
                 alert("Você não tem permissão")
                 break
         }
     })
     .fail(function(){
-        toggleProgress(false)
         clearInterval(runningActivities['indexing'])
+        toggleProgress(false)
+        alert("Falha na indexação")
     })
 }
 
