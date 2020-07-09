@@ -203,7 +203,7 @@ class AdvancedCorpora:
             pickle.dump(self.corpora, f)
 
     def get_number_sentences(self, name):
-        return len(self.corpora[name]['corpus'].sentences)
+        return len(self.corpora[name]['corpus'].sentences) if name in self.corpora else 0
 
     def __init__(self):
         self.metadata = {}

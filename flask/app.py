@@ -82,9 +82,12 @@ def load_advanced_corpus():
         n_files = len(os.listdir(corpus_dir))
         temporary_objects.set_max_indexing_files('indexing', session_token, n_files-1)
         for filename in os.listdir(corpus_dir):
-            advanced_corpora.load_file(name, filename, corpus_language)
-            temporary_objects.decrease_n_indexing_files('indexing', session_token, 1)
+            if filename != "README":
+                advanced_corpora.load_file(name, filename, corpus_language)
+                temporary_objects.decrease_n_indexing_files('indexing', session_token, 1)
         advanced_corpora.mount_corpus(name)
+    if not name in advanced_corpora.corpora:
+        return {'error': '2'}
     return {'error': '0', 'data': advanced_corpora.get_number_sentences(name), 'metadata': advanced_corpora.corpora[name]['metadata']}
 
 @app.route("/api/saveMetadata", methods=["POST"])

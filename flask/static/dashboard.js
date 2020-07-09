@@ -47,10 +47,15 @@ function indexCorpus(force=false) {
         })
         .done(function(data){
             if (data.error == "0") {
-                toggleProgress('Indexando coleção... (' + parseInt(data.data[1] - data.data[0]).toString() + '/' + data.data[1] + ')')
+                if (data.data[0] > 0) {
+                    toggleProgress('Indexando coleção... (' + parseInt(data.data[1] - data.data[0]).toString() + '/' + data.data[1] + ')')
+                } else {
+                    clearInterval(runningActivities['indexing'])
+                    toggleProgress("Só mais um pouco...")
+                }
             }
         })
-    }, 4000)
+    }, 5000)
     $.ajax({
         url: "/api/loadAdvancedCorpus",
         method: "POST",
@@ -62,6 +67,8 @@ function indexCorpus(force=false) {
         }
     })
     .done(function(data){
+        clearInterval(runningActivities['indexing'])
+        toggleProgress(false)
         switch (data.error) {
             case '0':
                 toggleMain("search")
@@ -71,15 +78,15 @@ function indexCorpus(force=false) {
                     $('#advancedSearchInput').focus()
                     $('#advancedSearchInput').select()
                 }
-                clearInterval(runningActivities['indexing'])
-                toggleProgress(false)
                 $('#advancedSearchSentences').html(" em " + data.data + " frases")
                 allMetadata = data.metadata
                 break
             case '1':
-                clearInterval(runningActivities['indexing'])
-                toggleProgress(false)
                 alert("Você não tem permissão")
+                break
+            case '2':
+                alert("Falha na indexação")
+                returnSearch("README")
                 break
         }
     })
@@ -87,6 +94,7 @@ function indexCorpus(force=false) {
         clearInterval(runningActivities['indexing'])
         toggleProgress(false)
         alert("Falha na indexação")
+        returnSearch("README")
     })
 }
 
@@ -495,8 +503,7 @@ function returnSearch(filename=$('#search').val()){
         }
     })
     .done(function(data){
-        updateFiles()
-        loadFile(data.data)
+        updateFiles("", load=data.data)
         $('#advancedSearch').find('a').toggleClass("active", false)
         //$(this).toggleClass('active', true)
         //this.scrollIntoView();
@@ -951,7 +958,6 @@ function validatePassword (name){
             setTroncoToken(data.tronco_token)
         }
         loadConfig()
-        updateFiles()
         search = window.location.href.match(/\?search=(.*)/)
         if (search) {
             if (search[1] != "true") {
@@ -1138,6 +1144,7 @@ function recentFiles(key = "", typing = ""){
 $('#deleteCorpus').click(function(){
     name = $('#name').html()
     confirmName = prompt("Digite o nome da coleção (" + name + ") para confirmar que deseja excluí-la:")
+    toggleProgress("Excluindo a coleção...")
     if (confirmName && confirmName.length && confirmName == name) {
         $.ajax({
             url: '/api/deleteCorpus',
@@ -1161,6 +1168,7 @@ $('#deleteCorpus').click(function(){
 $('#renameCorpus').click(function(){
     name = $('#name').html()
     new_name = prompt("Dê um novo nome para " + name + ":", name)
+    toggleProgress("Só um momento...")
     if (new_name && new_name.length){
         $.ajax({
             url: '/api/renameCorpus',
@@ -1259,7 +1267,7 @@ $('#renameFile').click(function(){
     renameFile($('#filename').attr('file'))
 })
 
-function updateFiles(key = ""){
+function updateFiles(key = "", load = ""){
     name = $('#name').html()
     $.ajax({
         url: '/api/updateFiles',
@@ -1318,6 +1326,10 @@ function updateFiles(key = ""){
         $("#context-menu-file a").on("click", function() {
             $(this).parent().removeClass("show").hide()
         })
+
+        if (load) {
+            loadFile(load)
+        }
 
         feather.replace()
 
