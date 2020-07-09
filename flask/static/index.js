@@ -1,15 +1,19 @@
 $('#indexGo').click(function(){
-    $.ajax({
-        url: '/api/findOrCreateCorpus',
-        method: 'POST',
-        data: {
-            'name': $('#filterOpenCorpus').val()
-        }
-    })
-    .done(function(data){
-        addRecent(data.data.split(":l")[0])
-        window.location.href = "/corpus/" + data.data + "?file=README"
-    })
+    if (!$('#filterOpenCorpus').val()) {
+        $('#filterOpenCorpus').toggleClass("is-invalid", true)
+    } else {
+        $.ajax({
+            url: '/api/findOrCreateCorpus',
+            method: 'POST',
+            data: {
+                'name': $('#filterOpenCorpus').val()
+            }
+        })
+        .done(function(data){
+            addRecent(data.data.split(":l")[0])
+            window.location.href = "/corpus/" + data.data + "?file=README"
+        })
+    }
 })
 
 var selectedCorpus = -1
@@ -94,7 +98,7 @@ function loadCorpora(key = ""){
         }
         new_data = ""
         for (x of data.data.split("|")) {
-            new_data = new_data + '<li class="list-group-item"><a class="openCorpus" corpus="' + x.split(":l")[0] + '" href="/corpus/' + x.split(":l")[0] + '?file=README">' + (x.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" data-feather="lock"></span>' : "") + x.split(":l")[0] + '</a></li>'
+            new_data = new_data + '<li class="list-group-item"><a class="openCorpus" corpus="' + x.split(":l")[0] + '" href="/corpus/' + x.split(":l")[0] + '?file=README">' + (x.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" title="Visitantes não podem visualizar" data-feather="lock"></span>' : "") + x.split(":l")[0] + '</a></li>'
         }
         if (pre_list.length) {
             $('#randomTip').html(pre_list)
@@ -106,7 +110,7 @@ function loadCorpora(key = ""){
             let recent = data["new_recent"]
             setRecent(recent.split(":l")[0])
             for (name of recent.split("|").reverse()){
-                $('#openCorpus').append('<li class="list-group-item"><a class="openCorpus" corpus="' + name.split(":l")[0] + '" href="/corpus/' + name.split(":l")[0] + '?file=README">' + (name.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" data-feather="lock"></span>' : "") + name.split(":l")[0] + '</a></li>')
+                $('#openCorpus').append('<li class="list-group-item"><a class="openCorpus" corpus="' + name.split(":l")[0] + '" href="/corpus/' + name.split(":l")[0] + '?file=README">' + (name.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" title="Visitantes não podem visualizar" data-feather="lock"></span>' : "") + name.split(":l")[0] + '</a></li>')
             }
             $("#openCorpus").append(new_data)
         }

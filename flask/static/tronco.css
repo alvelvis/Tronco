@@ -10,3 +10,14 @@
     -ms-user-select: none;
     user-select: none;
 }
+
+.toolbarButton:focus, .btn-primary:focus, .btn-outline-primary:focus, .btn-outline-secondary:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.btn-toolbar-hover{color:#fff;background-color:#6c757d;border-color:#6c757d;}
+
+a:hover {
+text-decoration:none;
+}

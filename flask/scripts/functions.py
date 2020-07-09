@@ -202,7 +202,7 @@ def secure_filename(filename):
             filename = filename.replace(sep, " ")
     filename = str(objects._filename_ascii_strip_re.sub("", filename)).strip(
         "._"
-    )
+    ).strip()
 
     # on nt a couple of special files are present in each folder.  We
     # have to ensure that the target file is not such a filename.  In
