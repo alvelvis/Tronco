@@ -76,6 +76,10 @@ def load_advanced_corpus():
     force = request.values.get("force")
     if not tronco_config.has_permission(name, password, "visualizar"): return {'error': '1'}
     corpus_language = tronco_config.corpora[name]['settings']['corpus_language'] if 'corpus_language' in tronco_config.corpora[name]['settings'] else objects.tronco_default_language
+    if name in advanced_corpora.files:
+        del advanced_corpora.files[name]
+    if name in advanced_corpora.metadata:
+        del advanced_corpora.metadata[name]
     if force == "true":
         advanced_corpora.delete_corpus(name)
     if not name in advanced_corpora.corpora:

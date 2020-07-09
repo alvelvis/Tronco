@@ -76,7 +76,6 @@ function indexCorpus(force=false) {
                 $('#advancedSearch').find("a").toggleClass("active", true)
                 if (!isMobile) {
                     $('#advancedSearchInput').focus()
-                    $('#advancedSearchInput').select()
                 }
                 $('#advancedSearchSentences').html(" em " + data.data + " frases")
                 allMetadata = data.metadata
@@ -840,8 +839,7 @@ $('#mainText').on("blur", function(){
 })
 
 $('#search').on('focus', function(){
-    window.scrollTo(0, 0)
-    $(this).select()
+    window.scrollTo(0, 0)    
     $('#breadcrumb-nav').toggle(true)
     $('.breadcrumb').scrollLeft(0)
     toggleMobile("mobileTronco")
