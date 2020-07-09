@@ -77,12 +77,20 @@
           <!--div class="card mb-4 box-shadow"-->
             <div class="card-body pt-0 mt-0">
               <!--h1 class="card-title pricing-card-title"><small class="text-muted">Hoje eu quero...</small></h1-->
-              <input class="mb-3 mt-0 form-control" id="filterOpenCorpus" type="text" placeholder="Digite aqui para criar uma coleção">
+              <div class="input-group mb-3">
+                <input type="text" class="mt-0 form-control" placeholder="Criar uma coleção" id="filterOpenCorpus">
+                <div class="input-group-append">
+                  <button type="button" class="btn btn-primary" id="indexGo">OK</span>
+                </div>
+              </div>
               <span class="text-muted" id="randomTip"></span><!--{{ random_tip }}-->
-              <ul class="list-unstyled mt-3 mb-4">
+              <ul id="openCorpus" style="overflow:auto; margin-bottom:40px" class="list-group list-group-flush py-3">
+                
+              </ul>
+              <!--ul class="list-unstyled mt-3 mb-4">
                 <div id="openCorpus" style="overflow:auto; margin-bottom:40px">
                 </div>
-              </ul>
+              </ul-->
               
               <!--button type="button" class="btn btn-lg btn-block btn-primary">Contact us</button-->
             </div>

@@ -79,7 +79,7 @@
     <div class="container-fluid">
       <div class="row">
         <nav id="sidebar" style="min-width:210px" class="col-md-2 d-none d-md-block sidebar">
-          <div id="sidebar-scroll" class="sidebar-sticky p-0">
+          <div id="sidebar-scroll" class="sidebar-sticky p-0 ">
             <ul class="nav flex-column">
                 <li class="nav-item settings form-control-dark bg-dark pb-2" id="corpusSettings" style="display:none;">
                     <a class="nav-link" id="settingsDiv">
@@ -228,9 +228,17 @@
               </li>
             </ul>
             
-            <ul id="files" class="nav flex-column mb-4 pb-5">
+            <ul id="files" class="nav flex-column">
 
             </ul>
+            <ul style="display:none" id="divFullUpdateFiles" class="nav flex-column">
+              <li class="nav-item py-1">
+                <a class="nav-link" id="fullUpdateFiles">
+                  ...
+                </a>
+              </li>
+            </ul>
+            <ul class="mb-4 pb-5"></ul>
           </div>
         </nav>
 

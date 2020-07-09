@@ -1,3 +1,17 @@
+$('#indexGo').click(function(){
+    $.ajax({
+        url: '/api/findOrCreateCorpus',
+        method: 'POST',
+        data: {
+            'name': $('#filterOpenCorpus').val()
+        }
+    })
+    .done(function(data){
+        addRecent(data.data.split(":l")[0])
+        window.location.href = "/corpus/" + data.data + "?file=README"
+    })
+})
+
 var selectedCorpus = -1
 
 function selectCorpus(nCorpus){
@@ -15,11 +29,11 @@ $(window).bind("keydown", function(event){
             $("#filterOpenCorpus").focus()
         }
     }
-    if (event.key == "ArrowDown" || event.key == "ArrowUp") {
+    /*if (event.key == "ArrowDown" || event.key == "ArrowUp") {
         event.preventDefault()
-    }
+    }*/
 })
-
+/*
 $(window).bind("keyup", function(){
     if (event.key == "ArrowDown" && selectedCorpus < $('#openCorpus').find("a").length-1) {
         event.preventDefault()
@@ -37,7 +51,7 @@ $(window).bind("keyup", function(){
         //window.location.href = 
         $('.openCorpus')[selectedCorpus].click()//.attr('href')
     }
-})
+})*/
 
 function addRecent (newName){
     recent = getRecent()
@@ -80,26 +94,28 @@ function loadCorpora(key = ""){
         }
         new_data = ""
         for (x of data.data.split("|")) {
-            new_data = new_data + "<li><a class='openCorpus' corpus='" + x + "' href='/corpus/" + x + "?file=README'>" + x + "</a></li>"
+            new_data = new_data + '<li class="list-group-item"><a class="openCorpus" corpus="' + x.split(":l")[0] + '" href="/corpus/' + x.split(":l")[0] + '?file=README">' + (x.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" data-feather="lock"></span>' : "") + x.split(":l")[0] + '</a></li>'
         }
         if (pre_list.length) {
             $('#randomTip').html(pre_list)
         }
         $('#openCorpus').html("")
         if (key.length) {
-            $("#openCorpus").append(data.data.length ? new_data : new_data + "Nada encontrado.")
+            $("#openCorpus").append(data.data.length ? new_data : new_data + "<span class='mt-3'>Nada encontrado.</span>")
         } else {
             let recent = data["new_recent"]
-            setRecent(recent)
+            setRecent(recent.split(":l")[0])
             for (name of recent.split("|").reverse()){
-                $('#openCorpus').append("<li><a corpus='" + name + "' class='openCorpus' href='/corpus/" + name + "?file=README'>" + name + "</a></li>")
+                $('#openCorpus').append('<li class="list-group-item"><a class="openCorpus" corpus="' + name.split(":l")[0] + '" href="/corpus/' + name.split(":l")[0] + '?file=README">' + (name.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" data-feather="lock"></span>' : "") + name.split(":l")[0] + '</a></li>')
             }
             $("#openCorpus").append(new_data)
         }
         //$('#filterOpenCorpus').toggleClass("is-invalid", data.data.length ? false : true)
         $('.openCorpus').click(function(){
-            addRecent($(this).attr('corpus'))
+            addRecent($(this).attr('corpus').split(":l")[0])
         })
+        checkTheme()
+        feather.replace()
     })
 }
 
@@ -120,23 +136,13 @@ $('#filterOpenCorpus').on('keyup', function(e){
         $('#filterOpenCorpus').blur()
     }
     if (e.which == 13){
-        $.ajax({
-            url: '/api/findOrCreateCorpus',
-            method: 'POST',
-            data: {
-                'name': $(this).val()
-            }
-        })
-        .done(function(data){
-            addRecent(data.data)
-            window.location.href = "/corpus/" + data.data + "?file=README"
-        })
+        $('#indexGo').click()
     }
 })
 
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
-    elements = "#mainDiv, #footer, #filterOpenCorpus, html"
+    elements = "#mainDiv, #footer, li, #openCorpus, #filterOpenCorpus, html"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
     } else {

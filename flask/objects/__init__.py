@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import estrutura_ud
+import interrogar_UD
 import pickle
 import functions
 from ufal.udpipe import Model, Pipeline
@@ -80,8 +81,19 @@ class TemporaryObjects:
             'query_results': {},
             'word_distribution': {},
             'lemma_distribution': {},
+            'sending': {},
+            'indexing': {},
         }
         self.temp = {}
+
+    def set_n_indexing_files(self, sending_or_indexing, session_token, n_files):
+        self.objects[sending_or_indexing][session_token] = [n_files, n_files]
+
+    def decrease_n_indexing_files(self, sending_or_indexing, session_token, n):
+        if session_token in self.objects[sending_or_indexing]:
+            self.objects[sending_or_indexing][session_token][0] -= n
+            if not self.objects[sending_or_indexing][session_token][0]:
+                del self.objects[sending_or_indexing][session_token]
 
     def claim_alive(self, session_token):
         self.temp[session_token] = time.time()
@@ -106,40 +118,73 @@ class TemporaryObjects:
 
 class AdvancedCorpora:
 
-    def load_corpus(self, name, lang):
+    def delete_corpus(self, name):
         if name in self.corpora:
             del self.corpora[name]
-        corpus_dir = os.path.join(root_path, "corpora", name)
-        corpus_language = lang
-        model = Model.load(os.path.join(root_path, "udpipe", udpipe_models[corpus_language]['path']))
-        pipeline = Pipeline(model, "tokenize", Pipeline.DEFAULT, Pipeline.DEFAULT, "conllu")
-        corpus = estrutura_ud.Corpus(recursivo=True)
-        all_metadata = {'filename': ''}
-        for filename in os.listdir(corpus_dir):
-            if filename != "README":
-                with open(corpus_dir + "/" + filename) as f:
-                    try:
-                        text = f.read().splitlines()
-                    except:
-                        continue
-                raw_text = []
-                metadata = {}
-                [metadata.update({x.split(" = ", 1)[0].split("# ", 1)[1]: x.split(" = ", 1)[1]}) if x.strip().startswith("# ") and " = " in x else raw_text.append(x) for x in text]
-                all_metadata.update(metadata)
-                processed = pipeline.process("\n".join(raw_text)).replace("# newdoc\n", "").replace("# newpar\n", "")
-                temp_corpus = estrutura_ud.Corpus(recursivo=False)
-                temp_corpus.build(processed)
-                for sent_id, sentence in temp_corpus.sentences.items():
-                    for metadado in metadata:
-                        sentence.metadados[metadado] = metadata[metadado]
-                    sentence.sent_id = filename + '-' + sent_id
-                    sentence.metadados['sent_id'] = filename + '-' + sent_id
-                    sentence.metadados['filename'] = filename
-                    corpus.sentences[filename + '-' + sent_id] = sentence
+        if name in self.metadata:
+            del self.metadata[name]
+        if name in self.files:
+            del self.files[name]
+
+    def mount_corpus(self, name):
+
+        if name in self.files:
+            all_metadata = {}
+            corpus = estrutura_ud.Corpus()
+            for filename in self.files[name]:
+                for sent in self.files[name][filename].split("\n\n"):
+                    if sent:
+                        sentence = estrutura_ud.Sentence(recursivo=True)
+                        sentence.build(sent)
+                        sent_id = sentence.sent_id
+                        all_metadata.update(self.metadata[name][filename])
+                        for metadado in self.metadata[name][filename]:
+                            sentence.metadados[metadado] = self.metadata[name][filename][metadado]
+                        sentence.sent_id = filename + '-' + sent_id
+                        sentence.metadados['sent_id'] = filename + '-' + sent_id
+                        sentence.metadados['filename'] = filename
+                        corpus.sentences[filename + '-' + sent_id] = sentence
+
+            all_words = interrogar_UD.main(corpus, 5, 'word = ".*"', fastSearch=True)
+            all_nouns = interrogar_UD.main(corpus, 1, '\\tNOUN\\t', fastSearch=True)
+            all_adjectives = interrogar_UD.main(corpus, 1, '\\tADJ\\t', fastSearch=True)
+            all_sentences = interrogar_UD.main(corpus, 1, '# text = .*', fastSearch=True)
+
+            self.corpora[name] = {
+                'corpus': corpus, 
+                'metadata': list(all_metadata.keys()),
+                'default_queries': {
+                    'word = ".*"': all_words, 
+                    'upos = "NOUN"': all_nouns, 
+                    'upos = "ADJ"': all_adjectives,
+                    "# text = .*": all_sentences,
+                    }
+                }
+            self.save()
+
+    def load_file(self, name, filename, lang):
         
-        self.corpora[name] = {'corpus': corpus, 'metadata': list(all_metadata.keys())}
-        self.save()
-        return True
+        if filename != "README":
+            filename_dir = os.path.join(root_path, "corpora", name, filename)
+            if not lang in self.models:
+                self.models[lang] = Model.load(os.path.join(root_path, "udpipe", udpipe_models[lang]['path']))
+            pipeline = Pipeline(self.models[lang], "tokenize", Pipeline.DEFAULT, Pipeline.DEFAULT, "conllu")
+            with open(filename_dir) as f:
+                try:
+                    text = f.read().splitlines()
+                except:
+                    return False
+            
+            raw_text = []
+            metadata = {}
+            [metadata.update({x.split(" = ", 1)[0].split("# ", 1)[1]: x.split(" = ", 1)[1]}) if x.strip().startswith("# ") and " = " in x else raw_text.append(x) for x in text]
+
+            if not name in self.files:
+                self.files[name] = {}
+            self.files[name][filename] = pipeline.process("\n".join(raw_text)).replace("# newdoc\n", "").replace("# newpar\n", "")
+            if not name in self.metadata:
+                self.metadata[name] = {}
+            self.metadata[name][filename] = metadata
 
     def remove_corpus(self, name):
         if name in self.corpora:
@@ -150,13 +195,14 @@ class AdvancedCorpora:
         with open(self.config_file, "wb") as f:
             pickle.dump(self.corpora, f)
 
-    def get_number_sentences_or_load(self, name, lang):
-        if not name in self.corpora:
-            self.load_corpus(name, lang)
+    def get_number_sentences(self, name):
         return len(self.corpora[name]['corpus'].sentences)
 
     def __init__(self):
+        self.metadata = {}
         self.corpora = {}
+        self.files = {}
+        self.models = {}
         self.config_file = os.path.join(root_path, "advanced_corpora.p")
         if os.path.isfile(self.config_file):
             with open(self.config_file, "rb") as f:

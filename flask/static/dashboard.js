@@ -1,3 +1,11 @@
+var max_update_files = 200
+
+var runningActivities = {}
+
+$('#fullUpdateFiles').click(function(){
+    alert("Limite de " + max_update_files + " arquivos atingido, utilize a barra de busca para encontrar o arquivo que deseja")
+})
+
 $('#clearAdvancedSearchMetadata').click(function(){
     $('#advancedSearchMetadataCount').html("0")
     $('.advancedSearchMetadataItem').remove()
@@ -22,13 +30,29 @@ function indexCorpus(force=false) {
         $('#navSearchPanels, .searchPanel').hide()
     }
     toggleMain(false)
-    toggleProgress("Indexando coleção... Pode demorar um pouco.")
+    toggleProgress("Indexando coleção...")
+    runningActivities['indexing'] = setInterval(function(){
+        $.ajax({
+            url: "/api/getProgress",
+            method: "POST",
+            data: {
+                'method': 'indexing',
+                'session_token': getSessionToken(),
+            }
+        })
+        .done(function(data){
+            if (data.error == "0") {
+                toggleProgress('Indexando coleção... (' + parseInt(data.data[1] - data.data[0]).toString() + '/' + data.data[1] + ')')
+            }
+        })
+    }, 4000)
     $.ajax({
         url: "/api/loadAdvancedCorpus",
         method: "POST",
         data: {
             "name": $('#name').html(),
             "tronco_token": getTroncoToken(),
+            'session_token': getSessionToken(),
             "force": force,
         }
     })
@@ -43,14 +67,20 @@ function indexCorpus(force=false) {
                     $('#advancedSearchInput').select()
                 }
                 toggleProgress(false)
+                clearInterval(runningActivities['indexing'])
                 $('#advancedSearchSentences').html(" em " + data.data + " frases")
                 allMetadata = data.metadata
                 break
             case '1':
                 toggleProgress(false)
+                clearInterval(runningActivities['indexing'])
                 alert("Você não tem permissão")
                 break
         }
+    })
+    .fail(function(){
+        toggleProgress(false)
+        clearInterval(runningActivities['indexing'])
     })
 }
 
@@ -109,7 +139,7 @@ $('#addAdvancedSearchMetadata').click(function(){
 
 function toggleProgress(label=false){
     if (label) {
-        if ($('title').html().indexOf(label) == -1) {
+        if ($('title').html().indexOf(") ") == -1) {
             $('title').html("(" + label + ") " + $('title').html())
         }
         $('#progress-label').html(label)
@@ -569,7 +599,7 @@ function changeATitle(link){
     $.ajax({
         url: "https://textance.herokuapp.com/title/" + link,
         complete: function(data) {
-            if (data.responseText){ 
+            if (link.indexOf('"') == -1 && data.responseText){ 
                 $('[href="' + link + '"]').html(data.responseText)
             }
         }
@@ -1196,7 +1226,13 @@ function updateFiles(key = "", click = ""){
         $('#files').html("")
         $('#nFiles').html(data.data.split("|").length)
 
+        n = 0
+        $('#divFullUpdateFiles').toggle(data.data.split("|").length >= max_update_files)
         for (x of data.data.split("|")){
+            n ++
+            if (n == max_update_files) {
+                break
+            }
             if (x.length) {
                 $('#files').append(`
                 <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
@@ -1221,9 +1257,9 @@ function updateFiles(key = "", click = ""){
             $(this).toggleClass('active', true)
             //this.scrollIntoView();
             if ($(this).attr('file') != "README") {
-                $('title').html($(this).attr('file') + " - Tronco")
+                $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + $(this).attr('file') + " - Tronco"))
             } else {
-                $('title').html(name + " - Tronco")
+                $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + name + " - Tronco"))
             }
         })
 

@@ -19,6 +19,15 @@ advanced_corpora = objects.AdvancedCorpora()
 temporary_objects = objects.TemporaryObjects()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
+@app.route("/api/getProgress", methods=["POST"])
+def get_percentage():
+    session_token = request.values.get("session_token")
+    method = request.values.get("method")
+    if session_token in temporary_objects.objects[method]:
+        return {'data': temporary_objects.objects[method][session_token], 'error': '0'}
+    else:
+        return {'error': '1'}
+
 @app.route("/api/queryPagination", methods=["POST"])
 def query_pagination():
     session_token = request.values.get("session_token")
@@ -60,13 +69,22 @@ def query():
 @app.route("/api/loadAdvancedCorpus", methods=["POST"])
 def load_advanced_corpus():
     name = request.values.get("name")
+    corpus_dir = os.path.join(objects.root_path, "corpora", name)
     password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    session_token = request.values.get("session_token")
     force = request.values.get("force")
     if not tronco_config.has_permission(name, password, "visualizar"): return {'error': '1'}
     corpus_language = tronco_config.corpora[name]['settings']['corpus_language'] if 'corpus_language' in tronco_config.corpora[name]['settings'] else objects.tronco_default_language
     if force == "true":
-        advanced_corpora.load_corpus(name, corpus_language)
-    return {'error': '0', 'data': advanced_corpora.get_number_sentences_or_load(name, corpus_language), 'metadata': advanced_corpora.corpora[name]['metadata']}
+        advanced_corpora.delete_corpus(name)
+    if not name in advanced_corpora.corpora:
+        n_files = len(os.listdir(corpus_dir))
+        temporary_objects.set_n_indexing_files('indexing', session_token, n_files-1)
+        for filename in os.listdir(corpus_dir):
+            advanced_corpora.load_file(name, filename, corpus_language)
+            temporary_objects.decrease_n_indexing_files('indexing', session_token, 1)
+        advanced_corpora.mount_corpus(name)
+    return {'error': '0', 'data': advanced_corpora.get_number_sentences(name), 'metadata': advanced_corpora.corpora[name]['metadata']}
 
 @app.route("/api/saveMetadata", methods=["POST"])
 def save_metadata():
@@ -381,8 +399,8 @@ def load_corpora():
     recent = request.values.get("recent")
     corpora = functions.load_corpora(key=key, recent=recent)
     return {
-        'data': "|".join([x['name'] for x in corpora['sorted_list']]),
-        'new_recent': "|".join(corpora['new_recent'])
+        'data': "|".join([x['name'] + (':l' if not 'visualizar' in tronco_config.corpora[x['name']]['permissions']['disconnected'] else '') for x in corpora['sorted_list']]),
+        'new_recent': "|".join([x + (':l' if not 'visualizar' in tronco_config.corpora[x]['permissions']['disconnected'] else '') for x in corpora['new_recent']])
     }
 
 @app.route('/')
