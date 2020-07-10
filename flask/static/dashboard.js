@@ -55,7 +55,7 @@ function indexCorpus(force=false) {
                 }
             }
         })
-    }, 5000)
+    }, 10000)
     $.ajax({
         url: "/api/loadAdvancedCorpus",
         method: "POST",
