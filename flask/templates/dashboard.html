@@ -371,6 +371,8 @@
             <h1 class="h2 filename" style="max-width:100%; display:inline-block; white-space: nowrap;" file="{{filename}}" id="filename"></h1>
           </div>
 
+          <div class="text-muted mb-2" id="saved" style="display:none"><span data-feather="upload-cloud"></span><span class="ml-1" id="savedSpan"></span></div>
+
           <div id="toolbarRow" style="display:none">
             <div class="btn-toolbar">
               <div class="btn-group" id="toolbar-group">
@@ -497,7 +499,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=7"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=89"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=90"></script>
   
   </body>
 </html>

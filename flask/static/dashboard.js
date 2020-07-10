@@ -109,12 +109,12 @@ $('.toggleSearch').click(function(){
 })
 
 function toggleMain(panel) {
-    $('#filename-div, #filename, #mainText, #toolbarRow, #toolbar, #hr').toggle(false)
+    $('#filename-div, #filename, #mainText, #saved, #toolbarRow, #toolbar, #hr').toggle(false)
     $('#searchMain').toggle(false)
     if (panel) {
         switch (panel) {
             case "file":
-                $('#filename-div, #filename, #mainText, #toolbarRow, #toolbar, #hr').toggle(true)
+                $('#filename-div, #filename, #mainText, #saved, #toolbarRow, #toolbar, #hr').toggle(true)
                 break
             case "search":
                 $('#searchMain').toggle(true)
@@ -1430,6 +1430,11 @@ function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val(
                         })
                         .done(function(){
                             textModified(true)
+                            date = new Date()
+                            $('#savedSpan').html("Salvo às " + date.getHours() + ":" + date.getMinutes())
+                            if (!$('#saved:visible').length) {
+                                $('#saved').slideToggle()
+                            }
                         })
                         .fail(function(){
                             if (!failedSave) {
@@ -1504,6 +1509,9 @@ function loadFile(filename){
     })
     .done(function(data){
         if (!data.error) {
+            if ($('#saved:visible').length) {
+                $('#saved').slideToggle()
+            }
             $('#renameFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
             $('#deleteFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
             textModified(false)
@@ -1718,7 +1726,7 @@ function triggerResize(first=false){
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:85vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
         $('#troncoLogo').hide()
         $('.navbar-brand').hide()
-        $('#toolbar-group, #searchHeader, #searchBody, #advancedSearchToolbarRow .btn-group, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
+        $('#toolbar-group, #searchHeader, #searchBody, #advancedSearchToolbarRow .btn-group, #toolbar, #filename-div, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow, #advancedSearchToolbarRow').css('overflow-x', "scroll")
@@ -1727,7 +1735,7 @@ function triggerResize(first=false){
             clearInterval(mobileInterval)
         }
         isMobile = false
-        $('#toolbar-group, #searchHeader, #advancedSearchToolbarRow .btn-group, #searchBody, #toolbar, #filename-div, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
+        $('#toolbar-group, #searchHeader, #advancedSearchToolbarRow .btn-group, #searchBody, #toolbar, #filename-div, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').show()
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
