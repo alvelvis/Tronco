@@ -571,9 +571,9 @@ $('.insertDocument').click(function(){
 
 $('.uploadFile').change(function(){    
     formdata = new FormData()
-    toggleProgress("Enviando...")
     if($(this).prop('files').length > 0)
     {
+        toggleProgress("Enviando...")
         file = $(this).prop('files')[0]
         extension = file.name.rsplit(".")[1]
         filename = prompt("Dê um nome para o arquivo:", file.name.rsplit(".")[0])
@@ -602,6 +602,10 @@ $('.uploadFile').change(function(){
                 }
             })
             .done(function(){
+                toggleProgress(false)
+            })
+            .fail(function(){
+                alert("Não foi possível enviar")
                 toggleProgress(false)
             })
         }
