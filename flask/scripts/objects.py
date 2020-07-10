@@ -336,3 +336,4 @@ class TroncoConfig:
         self.config_file = os.path.join(root_path, "tronco.json")
         self.load()
 
+advanced_corpora = AdvancedCorpora()
