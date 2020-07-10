@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['app.py'],
-             pathex=['wvenv\\Lib\\site-packages', 'C:\\Users\\elvis\\Desktop\\Tronco'],
+             pathex=['wvenv\\Lib\\site-packages', 'C:\\Users\\elvis\\Desktop\\Tronco', 'scripts'],
              binaries=[],
              datas=[('templates', 'templates'), ('static', 'static'), ('udpipe', 'udpipe'), ('scripts', 'scripts')],
              hiddenimports=['pkg_resources.py2_warn'],

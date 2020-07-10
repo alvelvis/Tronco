@@ -17,6 +17,7 @@ tronco_config = objects.TroncoConfig()
 session_tokens = objects.SessionTokens()
 tronco_tokens = objects.TroncoTokens()
 temporary_objects = objects.TemporaryObjects()
+advanced_corpora = objects.AdvancedCorpora()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
 @app.route("/api/getProgress", methods=["POST"])
@@ -54,7 +55,7 @@ def query():
     if not tronco_config.has_permission(name, password, "visualizar"): return {'error': '1'}
     params = request.values.get("params")
     metadata = json.loads(request.values.get("metadata"))
-    query = functions.query(name, session_token, params, objects.advanced_corpora.corpora[name]['corpus'], metadata)
+    query = functions.query(name, session_token, params, advanced_corpora.corpora[name]['corpus'], metadata, advanced_corpora.corpora[name]['default_queries'])
     query['data']['query_results'] = temporary_objects.push_objects('query_results', query['data']['results'], session_token)
     query['data']['word_distribution'] = temporary_objects.push_objects('word_distribution', query['data']['word_distribution'], session_token)
     query['data']['lemma_distribution'] = temporary_objects.push_objects('lemma_distribution', query['data']['lemma_distribution'], session_token)
@@ -75,23 +76,23 @@ def load_advanced_corpus():
     force = request.values.get("force")
     if not tronco_config.has_permission(name, password, "visualizar"): return {'error': '1'}
     corpus_language = tronco_config.corpora[name]['settings']['corpus_language'] if 'corpus_language' in tronco_config.corpora[name]['settings'] else objects.tronco_default_language
-    if name in objects.advanced_corpora.files:
-        del objects.advanced_corpora.files[name]
-    if name in objects.advanced_corpora.metadata:
-        del objects.advanced_corpora.metadata[name]
+    if name in advanced_corpora.files:
+        del advanced_corpora.files[name]
+    if name in advanced_corpora.metadata:
+        del advanced_corpora.metadata[name]
     if force == "true":
-        objects.advanced_corpora.delete_corpus(name)
-    if not name in objects.advanced_corpora.corpora:
+        advanced_corpora.delete_corpus(name)
+    if not name in advanced_corpora.corpora:
         n_files = len(os.listdir(corpus_dir))
         temporary_objects.set_max_indexing_files('indexing', session_token, n_files-1)
         for filename in os.listdir(corpus_dir):
             if filename != "README":
-                objects.advanced_corpora.load_file(name, filename, corpus_language)
+                advanced_corpora.load_file(name, filename, corpus_language)
                 temporary_objects.decrease_n_indexing_files('indexing', session_token, 1)
-        objects.advanced_corpora.mount_corpus(name)
-    if not name in objects.advanced_corpora.corpora:
+        advanced_corpora.mount_corpus(name)
+    if not name in advanced_corpora.corpora:
         return {'error': '2'}
-    return {'error': '0', 'data': objects.advanced_corpora.get_number_sentences(name), 'metadata': objects.advanced_corpora.corpora[name]['metadata']}
+    return {'error': '0', 'data': advanced_corpora.get_number_sentences(name), 'metadata': advanced_corpora.corpora[name]['metadata']}
 
 @app.route("/api/saveMetadata", methods=["POST"])
 def save_metadata():
@@ -295,7 +296,7 @@ def delete_corpus():
     functions.delete_corpus(name)
     tronco_tokens.revoke_password(name, token)
     tronco_config.delete_corpus(name)
-    objects.advanced_corpora.remove_corpus(name)
+    advanced_corpora.remove_corpus(name)
     return {'data': ''}
 
 @app.route("/api/renameCorpus", methods=["POST"])
@@ -310,9 +311,9 @@ def rename_corpus():
     tronco_tokens.revoke_password(name, token)
     tronco_config.corpora.update({new_name: tronco_config.corpora[name]})
     tronco_config.delete_corpus(name)
-    if name in objects.advanced_corpora.corpora:
-        objects.advanced_corpora.corpora.update({new_name: objects.advanced_corpora.corpora[name]})
-    objects.advanced_corpora.remove_corpus(name)
+    if name in advanced_corpora.corpora:
+        advanced_corpora.corpora.update({new_name: advanced_corpora.corpora[name]})
+    advanced_corpora.remove_corpus(name)
     if result:
         return {'data': result}
     else:

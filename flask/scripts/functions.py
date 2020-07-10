@@ -18,7 +18,7 @@ def chunkIt(seq, num):
         last += avg
     return out
 
-def query(name, session_token, params, corpus, metadata={}):
+def query(name, session_token, params, corpus, metadata={}, default_queries={}):
     if metadata:
         new_corpus = estrutura_ud.Corpus(recursivo=True)
         for sent_id in corpus.sentences:
@@ -27,7 +27,7 @@ def query(name, session_token, params, corpus, metadata={}):
     else:
         new_corpus = corpus
     criterio = 5 if ' = ' in params and len(params.split('"')) >= 3 else 1
-    query = objects.advanced_corpora.corpora[name]['default_queries'][params] if params in objects.advanced_corpora.corpora[name]['default_queries'] and not metadata else interrogar_UD.main(new_corpus, criterio, params, fastSearch=True)
+    query = default_queries[params] if default_queries and params in default_queries and not metadata else interrogar_UD.main(new_corpus, criterio, params, fastSearch=True)
     output = query['output']
     sentences = len(output)
     occurrences = query['casos']

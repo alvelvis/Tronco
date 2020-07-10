@@ -9,7 +9,7 @@ import pickle
 import functions
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.4
+tronco_version = 1.41
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 tronco_default_language = "pt"
@@ -334,6 +334,7 @@ class TroncoConfig:
     def __init__(self):
         self.corpora = {}
         self.config_file = os.path.join(root_path, "tronco.json")
+        if not os.path.isdir(os.path.join(root_path, "corpora")):
+            os.mkdir(os.path.join(root_path, "corpora"))
         self.load()
 
-advanced_corpora = AdvancedCorpora()
