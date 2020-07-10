@@ -9,7 +9,7 @@ import pickle
 import functions
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.38
+tronco_version = 1.4
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 tronco_default_language = "pt"
