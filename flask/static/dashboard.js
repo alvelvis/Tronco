@@ -307,6 +307,7 @@ $('#advancedSearchGo').click(function(){
         window.history.pushState("", "", '/corpus/' + name + "?search=" + encodeURIComponent($('#advancedSearchInput').val()) + "&" + metadata.join("&"))
         //$('[panel="searchResults"].toggleSearch').click()
         toggleProgress("Buscando...")
+        window.scrollTo(0, 0)
         $.ajax({
             url: "/api/query",
             method: "POST",
