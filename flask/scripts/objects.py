@@ -96,8 +96,8 @@ class TemporaryObjects:
     def decrease_n_indexing_files(self, sending_or_indexing, session_token, n):
         if session_token in self.objects[sending_or_indexing]:
             self.objects[sending_or_indexing][session_token][0] -= n
-            if self.objects[sending_or_indexing][session_token][0] <= 0:
-                del self.objects[sending_or_indexing][session_token]
+            #if self.objects[sending_or_indexing][session_token][0] <= 0:
+                #del self.objects[sending_or_indexing][session_token]
 
     def claim_alive(self, session_token):
         self.temp[session_token] = time.time()
