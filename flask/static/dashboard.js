@@ -114,7 +114,7 @@ function toggleMain(panel) {
     if (panel) {
         switch (panel) {
             case "file":
-                $('#filename-div, #filename, #mainText, #saved, #toolbarRow, #toolbar, #hr').toggle(true)
+                $('#filename-div, #filename, #mainText, #toolbarRow, #toolbar, #hr').toggle(true)
                 break
             case "search":
                 $('#searchMain').toggle(true)
@@ -1509,9 +1509,7 @@ function loadFile(filename){
     })
     .done(function(data){
         if (!data.error) {
-            if ($('#saved:visible').length) {
-                $('#saved').slideToggle()
-            }
+            $('#saved').hide()
             $('#renameFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
             $('#deleteFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
             textModified(false)
