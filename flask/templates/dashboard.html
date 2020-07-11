@@ -371,8 +371,6 @@
             <h1 class="h2 filename" style="max-width:100%; display:inline-block; white-space: nowrap;" file="{{filename}}" id="filename"></h1>
           </div>
 
-          <div class="text-muted mb-2" id="saved" style="display:none"><span data-feather="upload-cloud"></span><span class="ml-1" id="savedSpan"></span></div>
-
           <div id="toolbarRow" style="display:none">
             <div class="btn-toolbar">
               <div class="btn-group" id="toolbar-group">
@@ -450,6 +448,7 @@
 
           </div>
 
+
           <div id="toolbar" class="my-3" style="display:none">
 
             <div toolbar="metadata" style="display:none" class="toolbar">
@@ -460,7 +459,7 @@
                 <span data-feather="save"></span>
                 <span id="saveMetadataLabel"></span>
               </button>
-              <div id="metadataItems" class="mt-3">
+              <div id="metadataItems" class="mt-2">
 
               </div>
             </div>
@@ -479,7 +478,11 @@
 
           </div>
 
-          <div id="hr" style="display:none"><hr></div>
+          <!--div id="hr" style="display:none"><hr></div-->
+
+          <div class="text-muted mb-3" id="saved" style="display:none"><span data-feather="upload-cloud"></span><span class="ml-1" id="savedSpan"></span></div>
+
+
           <textarea class="form-control p-0 pb-5" style="resize:none; border-style:none; overflow:auto; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; height:100%; width:100%;" id="mainText"></textarea>
 
         </main>
@@ -499,7 +502,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=7"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=91"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=92"></script>
   
   </body>
 </html>
