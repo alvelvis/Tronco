@@ -111,6 +111,8 @@ $('.toggleSearch').click(function(){
 function toggleMain(panel) {
     $('#filename-div, #filename, #mainText, #saved, #toolbarRow, #toolbar, #hr').toggle(false)
     $('#searchMain').toggle(false)
+    $('#advancedSearch').find('a').toggleClass("active", false)
+    $('.files').toggleClass("active", false)
     if (panel) {
         switch (panel) {
             case "file":
@@ -982,6 +984,7 @@ function validatePassword (name){
                 $('#advancedSearchMetadataCount').html($('.advancedSearchMetadataItem').length)
             }
             checkTheme()
+            updateFiles()
             $('#advancedSearch').click()
         } else {
             returnSearch($('#filename').attr('file'))

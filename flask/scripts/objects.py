@@ -96,8 +96,8 @@ class TemporaryObjects:
     def decrease_n_indexing_files(self, sending_or_indexing, session_token, n):
         if session_token in self.objects[sending_or_indexing]:
             self.objects[sending_or_indexing][session_token][0] -= n
-            #if self.objects[sending_or_indexing][session_token][0] <= 0:
-                #del self.objects[sending_or_indexing][session_token]
+            if self.objects[sending_or_indexing][session_token][0] <= 0:
+                del self.objects[sending_or_indexing][session_token]
 
     def claim_alive(self, session_token):
         self.temp[session_token] = time.time()
@@ -152,19 +152,19 @@ class AdvancedCorpora:
             del self.files[name]
             del self.metadata[name]
 
-            all_words = interrogar_UD.main(corpus, 5, 'word = ".*"', fastSearch=True)
-            all_nouns = interrogar_UD.main(corpus, 1, '\\tNOUN\\t', fastSearch=True)
-            all_adjectives = interrogar_UD.main(corpus, 1, '\\tADJ\\t', fastSearch=True)
-            all_sentences = interrogar_UD.main(corpus, 1, '# text = .*', fastSearch=True)
+            #all_words = interrogar_UD.main(corpus, 5, 'word = ".*"', fastSearch=True)
+            #all_nouns = interrogar_UD.main(corpus, 1, '\\tNOUN\\t', fastSearch=True)
+            #all_adjectives = interrogar_UD.main(corpus, 1, '\\tADJ\\t', fastSearch=True)
+            #all_sentences = interrogar_UD.main(corpus, 1, '# text = .*', fastSearch=True)
 
             self.corpora[name] = {
                 'corpus': corpus, 
                 'metadata': list(all_metadata.keys()),
                 'default_queries': {
-                    'word = ".*"': all_words, 
-                    'upos = "NOUN"': all_nouns, 
-                    'upos = "ADJ"': all_adjectives,
-                    "# text = .*": all_sentences,
+                    #'word = ".*"': all_words, 
+                    #'upos = "NOUN"': all_nouns, 
+                    #'upos = "ADJ"': all_adjectives,
+                    #"# text = .*": all_sentences,
                     }
                 }
             self.save()
