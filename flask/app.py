@@ -95,9 +95,8 @@ def load_advanced_corpus():
         n_files = len(os.listdir(corpus_dir))
         temporary_objects.set_max_indexing_files('indexing', session_token, n_files-1)
         for filename in os.listdir(corpus_dir):
-            if filename != "README":
-                advanced_corpora.load_file(name, filename, corpus_language)
-                temporary_objects.decrease_n_indexing_files('indexing', session_token, 1)
+            advanced_corpora.load_file(name, filename, corpus_language)
+            temporary_objects.decrease_n_indexing_files('indexing', session_token, 1)
         advanced_corpora.mount_corpus(name)
     if not name in advanced_corpora.corpora:
         return {'error': '2'}

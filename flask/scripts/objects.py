@@ -200,7 +200,7 @@ class AdvancedCorpora:
 
     def save(self):
         with open(self.config_file, "wb") as f:
-            pickle.dump(self.corpora, f)
+            pickle.dump(self.corpora, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     def get_number_sentences(self, name):
         return len(self.corpora[name]['corpus'].sentences) if name in self.corpora else 0
