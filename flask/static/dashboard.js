@@ -112,7 +112,9 @@ function indexCorpus(force=false) {
         }
     })
     .fail(function(){
-               
+        clearInterval(runningActivities['indexing'])
+        toggleProgress(false)
+        alert("Falha na indexação: timeout")
     })
 }
 
