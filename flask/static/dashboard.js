@@ -52,7 +52,7 @@ function indexCorpus(force=false) {
                 } else {
                     clearInterval(runningActivities['indexing'])
                     toggleProgress("Só mais um pouco...")
-                    /*runningActivities['indexing'] = setInterval(function(){
+                    runningActivities['indexing'] = setInterval(function(){
                         $.ajax({
                             url: "/api/isCorpusReady",
                             method: "POST",
@@ -74,7 +74,7 @@ function indexCorpus(force=false) {
                                 allMetadata = data.metadata
                             }
                         })
-                    }, 10000)*/
+                    }, 10000)
                 }
             }
         })
@@ -112,9 +112,7 @@ function indexCorpus(force=false) {
         }
     })
     .fail(function(){
-        clearInterval(runningActivities['indexing'])
-        toggleProgress(false)
-        alert("Falha na indexação: timeout")
+        
     })
 }
 
