@@ -67,6 +67,15 @@ def query():
     query['data']['page'] = 1
     return query
 
+@app.route("/api/isCorpusReady", methods=["POST"])
+def is_corpus_ready():
+    name = request.values.get("name")
+    password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "visualizar"): return {'error': '2'}
+    if not name in advanced_corpora.corpora:
+        return {'error': '1'}
+    return {'error': '0', 'data': advanced_corpora.get_number_sentences(name), 'metadata': advanced_corpora.corpora[name]['metadata']}
+
 @app.route("/api/loadAdvancedCorpus", methods=["POST"])
 def load_advanced_corpus():
     name = request.values.get("name")

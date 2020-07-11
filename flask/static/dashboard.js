@@ -72,7 +72,6 @@ function indexCorpus(force=false) {
         switch (data.error) {
             case '0':
                 toggleMain("search")
-                $('.files').toggleClass('active', false)
                 $('#advancedSearch').find("a").toggleClass("active", true)
                 if (!isMobile) {
                     $('#advancedSearchInput').focus()
@@ -90,10 +89,31 @@ function indexCorpus(force=false) {
         }
     })
     .fail(function(){
-        /*clearInterval(runningActivities['indexing'])
-        toggleProgress(false)
-        alert("Falha na indexação")
-        returnSearch("README")*/
+        clearInterval(runningActivities['indexing'])
+        toggleProgress("Só mais um pouco...")
+        runningActivities['indexing'] = setInterval(function(){
+            $.ajax({
+                url: "/api/isCorpusReady",
+                method: "POST",
+                data: {
+                    'name': $('#name').html(),
+                    'tronco_token': getTroncoToken(),
+                }
+            })
+            .done(function(data){
+                if (data.error == "0") {
+                    clearInterval(runningActivities['indexing'])
+                    toggleProgress(false)
+                    toggleMain("search")
+                    $('#advancedSearch').find("a").toggleClass("active", true)
+                    if (!isMobile) {
+                        $('#advancedSearchInput').focus()
+                    }
+                    $('#advancedSearchSentences').html(" em " + data.data + " frases")
+                    allMetadata = data.metadata
+                }
+            })
+        }, 10000)        
     })
 }
 
