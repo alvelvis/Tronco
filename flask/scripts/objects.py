@@ -152,19 +152,19 @@ class AdvancedCorpora:
             del self.files[name]
             del self.metadata[name]
 
-            #all_words = interrogar_UD.main(corpus, 5, 'word = ".*"', fastSearch=True)
-            #all_nouns = interrogar_UD.main(corpus, 1, '\\tNOUN\\t', fastSearch=True)
-            #all_adjectives = interrogar_UD.main(corpus, 1, '\\tADJ\\t', fastSearch=True)
-            #all_sentences = interrogar_UD.main(corpus, 1, '# text = .*', fastSearch=True)
+            all_words = interrogar_UD.main(corpus, 5, 'word = ".*"', fastSearch=True)
+            all_nouns = interrogar_UD.main(corpus, 1, '\\tNOUN\\t', fastSearch=True)
+            all_adjectives = interrogar_UD.main(corpus, 1, '\\tADJ\\t', fastSearch=True)
+            all_sentences = interrogar_UD.main(corpus, 1, '# text = .*', fastSearch=True)
 
             self.corpora[name] = {
                 'corpus': corpus, 
                 'metadata': list(all_metadata.keys()),
                 'default_queries': {
-                    #'word = ".*"': all_words, 
-                    #'upos = "NOUN"': all_nouns, 
-                    #'upos = "ADJ"': all_adjectives,
-                    #"# text = .*": all_sentences,
+                    'word = ".*"': all_words, 
+                    'upos = "NOUN"': all_nouns, 
+                    'upos = "ADJ"': all_adjectives,
+                    "# text = .*": all_sentences,
                     }
                 }
             self.save()
