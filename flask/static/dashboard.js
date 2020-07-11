@@ -90,10 +90,10 @@ function indexCorpus(force=false) {
         }
     })
     .fail(function(){
-        clearInterval(runningActivities['indexing'])
+        /*clearInterval(runningActivities['indexing'])
         toggleProgress(false)
         alert("Falha na indexação")
-        returnSearch("README")
+        returnSearch("README")*/
     })
 }
 
