@@ -205,7 +205,6 @@ class AdvancedCorpora:
                             sentence.metadados[metadado] = self.metadata[name][filename][metadado]
                         sentence.sent_id = filename + '-' + sent_id
                         sentence.metadados['sent_id'] = filename + '-' + sent_id
-                        sentence.metadados['filename'] = filename
                         corpus.sentences[filename + '-' + sent_id] = sentence
             
             del self.files[name]
@@ -238,7 +237,7 @@ class AdvancedCorpora:
                     return False
             
             raw_text = []
-            metadata = {}
+            metadata = {'filename': filename}
             [metadata.update({x.split(" = ", 1)[0].split("# ", 1)[1]: x.split(" = ", 1)[1]}) if x.strip().startswith("# ") and " = " in x else raw_text.append(x) for x in text]
 
             if not name in self.files:
