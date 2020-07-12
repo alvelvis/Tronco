@@ -5,15 +5,16 @@ import re
 import sys
 import estrutura_ud
 import interrogar_UD
-import pickle
 import functions
+import psutil
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.41
+tronco_version = 1.50
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 tronco_default_language = "pt"
 root_path = ""
+computer_memory = psutil.virtual_memory().total/1024/1024
 
 udpipe_models = {
     'pt': {
@@ -158,7 +159,7 @@ class AdvancedCorpora:
             all_sentences = interrogar_UD.main(corpus, 1, '# text = .*', fastSearch=True)
 
             self.corpora[name] = {
-                'corpus': corpus, 
+                'corpus': corpus.to_str(), 
                 'metadata': list(all_metadata.keys()),
                 'default_queries': {
                     'word = ".*"': all_words, 
@@ -167,6 +168,7 @@ class AdvancedCorpora:
                     "# text = .*": all_sentences,
                     }
                 }
+            self.structured[name] = corpus
             self.save()
 
     def load_file(self, name, filename, lang):
@@ -199,21 +201,26 @@ class AdvancedCorpora:
             self.save()
 
     def save(self):
-        with open(self.config_file, "wb") as f:
-            pickle.dump(self.corpora, f, protocol=pickle.HIGHEST_PROTOCOL)
+        with open(self.config_file, "w") as f:
+            json.dump(self.corpora, f)
 
     def get_number_sentences(self, name):
-        return len(self.corpora[name]['corpus'].sentences) if name in self.corpora else 0
+        if not name in self.structured and name in self.corpora:
+            corpus = estrutura_ud.Corpus(recursivo=True)
+            corpus.build(self.corpora['name']['corpus'])
+            self.structured[name] = corpus
+        return len(self.structured[name].sentences) if name in self.structured else 0
 
     def __init__(self):
+        self.structured = {}
         self.metadata = {}
         self.corpora = {}
         self.files = {}
         self.models = {}
-        self.config_file = os.path.join(root_path, "advanced_corpora.p")
+        self.config_file = os.path.join(root_path, "advanced_corpora.json")
         if os.path.isfile(self.config_file):
-            with open(self.config_file, "rb") as f:
-                self.corpora = pickle.load(f)
+            with open(self.config_file, "r") as f:
+                self.corpora = json.load(f)
 
 class TroncoTokens:
 

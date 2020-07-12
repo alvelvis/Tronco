@@ -55,7 +55,7 @@ def query():
     if not tronco_config.has_permission(name, password, "visualizar"): return {'error': '1'}
     params = request.values.get("params")
     metadata = json.loads(request.values.get("metadata"))
-    query = functions.query(name, session_token, params, advanced_corpora.corpora[name]['corpus'], metadata, advanced_corpora.corpora[name]['default_queries'])
+    query = functions.query(name, session_token, params, advanced_corpora.structured[name], metadata, advanced_corpora.corpora[name]['default_queries'])
     query['data']['query_results'] = temporary_objects.push_objects('query_results', query['data']['results'], session_token)
     query['data']['word_distribution'] = temporary_objects.push_objects('word_distribution', query['data']['word_distribution'], session_token)
     query['data']['lemma_distribution'] = temporary_objects.push_objects('lemma_distribution', query['data']['lemma_distribution'], session_token)

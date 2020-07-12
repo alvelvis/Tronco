@@ -19,6 +19,9 @@ def chunkIt(seq, num):
     return out
 
 def query(name, session_token, params, corpus, metadata={}, default_queries={}):
+    if isinstance(corpus, str):
+        corpus = estrutura_ud.Corpus(recursivo=True)
+        corpus.build(corpus)
     if metadata:
         new_corpus = estrutura_ud.Corpus(recursivo=True)
         for sent_id in corpus.sentences:
