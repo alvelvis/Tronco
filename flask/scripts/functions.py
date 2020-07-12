@@ -18,45 +18,6 @@ def chunkIt(seq, num):
         last += avg
     return out
 
-def query(name, session_token, params, corpus, metadata={}, default_queries={}):
-    if isinstance(corpus, str):
-        corpus = estrutura_ud.Corpus(recursivo=True)
-        corpus.build(corpus)
-    if metadata:
-        new_corpus = estrutura_ud.Corpus(recursivo=True)
-        for sent_id in corpus.sentences:
-            if all(metadado in corpus.sentences[sent_id].metadados and re.search(metadata[metadado], corpus.sentences[sent_id].metadados[metadado], flags=re.I) for metadado in metadata):
-                new_corpus.build(corpus.sentences[sent_id].to_str())
-    else:
-        new_corpus = corpus
-    criterio = 5 if ' = ' in params and len(params.split('"')) >= 3 else 1
-    query = default_queries[params] if default_queries and params in default_queries and not metadata else interrogar_UD.main(new_corpus, criterio, params, fastSearch=True)
-    output = query['output']
-    sentences = len(output)
-    occurrences = query['casos']
-    results = []
-    for sentence in output:
-        if "# sent_id = " in sentence['resultado'] and '# text = ' in sentence['resultado']:
-            results.append([interrogar_UD.cleanEstruturaUD(sentence['resultado'].split("# sent_id = ")[1].split("\n")[0]), interrogar_UD.fromInterrogarToHtml(sentence['resultado'].split("# text = ")[1].split("\n")[0])])
-    
-    word_distribution = interrogar_UD.getDistribution(query, params, "word")
-    lemma_distribution = interrogar_UD.getDistribution(query, params, "lemma")
-
-    return {
-        'data': {
-            'results': results,
-            'sentences': sentences,
-            'occurrences': occurrences,
-            'words': len(word_distribution['lista']),
-            'word_occurrences': sum([x for x in word_distribution['lista'].values()]),
-            'lemma_occurrences': sum([x for x in lemma_distribution['lista'].values()]),
-            'lemmas': len(lemma_distribution['lista']),
-            'word_distribution': sorted(list(word_distribution['lista'].items()), key=lambda x: (-x[1], x[0].lower())),
-            'lemma_distribution': sorted(list(lemma_distribution['lista'].items()), key=lambda x: (-x[1], x[0].lower())),
-        },
-        'error': '0',
-    }
-
 def save_metadata(name, filename, metadata):
     filename_dir = os.path.join(objects.root_path, "corpora", name, filename)
     corpus_dir = os.path.join(objects.root_path, "corpora", name)

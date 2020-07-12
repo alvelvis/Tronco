@@ -123,6 +123,55 @@ class TemporaryObjects:
 
 class AdvancedCorpora:
 
+    def query(self, name, params, metadata={}):
+        if metadata or not name in self.corpora or not params in self.corpora[name]['default_queries']:
+            corpus = self.structured[name]
+            if metadata:
+                new_corpus = estrutura_ud.Corpus(recursivo=True)
+                for sent_id in corpus.sentences:
+                    if all(metadado in corpus.sentences[sent_id].metadados and re.search(metadata[metadado], corpus.sentences[sent_id].metadados[metadado], flags=re.I) for metadado in metadata):
+                        new_corpus.build(corpus.sentences[sent_id].to_str())
+            else:
+                new_corpus = corpus
+            criterio = 5 if ' = ' in params and len(params.split('"')) >= 3 else 1
+            query = interrogar_UD.main(new_corpus, criterio, params, fastSearch=True)
+            output = query['output']
+            sentences = len(output)
+            occurrences = query['casos']
+            results = []
+            for sentence in output:
+                if "# sent_id = " in sentence['resultado'] and '# text = ' in sentence['resultado']:
+                    results.append([interrogar_UD.cleanEstruturaUD(sentence['resultado'].split("# sent_id = ")[1].split("\n")[0]), interrogar_UD.fromInterrogarToHtml(sentence['resultado'].split("# text = ")[1].split("\n")[0])])
+            
+            word_distribution = interrogar_UD.getDistribution(query, params, "word")
+            lemma_distribution = interrogar_UD.getDistribution(query, params, "lemma")
+
+            return {
+                'results': results,
+                'sentences': sentences,
+                'occurrences': occurrences,
+                'words': len(word_distribution['lista']),
+                'word_occurrences': sum([x for x in word_distribution['lista'].values()]),
+                'lemma_occurrences': sum([x for x in lemma_distribution['lista'].values()]),
+                'lemmas': len(lemma_distribution['lista']),
+                'word_distribution': sorted(list(word_distribution['lista'].items()), key=lambda x: (-x[1], x[0].lower())),
+                'lemma_distribution': sorted(list(lemma_distribution['lista'].items()), key=lambda x: (-x[1], x[0].lower())),
+            }
+
+        else:
+            query = self.corpora[name]['default_queries'][params]
+            return {
+                "results": query['results'],
+                "sentences": query['sentences'],
+                "occurrences": query['occurrences'],
+                "words": query['words'],
+                "word_occurrences": query['word_occurrences'],
+                "lemma_occurrences": query['lemma_occurrences'],
+                "lemmas": query['lemmas'],
+                "word_distribution": query['word_distribution'],
+                "lemma_distribution": query['lemma_distribution'],
+            }
+
     def delete_corpus(self, name):
         if name in self.corpora:
             del self.corpora[name]
@@ -153,22 +202,17 @@ class AdvancedCorpora:
             del self.files[name]
             del self.metadata[name]
 
-            all_words = interrogar_UD.main(corpus, 5, 'word = ".*"', fastSearch=True)
-            all_nouns = interrogar_UD.main(corpus, 1, '\\tNOUN\\t', fastSearch=True)
-            all_adjectives = interrogar_UD.main(corpus, 1, '\\tADJ\\t', fastSearch=True)
-            all_sentences = interrogar_UD.main(corpus, 1, '# text = .*', fastSearch=True)
-
+            self.structured[name] = corpus
             self.corpora[name] = {
                 'corpus': corpus.to_str(), 
                 'metadata': list(all_metadata.keys()),
                 'default_queries': {
-                    'word = ".*"': all_words, 
-                    'upos = "NOUN"': all_nouns, 
-                    'upos = "ADJ"': all_adjectives,
-                    "# text = .*": all_sentences,
-                    }
-                }
-            self.structured[name] = corpus
+                    'word = ".*"': self.query(name, 'word = ".*"'),
+                    'upos = "NOUN"': self.query(name, "\\tNOUN\\t"),
+                    'upos = "ADJ"': self.query(name, "\\tADJ\\t"),
+                    "# text = .*": self.query(name, "# text = .*"),
+                },
+            }
             self.save()
 
     def load_file(self, name, filename, lang):
@@ -207,7 +251,7 @@ class AdvancedCorpora:
     def get_number_sentences(self, name):
         if not name in self.structured and name in self.corpora:
             corpus = estrutura_ud.Corpus(recursivo=True)
-            corpus.build(self.corpora['name']['corpus'])
+            corpus.build(self.corpora[name]['corpus'])
             self.structured[name] = corpus
         return len(self.structured[name].sentences) if name in self.structured else 0
 

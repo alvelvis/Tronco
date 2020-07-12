@@ -25,7 +25,9 @@ window.addEventListener('beforeinstallprompt', (e) => {
   deferredPrompt = e
   // Update UI notify the user they can install the PWA
   //showInstallPromotion();
-  $('#downloadTronco').attr('href', "#").html("Baixe o aplicativo")
+  if (!window.location.href.match(/127\.0\.0\.1/)){
+    $('#downloadTronco').attr('href', "#").html("Baixe o aplicativo")
+  }
 })
 
 $('#downloadTronco').click(function(e){

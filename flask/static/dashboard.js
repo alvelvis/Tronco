@@ -1,4 +1,5 @@
 $('.quickSearch').click(function(){
+    $('#clearAdvancedSearchMetadata').click()
     $('#advancedSearchInput').val($(this).attr('params'))
     $('#advancedSearchGo').click()
 })
