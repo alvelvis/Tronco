@@ -36,16 +36,8 @@ coluna_tab = {
 	'misc': 9
 }
 
-def getDistribution(arquivoUD, parametros, coluna="lemma", filtros=[], sent_id=""):
+def getDistribution(arquivoUD, criterio, parametros, coluna="lemma", filtros=[], sent_id=""):
 	import estrutura_ud
-
-	if re.search(r"^\d+\s", parametros):
-		criterio = int(parametros.split(" ", 1)[0])
-		parametros = parametros.split(" ", 1)[1]
-	elif any(x in parametros for x in [' = ', ' == ', ' != ', ' !== ']) and len(parametros.split('"')) > 2:
-		criterio = 5
-	else:
-		criterio = 1
 
 	if not isinstance(arquivoUD, dict):
 		sentences = main(arquivoUD, criterio, parametros, sent_id=sent_id, fastSearch=True)['output']
@@ -361,6 +353,11 @@ def main(arquivoUD, criterio, parametros, limit=0, sent_id="", fastSearch=False,
 	#Python
 
 	if criterio == 5:
+		
+		if not any(x in parametros for x in [' = ', ' == ']):
+			parametros = re.findall(r'@?"[^"]+?"', parametros.replace(" ", ""))
+			parametros = [("@" if "@" in x else "") + ("next_token."*i) + "word = " + x.replace("@", "") for i, x in enumerate(parametros) if x]
+			parametros = " and ".join(parametros)
 		pesquisa = parametros
 
 		pesquisa = pesquisa.replace(" = ", " == ")

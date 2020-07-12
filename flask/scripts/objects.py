@@ -9,7 +9,7 @@ import functions
 import psutil
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.50
+tronco_version = 1.6
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 tronco_default_language = "pt"
@@ -124,7 +124,7 @@ class TemporaryObjects:
 class AdvancedCorpora:
 
     def query(self, name, params, metadata={}):
-        if metadata or not name in self.corpora or not params in self.corpora[name]['default_queries']:
+        if metadata or not name in self.corpora or (not params in self.corpora[name]['default_queries'] and (not name in self.temporary_queries or not params in self.temporary_queries[name])):
             corpus = self.structured[name]
             if metadata:
                 new_corpus = estrutura_ud.Corpus(recursivo=True)
@@ -133,7 +133,7 @@ class AdvancedCorpora:
                         new_corpus.build(corpus.sentences[sent_id].to_str())
             else:
                 new_corpus = corpus
-            criterio = 5 if ' = ' in params and len(params.split('"')) >= 3 else 1
+            criterio = 5 if len(params.split('"')) >= 3 else 1
             query = interrogar_UD.main(new_corpus, criterio, params, fastSearch=True)
             output = query['output']
             sentences = len(output)
@@ -143,10 +143,10 @@ class AdvancedCorpora:
                 if "# sent_id = " in sentence['resultado'] and '# text = ' in sentence['resultado']:
                     results.append([interrogar_UD.cleanEstruturaUD(sentence['resultado'].split("# sent_id = ")[1].split("\n")[0]), interrogar_UD.fromInterrogarToHtml(sentence['resultado'].split("# text = ")[1].split("\n")[0])])
             
-            word_distribution = interrogar_UD.getDistribution(query, params, "word")
-            lemma_distribution = interrogar_UD.getDistribution(query, params, "lemma")
+            word_distribution = interrogar_UD.getDistribution(query, criterio, params, "word")
+            lemma_distribution = interrogar_UD.getDistribution(query, criterio, params, "lemma")
 
-            return {
+            query_return = {
                 'results': results,
                 'sentences': sentences,
                 'occurrences': occurrences,
@@ -158,8 +158,17 @@ class AdvancedCorpora:
                 'lemma_distribution': sorted(list(lemma_distribution['lista'].items()), key=lambda x: (-x[1], x[0].lower())),
             }
 
+            if not name in self.temporary_queries:
+                self.temporary_queries[name] = {}
+            self.temporary_queries[name][params] = query_return
+
+            return query_return
+
         else:
-            query = self.corpora[name]['default_queries'][params]
+            if params in self.corpora[name]['default_queries']:
+                query = self.corpora[name]['default_queries'][params]
+            elif params in self.temporary_queries[name]:
+                query = self.temporary_queries[name][params]
             return {
                 "results": query['results'],
                 "sentences": query['sentences'],
@@ -259,6 +268,7 @@ class AdvancedCorpora:
         self.structured = {}
         self.metadata = {}
         self.corpora = {}
+        self.temporary_queries = {}
         self.files = {}
         self.models = {}
         self.config_file = os.path.join(root_path, "advanced_corpora.json")

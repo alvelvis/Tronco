@@ -1,8 +1,11 @@
-$('.quickSearch').click(function(){
-    $('#clearAdvancedSearchMetadata').click()
-    $('#advancedSearchInput').val($(this).attr('params'))
-    $('#advancedSearchGo').click()
-})
+updateQuickSearch()
+function updateQuickSearch() {
+    $('.quickSearch').unbind('click').click(function(){
+        $('#clearAdvancedSearchMetadata').click()
+        $('#advancedSearchInput').val($(this).attr('params'))
+        $('#advancedSearchGo').click()
+    })
+}
 
 var max_update_files = 200
 
@@ -29,7 +32,19 @@ $('.toggleAdvancedSearchToolbar').click(function(){
     if ($("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']:visible").length) {
         $(this).toggleClass("btn-primary", true).toggleClass("btn-outline-secondary", false)
     }
+    if ($(this).attr('advanced-toolbar') == 'metadata' && $('#advancedSearchMetadataCount').text() == "0" && $('[advanced-toolbar-panel="metadata"]:visible').length) {
+        $('#addAdvancedSearchMetadata').click()
+    }
 })
+
+function configureRecentQueries(queries) {
+    $('#builder-recent').html("")
+    $('#recentSearches').toggle(queries.length > 0)
+    for (query of queries){
+        $('#builder-recent').append($($('#builder-buttons').find('button')[0]).clone().attr('title', 'Realizar busca').attr('params', query).text(query))
+    }
+    updateQuickSearch()
+}
 
 function indexCorpus(force=false) {
     if (force) {
@@ -72,6 +87,7 @@ function indexCorpus(force=false) {
                                     $('#advancedSearchInput').focus()
                                 }
                                 $('#advancedSearchSentences').html(" em " + data.data + " frases")
+                                configureRecentQueries(data.recent_queries)
                                 allMetadata = data.metadata
                             }
                         })
@@ -101,6 +117,7 @@ function indexCorpus(force=false) {
                     $('#advancedSearchInput').focus()
                 }
                 $('#advancedSearchSentences').html(" em " + data.data + " frases")
+                configureRecentQueries(data.recent_queries)
                 allMetadata = data.metadata
                 break
             case '1':
@@ -118,7 +135,9 @@ function indexCorpus(force=false) {
 }
 
 $('#reindexCorpus').click(function(){
-    indexCorpus(true)
+    if (confirm("Deseja indexar a coleção novamente? Pode demorar um pouco, a depender do tamanho da coleção.")) {
+        indexCorpus(true)
+    }
 })
 
 $('.toggleSearch').click(function(){
@@ -313,6 +332,7 @@ function updateSearchTables(data, tables) {
 }
 
 $('#advancedSearchGo').click(function(){
+    $('.toggleAdvancedSearchToolbar.btn-primary').click()
     if ($('#advancedSearchInput').val().length) {
         $('#advancedSearchInput').toggleClass("is-invalid", false)
         metadata = []
@@ -353,6 +373,7 @@ $('#advancedSearchGo').click(function(){
                     $('#lemma_distribution').find('.lemmas').html(data.data.lemmas)
                     $('#lemma_distribution').find('.occurrences').html(data.data.lemma_occurrences)
                     updateSearchTables(data, ["query_results", "word_distribution", "lemma_distribution"])
+                    configureRecentQueries(data.recent_queries)
                     break
                 case '1':
                     alert("Você não permissão para realizar a busca")
@@ -1743,27 +1764,28 @@ function triggerResize(first=false){
         if (first) {
             isMobileFromBeginning = true
             $('#sidebar').css("max-width", "")
+            $('#settings').append($('#renameCorpus, #deleteCorpus, #permissionsSettings').detach())
         }
         isMobile = true
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:85vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
         $('#troncoLogo').hide()
         $('.navbar-brand').hide()
-        $('#toolbar-group, #searchHeader, #searchBody, #advancedSearchToolbarRow .btn-group, #toolbar, #filename-div, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
+        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #advancedSearchToolbarRow .btn-group, #toolbar, #filename-div, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
-        $('#toolbarRow, #advancedSearchToolbarRow').css('overflow-x', "scroll")
+        $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons').css('overflow-x', "scroll")
     } else {
         if (mobileInterval) {
             clearInterval(mobileInterval)
         }
         isMobile = false
-        $('#toolbar-group, #searchHeader, #advancedSearchToolbarRow .btn-group, #searchBody, #toolbar, #filename-div, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
+        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #advancedSearchToolbarRow .btn-group, #toolbar, #filename-div, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').show()
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "").css("white-space", "")
-        $('#toolbarRow, #advancedSearchToolbarRow').css('overflow-x', "")
+        $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons').css('overflow-x', "")
         //$('#editingPanel').css("z-index", "1200").toggleClass("sticky-top", true)
         toggleMobile(false)
     }
@@ -1780,7 +1802,7 @@ function triggerResize(first=false){
     //$('#main').css('margin-left', !isMobile ? '260px' : '0px')
     $('#main').toggleClass("col-md-9 ml-sm-auto col-lg-10", !isMobile)
 
-    $('#uploadTextLabel').html(isMobile ? "Enviar arquivos" : "Solte arquivos")
+    $('#uploadTextLabel').html(isMobile ? "Enviar arquivos" : "Enviar arquivos")
 
     feather.replace()
 }
@@ -1803,7 +1825,7 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
     elements = "#main, .prepend, .page-link, .page-item.active, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
-    elements2 = "#corpusSettings, #mainHeadbar, #troncoHomeBar"
+    elements2 = "#corpusSettings, #settings .custom-control-label, #corpusLanguageDiv, #mainHeadbar, #troncoHomeBar"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
         $(elements2).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
@@ -1812,7 +1834,7 @@ function checkTheme(){
         }
     } else {
         $(elements).css("background-color", "white").css("color", "black")
-        $(elements2).css("background-color", "white").css("color", "").toggleClass("bg-dark", true)
+        $(elements2).css("background-color", "white").css("color", "white").toggleClass("bg-dark", true)
         if (isMobile) {
             $('#search').toggleClass("form-control-dark", true).css("background-color", "white").css("color", "black").css("border-style", "")
         }

@@ -1,7 +1,7 @@
 if (document.cookie.indexOf("theme=") == -1){
     document.cookie = "theme=light; expires=" + expirationDate
 }
-
+/*
 document.addEventListener('DOMContentLoaded', function() {
 
     if (window.location.href.match(/127.0.0.1|localhost/)) {
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setInterval(function(){ fetch(url, { mode: 'no-cors'});}, 5000)();
     }
 
-});
+});*/
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register("/pwa");

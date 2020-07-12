@@ -86,7 +86,7 @@
                       <span data-feather="settings"></span>
                       Configurações
                     </a>
-                    <a class="nav-link" style="margin-left:10px; display:none" id="settings">
+                    <a style="margin-left:10px; display:none" class="m-0 p-0" id="settings">
                       <!--div class="form-row align-items-left">
                           <div class="col-auto my-1">
                               <div class="custom-control custom-checkbox mr-sm-2">
@@ -95,28 +95,30 @@
                               </div>
                           </div>                        
                       </div-->
-                      <input type="checkbox" style="display:none" checked="true" class="custom-control-input" id="autoSaveCheckbox">
-                      <div class="form-row align-items-left">
+                      <div class="nav-link">
+                        <input type="checkbox" style="display:none" checked="true" class="custom-control-input" id="autoSaveCheckbox">
+                        <div class="form-row align-items-left">
+                            <div class="col-auto my-1">
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                <input type="checkbox" checked="true" class="custom-control-input" id="wrapTextCheckbox">
+                                <label class="custom-control-label" style="cursor:pointer" title="O texto terá quebra de linha" for="wrapTextCheckbox">Quebra de linha</label>
+                                </div>
+                            </div>                        
+                        </div>
+                        <div class="form-row align-items-left">
                           <div class="col-auto my-1">
                               <div class="custom-control custom-checkbox mr-sm-2">
-                              <input type="checkbox" checked="true" class="custom-control-input" id="wrapTextCheckbox">
-                              <label class="custom-control-label" style="cursor:pointer" title="O texto terá quebra de linha" for="wrapTextCheckbox">Quebra de linha</label>
+                              <input type="checkbox" class="custom-control-input" id="advancedEditingCheckbox">
+                              <label class="custom-control-label" style="cursor:pointer" title="Habilitar opções avançadas de edição" for="advancedEditingCheckbox">Editor avançado</label>
                               </div>
                           </div>                        
-                      </div>
-                      <div class="form-row align-items-left">
-                        <div class="col-auto my-1">
-                            <div class="custom-control custom-checkbox mr-sm-2">
-                            <input type="checkbox" class="custom-control-input" id="advancedEditingCheckbox">
-                            <label class="custom-control-label" style="cursor:pointer" title="Habilitar opções avançadas de edição" for="advancedEditingCheckbox">Editor avançado</label>
-                            </div>
-                        </div>                        
-                      </div>
-                      <div id="corpusLanguageDiv" style="display:none" class="my-1">
-                        Língua da coleção:
-                        <select id="corpusLanguage" class="custom-select mt-1">
-                          
-                        </select>
+                        </div>
+                        <div id="corpusLanguageDiv" style="display:none" class="my-1">
+                          Língua da coleção:
+                          <select id="corpusLanguage" class="custom-select mt-1">
+                            
+                          </select>
+                        </div>
                       </div>
                     </a>
                     <a id="renameCorpus" class="nav-link">
@@ -256,7 +258,7 @@
             <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-label" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
           </div>
 
-          <div id="searchMain" style="display:none">
+          <div id="searchMain" class="pb-5" style="display:none">
 
             <div id="searchHeader">
 
@@ -276,6 +278,10 @@
                     <span data-feather="search"></span>
                     Buscar
                   </button>
+                  <button class="toggleAdvancedSearchToolbar btn btn-sm btn-outline-secondary" advanced-toolbar="builder" id="advancedSearchGo" type="button">
+                    <span data-feather="help-circle"></span>
+                    Expressões
+                  </button>
                   <button type="button" advanced-toolbar="metadata" class="toggleAdvancedSearchToolbar btn btn-sm btn-outline-secondary">
                     <span data-feather="filter"></span>
                     Filtrar (<span id="advancedSearchMetadataCount">0</span>)
@@ -283,10 +289,6 @@
                   <button type="button" advanced-toolbar="customize" class="toggleAdvancedSearchToolbar btn btn-sm btn-outline-secondary">
                     <span data-feather="sliders"></span>
                     Customizar
-                  </button>
-                  <button class="toggleAdvancedSearchToolbar btn btn-sm btn-outline-secondary" advanced-toolbar="builder" id="advancedSearchGo" type="button">
-                    <span data-feather="help-circle"></span>
-                    Ajuda
                   </button>
                   <button type="button" id="reindexCorpus" class="btn btn-sm btn-outline-secondary">
                     <span data-feather="refresh-ccw"></span>
@@ -300,18 +302,30 @@
 
               <div style="display:none" class="advanced-toolbar-panel" advanced-toolbar-panel="builder">
                 <div class="h5">Buscas rápidas</div>
-                <button type="button" title="Buscar todas as palavras da coleção" params='word = ".*"' class="quickSearch btn btn-sm btn-outline-secondary">
-                  Todas as palavras
-                </button>
-                <button type="button" title="Buscar todos os substantivos da coleção" params='upos = "NOUN"' class="quickSearch btn btn-sm btn-outline-secondary">
-                  Todos os substantivos
-                </button>
-                <button type="button" title="Buscar todos os adjetivos da coleção" params='upos = "ADJ"' class="quickSearch btn btn-sm btn-outline-secondary">
-                  Todos os adjetivos
-                </button>
-                <button type="button" title="Buscar todas as frases da coleção" params='# text = .*' class="quickSearch btn btn-sm btn-outline-secondary">
-                  Todas as frases
-                </button>
+                <div class="btn-toolbar">
+                  <div id="builder-buttons" class="btn-group">
+                    <button type="button" title="Buscar todas as palavras da coleção" params='word = ".*"' class="quickSearch btn btn-sm btn-outline-secondary">
+                      Todas as palavras
+                    </button>
+                    <button type="button" title="Buscar todos os substantivos da coleção" params='upos = "NOUN"' class="quickSearch btn btn-sm btn-outline-secondary">
+                      Todos os substantivos
+                    </button>
+                    <button type="button" title="Buscar todos os adjetivos da coleção" params='upos = "ADJ"' class="quickSearch btn btn-sm btn-outline-secondary">
+                      Todos os adjetivos
+                    </button>
+                    <button type="button" title="Buscar todas as frases da coleção" params='# text = .*' class="quickSearch btn btn-sm btn-outline-secondary">
+                      Todas as frases
+                    </button>
+                  </div>
+                </div>
+                <div id="recentSearches" style="display:none" class="mt-3">
+                  <div class="h5">Buscas recentes</div>
+                  <div class="btn-toolbar">
+                    <div id="builder-recent" class="btn-group">
+
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div style="display:none" class="advanced-toolbar-panel" advanced-toolbar-panel="customize">
