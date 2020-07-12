@@ -30,6 +30,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
   }
 })
 
+if (window.location.href.match(/127\.0\.0\.1/)){
+    $('[target="_blank"]').attr('target', "")
+}
+
 $('#downloadTronco').click(function(e){
     if (deferredPrompt) {
         e.preventDefault()

@@ -444,5 +444,5 @@ def home():
 
 if __name__ == "__main__":
     from pyfladesk import init_gui
-    init_gui(app, port=5240, width=1024, height=768,
+    init_gui(app, port=5240, width=1200, height=768,
              window_title="Tronco", icon=os.path.join(app.root_path, "static", "favicon.png"), argv=None)#ui.run()
