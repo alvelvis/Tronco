@@ -3,11 +3,14 @@ import requests
 import random
 import json
 from flask import Flask, redirect, render_template, request, url_for, send_from_directory
-from flaskwebgui import FlaskUI
+#from webui import WebUI
+from pyfladesk import init_gui
+#from flaskwebgui import FlaskUI
 from uuid import uuid4
 
 app = Flask(__name__)
-ui = FlaskUI(app, port=5240, maximized=True)
+#ui = WebUI(app)
+#ui = FlaskUI(app, port=5240, maximized=True)
 sys.path.insert(0, os.path.join(app.root_path, "scripts"))
 import objects
 import functions
@@ -436,4 +439,5 @@ def home():
         )
 
 if __name__ == "__main__":
-    ui.run()
+    init_gui(app, port=5240, width=1024, height=768,
+             window_title="Tronco", icon=os.path.join(app.root_path, "static", "favicon.png"), argv=None)#ui.run()
