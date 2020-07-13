@@ -7,13 +7,13 @@ click==7.1.2
 docx2txt==0.8
 EbookLib==0.17.1
 extract-msg==0.23.1
-Flask==1.1.2
+Flask==1.0
 gunicorn==20.0.4
 idna==2.9
 IMAPClient==2.1.0
 isort==4.3.21
-itsdangerous==1.1.0
-Jinja2==2.11.2
+itsdangerous==0.24
+Jinja2==2.10
 lazy-object-proxy==1.4.3
 lxml==4.5.1
 MarkupSafe==1.1.1
@@ -41,7 +41,7 @@ typed-ast==1.4.1
 tzlocal==1.5.1
 ufal.udpipe==1.2.0.3
 urllib3==1.25.9
-Werkzeug==1.0.1
+Werkzeug==0.15.3
 whichcraft==0.6.1
 wrapt==1.12.1
 xlrd==1.2.0
