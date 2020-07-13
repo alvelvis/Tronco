@@ -162,7 +162,7 @@ function toggleMain(panel) {
     if (panel) {
         switch (panel) {
             case "file":
-                $('#filename-div, #filename, #mainText, #toolbarRow, #toolbar, #hr').toggle(true)
+                $('#filename-div, #filename, #saved, #mainText, #toolbarRow, #toolbar, #hr').toggle(true)
                 break
             case "search":
                 $('#searchMain').toggle(true)
@@ -1490,9 +1490,6 @@ function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val(
                             textModified(true)
                             date = new Date()
                             $('#savedSpan').html("Salvo às " + date.getHours() + ":" + date.getMinutes())
-                            if (!$('#saved:visible').length) {
-                                $('#saved').slideToggle()
-                            }
                         })
                         .fail(function(){
                             if (!failedSave) {
@@ -1569,7 +1566,7 @@ function loadFile(filename){
     })
     .done(function(data){
         if (!data.error) {
-            $('#saved').hide()
+            $('#savedSpan').html("Salvo")
             $('#renameFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
             $('#deleteFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
             textModified(false)

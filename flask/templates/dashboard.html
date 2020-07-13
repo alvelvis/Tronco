@@ -355,9 +355,9 @@
                 </div>
               </div>
 
-              <hr>
+              
 
-              <nav id="navSearchPanels" style="display:none" class="nav nav-pills justify-content-center mb-3">
+              <nav id="navSearchPanels" style="display:none" class="nav nav-pills justify-content-center mt-5 mb-3">
                 <a panel="query_results" class="nav-item toggleSearch nav-link active">Resultados</a>
                 <a panel="word_distribution" class="nav-item toggleSearch nav-link">Palavras</a>
                 <a panel="lemma_distribution" class="nav-item toggleSearch nav-link">Lemas</a>
@@ -384,6 +384,8 @@
           <div id="filename-div" style="display:none" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-4">
             <h1 class="h2 filename" style="max-width:100%; display:inline-block; white-space: nowrap;" file="{{filename}}" id="filename"></h1>
           </div>
+
+          <div class="text-muted mb-2" id="saved"><span data-feather="upload-cloud"></span><span class="ml-1" id="savedSpan"></span></div>
 
           <div id="toolbarRow" style="display:none">
             <div class="btn-toolbar">
@@ -494,9 +496,6 @@
 
           <!--div id="hr" style="display:none"><hr></div-->
 
-          <div class="text-muted mb-3" id="saved" style="display:none"><span data-feather="upload-cloud"></span><span class="ml-1" id="savedSpan"></span></div>
-
-
           <textarea class="form-control p-0 pb-5" style="resize:none; border-style:none; overflow:auto; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; height:100%; width:100%;" id="mainText"></textarea>
 
         </main>
@@ -516,7 +515,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=10"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=109"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=110"></script>
   
   </body>
 </html>
