@@ -32,6 +32,12 @@ $('.toggleAdvancedSearchToolbar').click(function(){
     if ($("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']:visible").length) {
         $(this).toggleClass("btn-primary", true).toggleClass("btn-outline-secondary", false)
     }
+    $('.advancedSearchMetadataItem').each(function(){
+        if (!$(this).find("input").val().length){
+            $(this).remove()
+        }
+    })
+    $('#advancedSearchMetadataCount').html($('.advancedSearchMetadataItem').length)
     if ($(this).attr('advanced-toolbar') == 'metadata' && $('#advancedSearchMetadataCount').text() == "0" && $('[advanced-toolbar-panel="metadata"]:visible').length) {
         $('#addAdvancedSearchMetadata').click()
     }
@@ -345,7 +351,6 @@ $('#advancedSearchGo').click(function(){
                 metadata_dic[$(this).find("select").val()] = $(this).find("input").val()
             }
         })
-        $('#advancedSearchMetadataCount').html($('.advancedSearchMetadataItem').length)
         window.history.pushState("", "", '/corpus/' + name + "?search=" + encodeURIComponent($('#advancedSearchInput').val()) + "&" + metadata.join("&"))
         //$('[panel="searchResults"].toggleSearch').click()
         toggleProgress("Buscando...")
