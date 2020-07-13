@@ -9,7 +9,7 @@ import functions
 import psutil
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.62
+tronco_version = 1.63
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 tronco_default_language = "pt"

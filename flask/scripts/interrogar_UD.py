@@ -5,6 +5,7 @@ import sys
 import time
 import cgi
 import html as web
+from collections import defaultdict
 
 tabelaf = {      'yellow': 'green',
                         'purple': 'purple',
@@ -369,10 +370,13 @@ def main(arquivoUD, criterio, parametros, limit=0, sent_id="", fastSearch=False,
 
 	if criterio == 5:
 		
-		if not any(x in parametros for x in [' = ', ' == ']):
-			parametros = re.findall(r'@?"[^"]+?"', parametros.replace(" ", ""))
-			parametros = [("@" if "@" in x else "") + ("next_token."*i) + "word = " + x.replace("@", "") for i, x in enumerate(parametros) if x]
-			parametros = " and ".join(parametros)
+		parametros = parametros.split(" and ")
+		for t, parametro in enumerate(parametros):
+			if not any(x in parametros[t] for x in [' = ', '==', '!=']):
+				parametros[t] = re.findall(r'@?"[^"]+?"', parametros[t].replace(" ", ""))
+				parametros[t] = [("@" if "@" in x else "") + ("next_token."*i) + "word = " + x.replace("@", "") for i, x in enumerate(parametros[t]) if x]
+				parametros[t] = " and ".join(parametros[t])
+		parametros = " and ".join(parametros)
 		pesquisa = parametros
 
 		pesquisa = pesquisa.replace(" = ", " == ")
@@ -445,14 +449,27 @@ def main(arquivoUD, criterio, parametros, limit=0, sent_id="", fastSearch=False,
 		casos = []
 
 		if indexed_conditions:
-			sentences = {}
+			sentences = defaultdict(list)
+			tokens = defaultdict(list)
+			values = {}
 			for col in indexed_conditions:
-				values = [x.strip() for x in re.findall(r"\n" + indexed_conditions[col] + r"\n", "\n" + "\n\n".join(list(corpus.processed[col].keys())) + "\n") if x]
+				values = [x.strip() for x in re.findall(r"\n(" + indexed_conditions[col] + r")\n", "\n" + "\n\n".join(list(corpus.processed[col])) + "\n") if x]
 				for value in values:
-					for entry in corpus.processed[col][value]:
-						if not entry[0] in sentences:
-							sentences[entry[0]] = []
-						sentences[entry[0]].append(entry[1])
+					tokens[col].extend(corpus.processed[col][value])
+			priority = ['lemma', 'word', 'deprel', 'upos']
+			priority_possible = []
+			for col in indexed_conditions:
+				if col in priority:
+					priority_possible.append(priority.index(col))
+			if priority_possible:
+				col = priority[min(priority_possible)]
+			else:
+				col = list(indexed_conditions)[0]
+			cols = list(indexed_conditions)
+			cols.remove(col)
+			for token in tokens[col]:
+				if all(token in tokens[x] for x in cols):
+					sentences[token[0]].append(token[1])
 		else:
 			sentences = corpus.sentences
 		for sent_id in sentences:
@@ -469,7 +486,7 @@ else:
 for token_t in available_tokens:
 	token = sentence.tokens[token_t]
 	try:
-		if not "-" in token.id and (''' + pesquisa + ''') :
+		if (not "-" in token.id and (''' + pesquisa + ''')) :
 			sentence2.metadados['corresponde'] = 1
 			sentence2.metadados['text'] = re.sub(r'\\b(' + re.escape(token.word) + r')\\b', r"@RED/\\1/FONT", sentence2.metadados['text'])
 			sentence2.print = sentence2.print.replace(token.to_str(), "@RED/" + token.to_str() + "/FONT")

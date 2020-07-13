@@ -1,4 +1,5 @@
 import sys, re, time
+from collections import defaultdict
 
 def chunkIt(seq, num):
     avg = len(seq) / float(num)
@@ -120,9 +121,7 @@ class Sentence:
 					if not '-' in tok.id:
 						for col in tok.col:
 							if not col in self.processed:
-								self.processed[col] = {}
-							if not tok.col[col] in self.processed[col]:
-								self.processed[col][tok.col[col]] = []
+								self.processed[col] = defaultdict(list)
 							self.processed[col][tok.col[col]].append([self.sent_id, n_token])
 					tok.head_token = self.default_token
 					tok.next_token = self.default_token
@@ -179,14 +178,11 @@ class Corpus:
 
 	def process(self):
 		self.processed = {}
-		for sent_id, sentence in self.sentences.items():
-			for col in sentence.processed:
+		for sent_id in self.sentences:
+			for col in self.sentences[sent_id].processed:
 				if not col in self.processed:
-					self.processed[col] = {}
-				for value in sentence.processed[col]:
-					if not value in self.processed[col]:
-						self.processed[col][value] = []
-					self.processed[col][value].extend(sentence.processed[col][value])
+					self.processed[col] = defaultdict(list)
+				[self.processed[col][x].extend(self.sentences[sent_id].processed[col][x]) for x in self.sentences[sent_id].processed[col]]
 
 	def build(self, txt):
 		if self.sent_id:
