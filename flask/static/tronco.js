@@ -25,12 +25,12 @@ window.addEventListener('beforeinstallprompt', (e) => {
   deferredPrompt = e
   // Update UI notify the user they can install the PWA
   //showInstallPromotion();
-  if (!window.location.href.match(/127\.0\.0\.1/)){
+  if (!window.location.href.match(/127\.0\.0\.1|localhost/)){
     $('#downloadTronco').attr('href', "#").html("Baixe o aplicativo")
   }
 })
 
-if (window.location.href.match(/127\.0\.0\.1/)){
+if (window.location.href.match(/127\.0\.0\.1|localhost/)){
     $('[target="_blank"]').attr('target', "")
 }
 
