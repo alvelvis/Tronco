@@ -50,6 +50,7 @@ function indexCorpus(force=false) {
     if (force) {
         $('#navSearchPanels, .searchPanel').hide()
     }
+    $('.toggleAdvancedSearchToolbar.btn-primary').click()
     toggleMain(false)
     toggleProgress("Indexando coleção...")
     runningActivities['indexing'] = setInterval(function(){
@@ -193,9 +194,8 @@ $('#addAdvancedSearchMetadata').click(function(){
 
 function toggleProgress(label=false){
     if (label) {
-        if ($('title').html().indexOf(") ") == -1) {
-            $('title').html("(" + label + ") " + $('title').html())
-        }
+        title = ($('title').html().indexOf(") ") >= 0 ? $('title').html().split(") ")[1] : $('title').html())
+        $('title').html("(" + label + ") " + title)
         $('#progress-label').html(label)
         $('#progress-div').show()
     } else {
@@ -349,6 +349,7 @@ $('#advancedSearchGo').click(function(){
         window.history.pushState("", "", '/corpus/' + name + "?search=" + encodeURIComponent($('#advancedSearchInput').val()) + "&" + metadata.join("&"))
         //$('[panel="searchResults"].toggleSearch').click()
         toggleProgress("Buscando...")
+        $('#advancedSearchToolbarRow button').prop('disabled', true)
         window.scrollTo(0, 0)
         $.ajax({
             url: "/api/query",
@@ -380,9 +381,11 @@ $('#advancedSearchGo').click(function(){
                     break
             }
             toggleProgress(false)
+            $('#advancedSearchToolbarRow button').prop('disabled', false)
         })
         .fail(function(){
             toggleProgress(false)
+            $('#advancedSearchToolbarRow button').prop('disabled', false)
             alert("A busca retornou um erro")
         })
     } else {
@@ -392,7 +395,6 @@ $('#advancedSearchGo').click(function(){
 
 $('#advancedSearch').click(function(){
     $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + $('#name').html() + " - Tronco"))
-    $('.toggleAdvancedSearchToolbar.btn-primary').click()
     indexCorpus()
 })
 
@@ -1499,8 +1501,10 @@ function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val(
 var typingTimer
 var doneTypingInterval = 1000
 
-function doneTyping () {
-    saveFile($('#filename').attr('file'), $('#mainText').val())
+function doneTyping () {i
+    if ($('#mainText').val().length) {
+        saveFile($('#filename').attr('file'), $('#mainText').val())
+    }
 }
 
 $('#mainText').on('keyup', function(event){

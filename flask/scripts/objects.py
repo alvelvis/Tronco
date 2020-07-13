@@ -9,7 +9,7 @@ import functions
 import psutil
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.6
+tronco_version = 1.61
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
 tronco_default_language = "pt"
@@ -127,10 +127,13 @@ class AdvancedCorpora:
         if metadata or not name in self.corpora or (not params in self.corpora[name]['default_queries'] and (not name in self.temporary_queries or not params in self.temporary_queries[name])):
             corpus = self.structured[name]
             if metadata:
-                new_corpus = estrutura_ud.Corpus(recursivo=True)
+                new_corpus = estrutura_ud.Corpus()
                 for sent_id in corpus.sentences:
+                    new_sentence = estrutura_ud.Sentence(recursivo=True)
                     if all(metadado in corpus.sentences[sent_id].metadados and re.search(metadata[metadado], corpus.sentences[sent_id].metadados[metadado], flags=re.I) for metadado in metadata):
-                        new_corpus.build(corpus.sentences[sent_id].to_str())
+                        new_sentence.build(corpus.sentences[sent_id].to_str())
+                    new_corpus.sentences[new_sentence.sent_id] = new_sentence
+                new_corpus.process()
             else:
                 new_corpus = corpus
             criterio = 5 if len(params.split('"')) >= 3 else 1
@@ -158,9 +161,10 @@ class AdvancedCorpora:
                 'lemma_distribution': sorted(list(lemma_distribution['lista'].items()), key=lambda x: (-x[1], x[0].lower())),
             }
 
-            if not name in self.temporary_queries:
-                self.temporary_queries[name] = {}
-            self.temporary_queries[name][params] = query_return
+            if params not in ['word = ".*"', '\\tNOUN\\t', "\\tADJ\\t", "# text = .*"]:
+                if not name in self.temporary_queries:
+                    self.temporary_queries[name] = {}
+                self.temporary_queries[name][params] = query_return
 
             return query_return
 
@@ -194,18 +198,19 @@ class AdvancedCorpora:
         if name in self.files:
             all_metadata = {}
             corpus = estrutura_ud.Corpus()
+            n = 1
             for filename in self.files[name]:
                 for sent in self.files[name][filename].split("\n\n"):
                     if sent:
                         sentence = estrutura_ud.Sentence(recursivo=True)
-                        sentence.build(sent)
+                        sentence.build(sent, sent_id=filename + '-' + str(n))
                         sent_id = sentence.sent_id
                         all_metadata.update(self.metadata[name][filename])
                         for metadado in self.metadata[name][filename]:
                             sentence.metadados[metadado] = self.metadata[name][filename][metadado]
-                        sentence.sent_id = filename + '-' + sent_id
-                        sentence.metadados['sent_id'] = filename + '-' + sent_id
-                        corpus.sentences[filename + '-' + sent_id] = sentence
+                        corpus.sentences[sent_id] = sentence
+                        n += 1
+            corpus.process()
             
             del self.files[name]
             del self.metadata[name]
@@ -260,6 +265,7 @@ class AdvancedCorpora:
         if not name in self.structured and name in self.corpora:
             corpus = estrutura_ud.Corpus(recursivo=True)
             corpus.build(self.corpora[name]['corpus'])
+            corpus.process()
             self.structured[name] = corpus
         return len(self.structured[name].sentences) if name in self.structured else 0
 
