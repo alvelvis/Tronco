@@ -146,8 +146,8 @@ class AdvancedCorpora:
                 if "# sent_id = " in sentence['resultado'] and '# text = ' in sentence['resultado']:
                     results.append([interrogar_UD.cleanEstruturaUD(sentence['resultado'].split("# sent_id = ")[1].split("\n")[0]), interrogar_UD.fromInterrogarToHtml(sentence['resultado'].split("# text = ")[1].split("\n")[0])])
             
-            word_distribution = interrogar_UD.getDistribution(query, criterio, params, "word")
-            lemma_distribution = interrogar_UD.getDistribution(query, criterio, params, "lemma")
+            word_distribution = interrogar_UD.getDistribution(query, params, "word", criterio=criterio)
+            lemma_distribution = interrogar_UD.getDistribution(query, params, "lemma", criterio=criterio)
 
             query_return = {
                 'results': results,

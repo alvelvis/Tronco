@@ -2,7 +2,7 @@ ubuntu run flask/uvenv/bin/pip3 freeze > requirements_untouched.txt
 ubuntu run sed '/pkg-resources==0.0.0/d' requirements_untouched.txt > requirements.txt
 ubuntu run rm requirements_untouched.txt
 cd flask
-rmdir /s /q dist
+RMDIR /S /Q dist
 IF NOT EXIST wvenv (
   virtualenv wvenv
   wvenv\Scripts\pip3.exe install -r ../requirements.txt
