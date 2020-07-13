@@ -427,14 +427,19 @@ $('#saveMetadata').click(function(){
 })
 
 function updateMetadataRemove() {
-    $('.removeMetadata').unbind("click").click(function(){
-        value = $(this).parents(".metadataDiv").children('.metadataItem').val()
-        key = $(this).parents(".metadataDiv").children(".metadataItem").attr('key')
-        if(confirm("Deseja remover o metadado " + key + "?")) {
-            $(this).parents(".metadataDiv").remove()
-            $('#saveMetadata').click()
-        }
-    })
+    $('.removeMetadata').unbind("click")
+    if (permEdit) {
+        $('.removeMetadata').click(function(){
+            value = $(this).parents(".metadataDiv").children('.metadataItem').val()
+            key = $(this).parents(".metadataDiv").children(".metadataItem").attr('key')
+            if(confirm("Deseja remover o metadado " + key + "?")) {
+                $(this).parents(".metadataDiv").remove()
+                $('#saveMetadata').click()
+            }
+        })
+    }
+    $('.metadataItem').prop('disabled', !permEdit)
+    $('.removeMetadata svg, .removeMetadata span').toggle(permEdit)
 }
 
 $('#newMetadata').click(function(){
@@ -791,7 +796,7 @@ function updateToolbar(){
         $('[toolbar=filesLink]').html("")
         for (link in files) {
             if (files[link][1].indexOf("/media/") >= 0) {
-                $('[toolbar=filesLink]').append('<div class="file-div"><a href="' + files[link][1] + '" target="_blank" class="px-1">' + files[link][0] + '</a></div>' + (link == files.length -1 ? "" : ""))
+                $('[toolbar=filesLink]').append('<div class="file-div"><a href="' + files[link][1] + '" target="' + target_href + '" class="px-1">' + files[link][0] + '</a></div>' + (link == files.length -1 ? "" : ""))
             } else {
                 $('[toolbar=filesLink]').append('<div class="file-div"><a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + files[link].split(":")[0] + '</a></div>' + (link == files.length -1 ? "" : ""))
             }
@@ -1219,8 +1224,8 @@ $('#deleteCorpus').click(function(){
 $('#renameCorpus').click(function(){
     name = $('#name').html()
     new_name = prompt("Dê um novo nome para " + name + ":", name)
-    toggleProgress("Só um momento...")
     if (new_name && new_name.length){
+        toggleProgress("Só um momento...")
         $.ajax({
             url: '/api/renameCorpus',
             method: 'POST',
@@ -1501,7 +1506,7 @@ function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val(
 var typingTimer
 var doneTypingInterval = 1000
 
-function doneTyping () {i
+function doneTyping () {
     if ($('#mainText').val().length) {
         saveFile($('#filename').attr('file'), $('#mainText').val())
     }
@@ -1673,7 +1678,8 @@ $('#wrapTextCheckbox').on('change', function(){
 
 function loadConfigFromCheckboxes(){
     $('#corpusLanguageDiv, #advancedSearch').toggle($('#advancedEditingCheckbox').prop('checked') && permView)
-    $('#metadata').toggle($('#advancedEditingCheckbox').prop('checked') && permEdit)
+    $('#metadata').toggle($('#advancedEditingCheckbox').prop('checked') && permView)
+    $('.changeMetadata').toggle(permEdit)
     $('#saveModifications').toggle(!$('#autoSaveCheckbox').prop('checked'))
     $('#mainText').attr('wrap', $('#wrapTextCheckbox').prop('checked') ? 'on' : 'off')
     $('#mainText').css('overflow', $('#wrapTextCheckbox').prop('checked') ? "hidden" : "auto")

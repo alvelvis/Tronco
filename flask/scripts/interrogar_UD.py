@@ -447,7 +447,7 @@ def main(arquivoUD, criterio, parametros, limit=0, sent_id="", fastSearch=False,
 		if indexed_conditions:
 			sentences = {}
 			for col in indexed_conditions:
-				values = [x for x in re.findall(r"^" + indexed_conditions[col] + r"$", "\n".join(list(corpus.processed[col].keys())), flags=re.M) if x]
+				values = [x.strip() for x in re.findall(r"\n" + indexed_conditions[col] + r"\n", "\n" + "\n\n".join(list(corpus.processed[col].keys())) + "\n") if x]
 				for value in values:
 					for entry in corpus.processed[col][value]:
 						if not entry[0] in sentences:

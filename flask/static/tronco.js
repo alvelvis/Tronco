@@ -27,6 +27,9 @@ window.addEventListener('beforeinstallprompt', (e) => {
   //showInstallPromotion();
   if (!window.location.href.match(/127\.0\.0\.1|localhost/)){
     $('#downloadTronco').attr('href', "#").html("Baixe o aplicativo")
+    var target_href = ""
+  } else {
+    var target_href = "_blank"
   }
 })
 
