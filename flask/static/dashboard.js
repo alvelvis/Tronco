@@ -339,6 +339,7 @@ function updateSearchTables(data, tables) {
 
 $('#advancedSearchGo').click(function(){
     $('.toggleAdvancedSearchToolbar.btn-primary').click()
+    $('#advancedSearchToolbarRow').scrollLeft(0)
     if ($('#advancedSearchInput').val().length) {
         $('#advancedSearchInput').toggleClass("is-invalid", false)
         metadata = []
@@ -1783,7 +1784,7 @@ function triggerResize(first=false){
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:85vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / " + name + "</a>")
         $('#troncoLogo').hide()
         $('.navbar-brand').hide()
-        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #advancedSearchToolbarRow .btn-group, #toolbar, #filename-div, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
+        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #advancedSearchToolbarRow .btn-group, #toolbar, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons').css('overflow-x', "scroll")
@@ -1792,7 +1793,7 @@ function triggerResize(first=false){
             clearInterval(mobileInterval)
         }
         isMobile = false
-        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #advancedSearchToolbarRow .btn-group, #toolbar, #filename-div, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
+        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #advancedSearchToolbarRow .btn-group, #toolbar, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').show()
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()

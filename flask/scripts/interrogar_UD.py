@@ -453,9 +453,10 @@ def main(arquivoUD, criterio, parametros, limit=0, sent_id="", fastSearch=False,
 			tokens = defaultdict(list)
 			values = {}
 			for col in indexed_conditions:
-				values = [x.strip() for x in re.findall(r"\n(" + indexed_conditions[col] + r")\n", "\n" + "\n\n".join(list(corpus.processed[col])) + "\n") if x]
-				for value in values:
-					tokens[col].extend(corpus.processed[col][value])
+				if col in corpus.processed:
+					values = [x.strip() for x in re.findall(r"\n(" + indexed_conditions[col] + r")\n", "\n" + "\n\n".join(list(corpus.processed[col])) + "\n") if x]
+					for value in values:
+						tokens[col].extend(corpus.processed[col][value])
 			priority = ['lemma', 'word', 'deprel', 'upos']
 			priority_possible = []
 			for col in indexed_conditions:
