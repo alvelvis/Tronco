@@ -255,12 +255,22 @@ def load_file(name, filename):
 def create_new_file(name, filename, text=""):
     filename = secure_filename(filename)
     filename_dir = os.path.join(objects.root_path, "corpora", name, filename)
+    readme_dir = os.path.join(objects.root_path, "corpora", name, "README")
     if not any(x.lower().strip() == filename.lower().strip() for x in os.listdir(os.path.join(objects.root_path, "corpora", name))):
-        if filename == "README":
-            text = f'''# times_seen = 0
+        text = f'''# times_seen = 0
 # last_seen = 0
 # first_seen = {time.time()}
 '''
+        if filename != "README":
+            with open(readme_dir) as f:
+                readme = f.read()
+            readme_metadata = {
+                y.split(" = ")[0].split("# ")[1]: y.split(" = ", 1)[1] 
+                for y in [x for x in readme.splitlines() if x.strip().startswith("# ") and " = " in x]
+                }
+            for metadata in readme_metadata:
+                if metadata not in objects.tronco_metadata:
+                    text = '# ' + metadata + " = " + readme_metadata[metadata] + "\n" + text
         with open(filename_dir, "w") as f:
             f.write(text)
         return filename

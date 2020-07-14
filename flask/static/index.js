@@ -186,5 +186,6 @@ $(window).ready(function(){
     } else {
         $('#aboutTronco, #downloadTronco, #toggleTheme').show()
     }
+    $('#leadToggle').toggle(!is_local)
     checkTheme()
 })

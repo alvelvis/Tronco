@@ -27,14 +27,16 @@ window.addEventListener('beforeinstallprompt', (e) => {
   //showInstallPromotion();
   if (!window.location.href.match(/127\.0\.0\.1|localhost/)){
     $('#downloadTronco').attr('href', "#").html("Baixe o aplicativo")
-    var target_href = ""
-  } else {
-    var target_href = "_blank"
   }
 })
 
 if (window.location.href.match(/127\.0\.0\.1|localhost/)){
     $('[target="_blank"]').attr('target', "")
+    target_href = ""
+    is_local = true
+} else {
+    target_href = "_blank"
+    is_local = false
 }
 
 $('#downloadTronco').click(function(e){

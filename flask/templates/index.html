@@ -68,7 +68,7 @@
         {% endif %}
         <img src="{{url_for('static', filename='favicon.png')}}" class="mb-2" alt="" width="96">
         <h1 class="display-5">Tronco te ajuda a organizar coleções de texto</h1>
-        <p class="lead">Você cria uma coleção, organiza seus arquivos pessoais ou de trabalho, acessa de onde quiser e compartilha com quem quiser. Crie uma senha apenas se assim desejar.</p>
+        <p id="leadToggle" class="lead">Crie uma coleção, organize seus arquivos pessoais ou de trabalho, acesse de onde quiser e compartilhe com quem quiser. Crie uma senha apenas se assim desejar.</p>
         <p class="lead">Vamos começar?</p>
       </div>
 
@@ -140,8 +140,8 @@
     <script src="{{url_for('static', filename='popper.js')}}"></script>
     <script src="{{url_for('static', filename='bootstrap.js')}}"></script>
     <script src="{{url_for('static', filename='holder.js')}}"></script>
-    <script src="{{url_for('static', filename='tronco.js')}}?version=11"></script>
-    <script src="{{url_for('static', filename='index.js')}}?version=10"></script>
+    <script src="{{url_for('static', filename='tronco.js')}}?version=12"></script>
+    <script src="{{url_for('static', filename='index.js')}}?version=11"></script>
     <script src="{{url_for('static', filename='feather.js')}}"></script>
     <script>
       Holder.addTheme('thumb', {

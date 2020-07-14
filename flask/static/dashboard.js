@@ -405,6 +405,10 @@ $('#advancedSearch').click(function(){
 })
 
 $('#saveMetadata').click(function(){
+    $('.metadataItem').prop('disabled', true)
+    $('.changeMetadata').prop('disabled', true)
+    $('.removeMetadata').unbind("click")
+    toggleProgress("Atualizando metadados...")
     metadata = {}
     $('.metadataItem').each(function(){
         metadata[$(this).attr('key')] = $(this).val()
@@ -420,10 +424,14 @@ $('#saveMetadata').click(function(){
         }
     })
     .done(function(){
-        $('#saveMetadata').toggleClass("btn-primary").toggleClass("btn-success")
+        $('#saveMetadata').toggleClass("btn-primary", false).toggleClass("btn-success", true)
+        $('.metadataItem').prop('disabled', false)
+        $('.changeMetadata').prop('disabled', false)
         $('#saveMetadataLabel').html("Salvo!")
+        toggleProgress(false)
+        updateMetadataRemove()
         setTimeout(function(){
-            $('#saveMetadata').toggleClass("btn-primary").toggleClass("btn-success")
+            $('#saveMetadata').toggleClass("btn-primary", true).toggleClass("btn-success", false)
             $('#saveMetadataLabel').html("")
         }, 2000)
     })
@@ -813,7 +821,7 @@ function updateToolbar(){
         $('[toolbar=filesLink]').toggle(false)
     }
 
-    $('#shareText').show()
+    $('#shareText').toggle(!is_local)
     $('#dropdown').toggle(permEdit)
     if (isMobile) {
         $('#toolbarRow').scrollLeft(0)
@@ -1002,6 +1010,7 @@ function validatePassword (name){
         permSetup = permissions.indexOf("configurar") >= 0
         if (permSetup) { permEdit = true }
         if (!permEdit) { permSetup = false }
+        $('#login').toggle(!is_local)
         $('#conected').html(!data.has_password && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não pode visualizar"))))
         $('#permissionsSettings').toggle(!data.has_password ? false : (permSetup ? true : false))
         $('#uploadTextDiv').toggle(permEdit)
@@ -1040,8 +1049,8 @@ function validatePassword (name){
                 $('#advancedSearchMetadataCount').html($('.advancedSearchMetadataItem').length)
             }
             checkTheme()
-            updateFiles()
             $('#advancedSearch').click()
+            updateFiles()
         } else {
             returnSearch($('#filename').attr('file'))
         }
@@ -1367,7 +1376,7 @@ function updateFiles(key = "", load = ""){
             })
         }
 
-        $('.files').click(function(){
+        $('.files').unbind('click').click(function(){
             returnSearch($(this).attr('file'))
         })
 
