@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });*/
 
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register("/pwa");
+    navigator.serviceWorker.register("/pwabuilder-sw.js")
 }
 
 let deferredPrompt

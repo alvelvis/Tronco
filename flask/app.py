@@ -160,9 +160,10 @@ def upload_file():
 def download_app():
     return redirect("/?app=true")
 
-@app.route("/pwa")
+@app.route("/pwabuilder-sw.js")
+@app.route("/corpus/pwabuilder-sw.js")
 def pwa():
-    return app.send_static_file("pwabuilder-sw.js")
+    return send_from_directory(os.path.join(objects.root_path, "static"), "pwabuilder-sw.js")
 
 @app.route("/api/claimAccess", methods=["POST"])
 def claim_access():
