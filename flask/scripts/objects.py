@@ -254,6 +254,8 @@ class AdvancedCorpora:
         if name in self.corpora:
             del self.corpora[name]
             self.save()
+        if name in self.structured:
+            del self.structured[name]
 
     def save(self):
         with open(self.config_file, "w") as f:
