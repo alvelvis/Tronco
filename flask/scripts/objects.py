@@ -124,6 +124,7 @@ class TemporaryObjects:
 class AdvancedCorpora:
 
     def query(self, name, params, metadata={}):
+        sys.stderr.write(str(metadata))
         if metadata or not name in self.corpora or (not params in self.corpora[name]['default_queries'] and (not name in self.temporary_queries or not params in self.temporary_queries[name])):
             corpus = self.structured[name]
             if metadata:
@@ -159,11 +160,12 @@ class AdvancedCorpora:
                 'word_distribution': sorted(list(word_distribution['lista'].items()), key=lambda x: (-x[1], x[0].lower())),
                 'lemma_distribution': sorted(list(lemma_distribution['lista'].items()), key=lambda x: (-x[1], x[0].lower())),
             }
-
-            if params not in ['word = ".*"', '\\tNOUN\\t', "\\tADJ\\t", "# text = .*"]:
-                if not name in self.temporary_queries:
-                    self.temporary_queries[name] = {}
-                self.temporary_queries[name][params] = query_return
+            
+            if not metadata:
+                if params not in ['word = ".*"', '\\tNOUN\\t', "\\tADJ\\t", "# text = .*"]:
+                    if not name in self.temporary_queries:
+                        self.temporary_queries[name] = {}
+                    self.temporary_queries[name][params] = query_return
 
             return query_return
 
