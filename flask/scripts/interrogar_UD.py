@@ -410,7 +410,7 @@ def main(arquivoUD, criterio, parametros, limit=0, sent_id="", fastSearch=False,
 #		pesquisa = pesquisa.replace("== int(", "==int(")
 		pesquisa = re.sub(r'token\.([1234567890])', r'\1', pesquisa)
 
-		indexed_conditions = {x.split(" == ")[0].strip().split("token.", 1)[1]: x.split(" == ")[1].strip().replace('"', '') for x in pesquisa.split(" and ") if ' == ' in x and not any(y in x for y in ["head_token.head", "head_token.next", "head_token.previous", "next_token.head", "next_token.next", "next_token.previous", "previous_token.head", "previous_token.next", "previous_token.previous"])}
+		indexed_conditions = {x.split(" == ")[0].strip().split("token.", 1)[1]: x.split(" == ")[1].strip().replace('"', '') for x in pesquisa.split(" and ") if ' == ' in x and 'token.' in x and not any(y in x for y in ["head_token.head", "head_token.next", "head_token.previous", "next_token.head", "next_token.next", "next_token.previous", "previous_token.head", "previous_token.next", "previous_token.previous"])}
 		pesquisa = re.sub(r"token\.([^. ]+?)\s", r"token.col['\1'] ", pesquisa)
 
 		pesquisa = re.sub(r'(\S+)\s==\s(\".*?\")', r'any( re.search( r"^" + r\2 + r"$", x ) for x in \1.split("|") )', pesquisa)
@@ -453,11 +453,12 @@ def main(arquivoUD, criterio, parametros, limit=0, sent_id="", fastSearch=False,
 			sentences = defaultdict(list)
 			tokens = defaultdict(list)
 			values = {}
-			for col in indexed_conditions:
-				if col in corpus.processed:
-					values = [x.strip() for x in re.findall(r"\n(" + indexed_conditions[col] + r")\n", "\n" + "\n\n".join(list(corpus.processed[col])) + "\n") if x]
-					for value in values:
-						tokens[col].extend(corpus.processed[col][value])
+			for sent_id in corpus.sentences:
+				for col in indexed_conditions:
+					if col in corpus.sentences[sent_id].processed:
+						values = [x.strip() for x in re.findall(r"\n(" + indexed_conditions[col] + r")\n", "\n" + "\n\n".join(list(corpus.sentences[sent_id].processed[col])) + "\n") if x]
+						for value in values:
+							tokens[col].extend(corpus.sentences[sent_id].processed[col][value])
 			for col in tokens:
 				tokens[col] = set(tokens[col])
 			tokens_filtered = []
@@ -488,7 +489,7 @@ def main(arquivoUD, criterio, parametros, limit=0, sent_id="", fastSearch=False,
 		for sent_id in sentences:
 			sentence = corpus.sentences[sent_id]
 			sentence2 = sentence
-			clean_text = sentence2.metadados['clean_text']
+			clean_text = " ".join([x.word for x in sentence2.tokens if not '-' in x.id])
 			corresponde = 0
 			tokens = sentence2.tokens_to_str()
 			if limit and limit == len(output):
@@ -536,17 +537,18 @@ for token_t in available_tokens:
 			if separate:
 				clean_text = " ".join(clean_text)
 				corresponde = 0
-				final = sentence2.metadados_to_str().replace(sentence2.metadados['clean_text'], clean_text) + "\\n" + tokens
+				final = "# clean_text = " + clean_text + "\\n" + sentence2.metadados_to_str() + "\\n" + tokens
 				output.append(final)
 				clean_text = clean_text.split(" ")
 			
 	except Exception as e:
 		print(e)
+		print(token.string)
 		pass
 clean_text = " ".join(clean_text)
 if corresponde and not separate:
 	corresponde = 0
-	final = sentence2.metadados_to_str().replace(sentence2.metadados['clean_text'], clean_text) + "\\n" + tokens
+	final = "# clean_text = " + clean_text + "\\n" + sentence2.metadados_to_str() + "\\n" + tokens
 	output.append(final)''')
 		sys.stderr.write("\ncritério 5: " + str(time.time() - start))
 		casos = len(casos)

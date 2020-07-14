@@ -133,7 +133,6 @@ class AdvancedCorpora:
                     if all(metadado in corpus.sentences[sent_id].metadados and re.search(metadata[metadado], corpus.sentences[sent_id].metadados[metadado], flags=re.I) for metadado in metadata):
                         new_sentence.build(corpus.sentences[sent_id].to_str())
                     new_corpus.sentences[new_sentence.sent_id] = new_sentence
-                new_corpus.process()
             else:
                 new_corpus = corpus
             criterio = 5 if len(params.split('"')) >= 3 else 1
@@ -210,7 +209,6 @@ class AdvancedCorpora:
                             sentence.metadados[metadado] = self.metadata[name][filename][metadado]
                         corpus.sentences[sent_id] = sentence
                         n += 1
-            corpus.process()
             
             del self.files[name]
             del self.metadata[name]
@@ -265,7 +263,6 @@ class AdvancedCorpora:
         if not name in self.structured and name in self.corpora:
             corpus = estrutura_ud.Corpus(recursivo=True)
             corpus.build(self.corpora[name]['corpus'])
-            corpus.process()
             self.structured[name] = corpus
         return len(self.structured[name].sentences) if name in self.structured else 0
 

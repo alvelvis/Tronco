@@ -1462,7 +1462,7 @@ function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val(
                 if (!failedSave) {
                     failedSave = true
                     shouldReload(true)
-                    alert("O arquivo está sendo editado por outra pessoa. Recarregue a página.")
+                    alert("Sessão expirada, ou o arquivo está sendo editado por outra pessoa. Recarregue a página.")
                 }
                 return false
             } else {

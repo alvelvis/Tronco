@@ -128,7 +128,6 @@ class Sentence:
 				sys.stderr.write(str(e) + "\n")
 				sys.stderr.write(str(linha + "\n"))
 				sys.exit()
-		self.metadados["clean_text"] = " ".join([x.word for x in self.tokens if not '-' in x.id])
 		
 		for t, token in enumerate(self.tokens):
 			if not '-' in token.id:
@@ -189,14 +188,7 @@ class Corpus:
 		self.keywords = keywords
 		self.any_of_keywords = any_of_keywords
 		self.time = time.time()
-
-	def process(self):
-		self.processed = {}
-		for sent_id in self.sentences:
-			for col in self.sentences[sent_id].processed:
-				if not col in self.processed:
-					self.processed[col] = defaultdict(list)
-				[self.processed[col][x].extend(self.sentences[sent_id].processed[col][x]) for x in self.sentences[sent_id].processed[col]]
+		self.loading = False
 
 	def build(self, txt):
 		if self.sent_id:
@@ -218,9 +210,8 @@ class Corpus:
 					self.sentences[sent.id] = sent
 				elif sent.text:
 					self.sentences[sent.text] = sent
-		self.process()
-		sys.stderr.write("build: " + str(time.time() - self.time))
-
+		if not self.loading:
+			sys.stderr.write("build: " + str(time.time() - self.time))
 
 	def to_str(self):
 		self.sentences_not_built.update(self.sentences)
@@ -228,25 +219,10 @@ class Corpus:
 		return "\n\n".join(retorno) + '\n\n'
 
 	def load(self, path):
+		self.loading = True
 		sentence = ""
 		with open(path, "r", encoding=self.encoding) as f:
-			if self.keywords and all(x in "ADJ|ADP|ADV|AUX|CCONJ|DET|INTJ|NOUN|NUM|PART|PRON|PROPN|PUNCT|SCONJ|SYM|VERB|X|acl|advcl|advmod|amod|appos|aux|case|cc|ccomp|clf|compound|conj|cop|csubj|dep|det|discourse|dislocated|expl|fixed|flat|goeswith|iobj|list|mark|nmod|nsubj|nummod|obj|obl|orphan|parataxis|punct|reparandum|root|vocative|xcomp".split("|") for x in self.keywords):
-				sys.stderr.write("\nthreading active\n")
-				
-				import threading
-				import multiprocessing
-				chunks = chunkIt(f.read().split(self.separator), multiprocessing.cpu_count())
-
-				threads = []
-				for i in range(multiprocessing.cpu_count()):
-					p = threading.Thread(target=self.build, args=(chunks[i],))
-					threads.append(p)
-					p.start()
-				
-				for thread in threads:
-					thread.join()
-
-			elif not self.sent_id:
+			if not self.sent_id:
 				for line in f:
 					if line.strip():
 						sentence += line
@@ -262,7 +238,7 @@ class Corpus:
 						sentence = ""
 			else:
 				self.build(f.read())
-		self.process()
+		sys.stderr.write("build: " + str(time.time() - self.time))
 
 	def save(self, path):
 		final = self.to_str() if not self.sent_id else (self.pre + "\n\n" + self.to_str() + self.pos).strip() + "\n\n"
