@@ -124,8 +124,7 @@ class TemporaryObjects:
 class AdvancedCorpora:
 
     def query(self, name, params, metadata={}):
-        sys.stderr.write(str(metadata))
-        if metadata or not name in self.corpora or (not params in self.corpora[name]['default_queries'] and (not name in self.temporary_queries or not params in self.temporary_queries[name])):
+        if metadata or not name in self.corpora or (not params in self.corpora[name]['default_queries'] and (not params in self.corpora[name]['recent_queries'])):
             corpus = self.structured[name]
             if metadata:
                 new_corpus = estrutura_ud.Corpus()
@@ -162,18 +161,17 @@ class AdvancedCorpora:
             }
             
             if not metadata:
-                if params not in ['word = ".*"', '\\tNOUN\\t', "\\tADJ\\t", "# text = .*"]:
-                    if not name in self.temporary_queries:
-                        self.temporary_queries[name] = {}
-                    self.temporary_queries[name][params] = query_return
+                if params not in ['word = ".*"', '\\tNOUN\\t', "\\tADJ\\t", "\\tVERB\\t", "# text = .*"]:
+                    self.corpora[name]['recent_queries'][params] = query_return
+                    self.save()
 
             return query_return
 
         else:
             if params in self.corpora[name]['default_queries']:
                 query = self.corpora[name]['default_queries'][params]
-            elif params in self.temporary_queries[name]:
-                query = self.temporary_queries[name][params]
+            elif params in self.corpora[name]['recent_queries']:
+                query = self.corpora[name]['recent_queries'][params]
             return {
                 "results": query['results'],
                 "sentences": query['sentences'],
@@ -223,8 +221,10 @@ class AdvancedCorpora:
                     'word = ".*"': self.query(name, 'word = ".*"'),
                     'upos = "NOUN"': self.query(name, "\\tNOUN\\t"),
                     'upos = "ADJ"': self.query(name, "\\tADJ\\t"),
+                    'upos = "VERB"': self.query(name, "\\tVERB\\t"),
                     "# text = .*": self.query(name, "# text = .*"),
                 },
+                'recent_queries': {}
             }
             self.save()
 
@@ -265,6 +265,8 @@ class AdvancedCorpora:
 
     def get_number_sentences(self, name):
         if not name in self.structured and name in self.corpora:
+            if not 'recent_queries' in self.corpora[name]:
+                self.corpora[name]['recent_queries'] = {}
             corpus = estrutura_ud.Corpus(recursivo=True)
             corpus.build(self.corpora[name]['corpus'])
             self.structured[name] = corpus
@@ -274,7 +276,6 @@ class AdvancedCorpora:
         self.structured = {}
         self.metadata = {}
         self.corpora = {}
-        self.temporary_queries = {}
         self.files = {}
         self.models = {}
         self.config_file = os.path.join(root_path, "advanced_corpora.json")

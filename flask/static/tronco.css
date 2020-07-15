@@ -2,7 +2,7 @@
     display: none;
 }  
 
- #sidebar, #filename, #mainHeadbar, #troncoHomeLabel, #saved { /*#filename, #sidebar a*/
+ #sidebar, #filename, #mainHeadbar, #troncoHomeLabel, #saved, #savedSpan { /*#filename, #sidebar a*/
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

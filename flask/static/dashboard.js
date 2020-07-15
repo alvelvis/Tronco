@@ -46,7 +46,8 @@ $('.toggleAdvancedSearchToolbar').click(function(){
 function configureRecentQueries(queries) {
     $('#builder-recent').html("")
     $('#recentSearches').toggle(queries.length > 0)
-    for (query of queries){
+    queries_reverse = queries.reverse().slice(-10)
+    for (query of queries_reverse){
         $('#builder-recent').append($($('#builder-buttons').find('button')[0]).clone().attr('title', 'Realizar busca').attr('params', query).text(query))
     }
     updateQuickSearch()
@@ -473,10 +474,12 @@ $('#newMetadata').click(function(){
 })
 
 function loadMetadata(metadata, readme=false) {
+    first_seen = new Date(metadata.first_seen * 1000)
+    first_seen_string = "Arquivo criado dia " + first_seen.getDate() + "/" + (parseInt(first_seen.getMonth())+1).toString() + "/" + first_seen.getFullYear() + " às " + first_seen.getHours() + ":" + first_seen.getMinutes()
     if (readme) {
-        metadataItems = "<div class='pb-2'>Dica: Os metadados deste arquivo serão aplicados a todos os outros arquivos da coleção.</div>"
+        metadataItems = "<div class='pb-2'>Dica: Os metadados deste arquivo serão aplicados a todos os outros arquivos da coleção.<br>" + first_seen_string + "</div>"
     } else {
-        metadataItems = ""
+        metadataItems = "<div class='pb-2'>" + first_seen_string + "</div>"
     }
     for (key of Object.keys(metadata)) {
         if (default_metadata.indexOf(key) == -1)
@@ -559,6 +562,7 @@ function toggleInsertSuccess(){
 }
 
 function returnSearch(filename=$('#search').val()){
+    toggleMain(false)
     $.ajax({
         url: '/api/findOrCreateFile',
         method: 'POST',
@@ -1206,7 +1210,7 @@ function recentFiles(key = "", typing = ""){
             }
         }
         $('#recentFiles').html(data.data.length ? new_data : new_data + 'Nenhum arquivo encontrado.')
-        $('.recentFiles').click(function(){
+        $('.recentFiles').unbind('click').click(function(){
             returnSearch($(this).attr('file'))
         })
     })
@@ -1497,6 +1501,10 @@ function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val(
                             }
                         })
                         .done(function(){
+                            $('#saved').find("svg").attr('stroke', 'green').attr('stroke-width', 3)
+                            setTimeout(function(){
+                                $('#saved').find("svg").attr('stroke', 'currentColor').attr('stroke-width', 2)
+                            },2000)
                             textModified(true)
                             date = new Date()
                             $('#savedSpan').html("Salvo às " + date.getHours() + ":" + date.getMinutes())
@@ -1796,7 +1804,7 @@ function triggerResize(first=false){
         $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #advancedSearchToolbarRow .btn-group, #toolbar, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
-        $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons').css('overflow-x', "scroll")
+        $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons, #builder-recent').css('overflow-x', "scroll")
     } else {
         if (mobileInterval) {
             clearInterval(mobileInterval)
@@ -1808,7 +1816,7 @@ function triggerResize(first=false){
         $('.navbar-brand').show()
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "").css("white-space", "")
-        $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons').css('overflow-x', "")
+        $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons, #builder-recent').css('overflow-x', "")
         //$('#editingPanel').css("z-index", "1200").toggleClass("sticky-top", true)
         toggleMobile(false)
     }

@@ -67,7 +67,7 @@ def query():
         'lemma_distribution': len(temporary_objects.objects['lemma_distribution'][session_token]),
     }
     query['page'] = 1
-    return {'data': query, 'error': '0', 'recent_queries': list(advanced_corpora.temporary_queries[name].keys()) if name in advanced_corpora.temporary_queries else []}
+    return {'data': query, 'error': '0', 'recent_queries': list(advanced_corpora.corpora[name]['recent_queries'].keys())}
 
 @app.route("/api/isCorpusReady", methods=["POST"])
 def is_corpus_ready():
@@ -106,7 +106,7 @@ def load_advanced_corpus():
         'error': '0', 
         'data': advanced_corpora.get_number_sentences(name), 
         'metadata': advanced_corpora.corpora[name]['metadata'],
-        'recent_queries': list(advanced_corpora.temporary_queries[name].keys()) if name in advanced_corpora.temporary_queries else []
+        'recent_queries': list(advanced_corpora.corpora[name]['recent_queries'])
         }
 
 @app.route("/api/saveMetadata", methods=["POST"])
