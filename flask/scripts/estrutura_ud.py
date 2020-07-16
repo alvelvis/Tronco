@@ -46,7 +46,7 @@ class Sentence:
 		self.id = ""
 		self.metadados = {}
 		self.recursivo = recursivo
-		self.processed = defaultdict(dict)
+		self.processed = defaultdict(lambda: defaultdict(list))
 		self.default_token = Token()
 		self.tokens = list()
 		self.tokens_incompletos = list()
@@ -80,7 +80,7 @@ class Sentence:
 				if not linha.startswith("# ") and "\t" in linha:
 					tok = Token()
 					tok.string = linha
-					self.map_token_id[re.sub(r"<.*?>", "", tok.id) if '<' in tok.id else tok.id] = n_token
+					self.map_token_id[tok.id if not '<' in tok.id else re.sub(r"<.*?>", "", tok.id)] = n_token
 					self.tokens.append(tok)
 					n_token += 1
 			except Exception as e:
@@ -100,17 +100,17 @@ class Sentence:
 			token.deprel = coluna[7]
 			token.deps = coluna[8]
 			token.misc = coluna[9]
-			token.col["id"] = token.id
-			token.col["word"] = token.word
-			token.col["lemma"] = token.lemma
-			token.col["upos"] = token.upos
-			token.col["xpos"] = token.xpos
-			token.col["feats"] = token.feats
-			token.col["dephead"] = token.dephead
-			token.col["deprel"] = token.deprel
-			token.col["deps"] = token.deps
-			token.col["sema"] = token.deps
-			token.col["misc"] = token.misc
+			token.col["id"] = coluna[0]
+			token.col["word"] = coluna[1]
+			token.col["lemma"] = coluna[2]
+			token.col["upos"] = coluna[3]
+			token.col["xpos"] = coluna[4]
+			token.col["feats"] = coluna[5]
+			token.col["dephead"] = coluna[6]
+			token.col["deprel"] = coluna[7]
+			token.col["deps"] = coluna[8]
+			token.col["sema"] = coluna[8]
+			token.col["misc"] = coluna[9]
 			if token.feats != "_":
 				for feat in token.feats.split("|"):
 					if '=' in feat:
@@ -121,8 +121,6 @@ class Sentence:
 						token.col[misc.split("=")[0].lower()] = misc.split("=")[1]
 			if not '-' in token.id:
 				for col in token.col:
-					if not col in self.processed:
-						self.processed[col] = defaultdict(list)
 					self.processed[col][token.col[col]].append(self.sent_id + "<tok>" + str(t))
 				token_dephead = token.dephead if not '<' in token.dephead else re.sub(r"<.*?>", "", token.dephead)
 				token_id = token.id if not '<' in token.id else re.sub(r"<.*?>", "", token.id)

@@ -9,8 +9,6 @@ function updateQuickSearch() {
 
 var max_update_files = 200
 
-var runningActivities = {}
-
 $('#fullUpdateFiles').click(function(){
     alert("Limite de " + max_update_files + " arquivos atingido, utilize a barra de busca para encontrar o arquivo que deseja")
 })
@@ -142,6 +140,7 @@ function indexCorpus(force=false) {
     })
 }
 
+
 $('#reindexCorpus').click(function(){
     if (confirm("Deseja indexar a coleção novamente? Pode demorar um pouco, a depender do tamanho da coleção.")) {
         indexCorpus(true)
@@ -156,7 +155,7 @@ $('.toggleSearch').click(function(){
 })
 
 function toggleMain(panel) {
-    $('#filename-div, #filename, #mainText, #saved, #toolbarRow, #toolbar, #hr').toggle(false)
+    $('#filename-div, #filename, #mainText, #saved, #toolbarRow, #toolbar, #hr, #breadcrumb-nav').toggle(false)
     $('#searchMain').toggle(false)
     $('#advancedSearch').find('a').toggleClass("active", false)
     $('.files').toggleClass("active", false)
@@ -240,7 +239,7 @@ function updateSearchTables(data, tables) {
 
         n = 1
         for (sentence of data.data.query_results) {
-            $('#query_results').find("table").append("<tr>" + "<td " + ($('#advancedSearchShowId').prop("checked") ? "" : "style='display:none'") + ">" + parseInt(n+((data.data.page-1)*100)).toString() + "</td>" + "<td " + ($('#advancedSearchShowFilename').prop("checked") ? "" : "style='display:none'") + "><a title='Ir para arquivo' class='gotoFile'>" + sentence[0].rsplit("-", 1)[0] + "</td>" + "<td>" + sentence[1] + "</td></tr>")
+            $('#query_results').find("table").append("<tr>" + "<td " + ($('#advancedSearchShowId').prop("checked") ? "" : "style='display:none'") + ">" + parseInt(n+((data.data.page-1)*100)).toString() + "</td>" + "<td " + ($('#advancedSearchShowFilename').prop("checked") ? "" : "style='display:none'") + "><a title='Ir para arquivo' style='text-decoration:underline' class='gotoFile'>" + sentence[0].rsplit("-", 1)[0] + "</td>" + "<td>" + sentence[1] + "</td></tr>")
             n ++
         }
         if ($('#advancedSearchShowGaps').prop('checked')) {
@@ -266,7 +265,7 @@ function updateSearchTables(data, tables) {
 
         n = 1
         for (word of data.data.word_distribution) {
-            $('#word_distribution').find("table").append("<tr><td>" + parseInt(n+((data.data.page-1)*100)).toString() + "</td><td><a title='Buscar esta palavra' class='gotoWord'>" + word[0] + "</td><td>" + word[1] + "</td></tr>")
+            $('#word_distribution').find("table").append("<tr><td>" + parseInt(n+((data.data.page-1)*100)).toString() + "</td><td><a title='Buscar esta palavra' style='text-decoration:underline' class='gotoWord'>" + word[0] + "</td><td>" + word[1] + "</td></tr>")
             n ++
         }
     }
@@ -289,7 +288,7 @@ function updateSearchTables(data, tables) {
 
         n = 1
         for (lemma of data.data.lemma_distribution) {
-            $('#lemma_distribution').find("table").append("<tr><td>" + parseInt(n+((data.data.page-1)*100)).toString() + "</td><td><a title='Buscar este lema' class='gotoLemma'>" + lemma[0] + "</td><td>" + lemma[1] + "</td></tr>")
+            $('#lemma_distribution').find("table").append("<tr><td>" + parseInt(n+((data.data.page-1)*100)).toString() + "</td><td><a title='Buscar este lema' style='text-decoration:underline' class='gotoLemma'>" + lemma[0] + "</td><td>" + lemma[1] + "</td></tr>")
             n ++
         }
     }
@@ -475,7 +474,7 @@ $('#newMetadata').click(function(){
 
 function loadMetadata(metadata, readme=false) {
     first_seen = new Date(metadata.first_seen * 1000)
-    first_seen_string = "Arquivo criado dia " + first_seen.getDate() + "/" + (parseInt(first_seen.getMonth())+1).toString() + "/" + first_seen.getFullYear() + " às " + first_seen.getHours() + ":" + first_seen.getMinutes()
+    first_seen_string = "<hr><span data-feather='calendar'></span> Data de criação: " + first_seen.getDate() + "/" + (parseInt(first_seen.getMonth())+1).toString() + "/" + first_seen.getFullYear() + " às " + first_seen.getHours() + ":" + first_seen.getMinutes()
     if (readme) {
         metadataItems = "<div class='pb-2'>Dica: Os metadados deste arquivo serão aplicados a todos os outros arquivos da coleção.<br>" + first_seen_string + "</div>"
     } else {
@@ -575,9 +574,7 @@ function returnSearch(filename=$('#search').val()){
     .done(function(data){
         updateFiles("", load=data.data)
         $('#advancedSearch').find('a').toggleClass("active", false)
-        //$(this).toggleClass('active', true)
-        //this.scrollIntoView();
-        if ($(this).attr('file') != "README") {
+        if (special_files.indexOf($(this).attr('file')) == -1) {
             $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + data.data + " - Tronco"))
         } else {
             $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + name + " - Tronco"))
@@ -625,7 +622,15 @@ $('.insertDate').click(function(){
 
 $('.insertChecklist').click(function(){
     n_checklists = $('#mainText').val().match(/\[(x)?\]/gi)
-    $('#mainText').val($('#mainText').val() + "\n[] Item " + (n_checklists ? n_checklists.length+1 : 1).toString())
+    where_to_insert = $(this).attr('where')
+    switch (where_to_insert) {
+        case 'bottom':
+            $('#mainText').val($('#mainText').val() + "\n[] Item " + (n_checklists ? n_checklists.length+1 : 1).toString())
+            break
+        case 'top':
+            $('#mainText').val("[] Item " + (n_checklists ? n_checklists.length+1 : 1).toString() + "\n" + $('#mainText').val())
+            break
+    }
     saveFile()
     $('#mainText').trigger("input")
     toggleInsertSuccess()
@@ -744,9 +749,9 @@ function updateToolbar(){
     if (checklist.length) {
         $('#checklist').toggle(true)
         $('#checklistLabel').html("Checklist (" + checklist.filter(x => x[0]).length + "/" + checklist.length + ")")
-        $('[toolbar=checklist]').html("")
+        $('[toolbar=checklist] .checklist-items').html('')
         for (check in checklist) {
-            $('[toolbar=checklist]').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + checklist[check][1] + '</label></div></div></div>')
+            $('[toolbar=checklist] .checklist-items').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + checklist[check][1] + '</label></div></div></div>')
         }
         $('.checkbox-item-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
         $('.file-checkbox').change(function(){
@@ -1205,7 +1210,7 @@ function recentFiles(key = "", typing = ""){
             new_data = ""
         }
         for (x of data.data.split("|")){
-            if (x !== "README"){
+            if (special_files.indexOf(x) == -1){
                 new_data = new_data + '<li class="breadcrumb-item"><a class="recentFiles" href="#" file="' + x + '">' + (x == "README" ? $('#name').html() : x) + '</a></li>'
             }
         }
@@ -1289,12 +1294,12 @@ $('.toggleSettings').click(function(){
 function deleteFile(filename){
     if (confirm("Tem certeza de que deseja excluir " + filename + "?")) {
         $.ajax({
-            url: '/api/deleteFile',
+            url: '/api/archiveFile',
             method: "POST",
             data: {
-                'name': name,
+                'name': $('#name').html(),
                 'filename': filename,
-                "tronco_token": getTroncoToken()
+                'tronco_token': getTroncoToken(),
             }
         })
         .done(function(){
@@ -1353,9 +1358,10 @@ function updateFiles(key = "", load = ""){
         }
     })
     .done(function(data){
+        $('#archive').toggle(data.has_archive)
         $('#files').html("")
         $('#nFiles').html(data.data.split("|").length)
-
+        
         n = 0
         $('#divFullUpdateFiles').toggle(data.data.split("|").length >= max_update_files)
         for (x of data.data.split("|")){
@@ -1384,7 +1390,7 @@ function updateFiles(key = "", load = ""){
             returnSearch($(this).attr('file'))
         })
 
-        $('[file!=README].files').on('contextmenu', function(e) {
+        $('[file!=README][file!=ARCHIVE].files').on('contextmenu', function(e) {
             filedivcontext = $(this)
             var top = e.pageY
             var left = e.pageX
@@ -1397,6 +1403,9 @@ function updateFiles(key = "", load = ""){
         }).on("click", function() {
             $("#context-menu-file").removeClass("show").hide()
         })
+        $('[file=README], [file=ARCHIVE]').on('contextmenu', function(e) {
+            e.preventDefault()
+        })
 
         $("#context-menu-file a").on("click", function() {
             $(this).parent().removeClass("show").hide()
@@ -1404,6 +1413,11 @@ function updateFiles(key = "", load = ""){
 
         if (load) {
             loadFile(load)
+        } else {
+            if ($('[file="' + $('#filename').attr('file') + '"].files')) {
+                $('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active', true)
+                $('#advancedSearch').find('a').toggleClass("active", false)
+            }
         }
 
         feather.replace()
@@ -1571,7 +1585,6 @@ function loadFile(filename){
     
     name = $('#name').html()
         
-    $('#breadcrumb-nav').toggle(false)//filename == "README" && permView
     window.history.pushState("", "", '/corpus/' + name + "?file=" + filename)
     $.ajax({
         url: '/api/loadFile',
@@ -1585,13 +1598,13 @@ function loadFile(filename){
     .done(function(data){
         if (!data.error) {
             $('#savedSpan').html("Salvo")
-            $('#renameFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
-            $('#deleteFile').toggle((permEdit || permSetup) && filename != "README" ? true : false)
+            $('#renameFile').toggle((permEdit || permSetup) && special_files.indexOf(filename) == -1 ? true : false)
+            $('#deleteFile').toggle((permEdit || permSetup) && special_files.indexOf(filename) == -1 ? true : false)
             textModified(false)
             $('#search').val('')
             toggleMain("file")
-            $('#filename').html(filename == "README" ? name : filename)
-            $('.filename').html(filename == "README" ? name : filename)
+            $('#filename').html(special_files.indexOf(filename) >= 0 ? name : filename)
+            $('.filename').html(special_files.indexOf(filename) >= 0 ? name : filename)
             $('.files').toggleClass("active", false)
             if ($('[file="' + filename + '"].files')) {
                 $('[file="' + filename + '"].files').toggleClass('active', true)
@@ -1706,6 +1719,7 @@ function loadConfigFromCheckboxes(){
 }
 
 var default_metadata = ["times_seen", "last_seen", "first_seen"]
+var special_files = ["README", "tronco.json", "ARCHIVE"]
 
 function loadConfig(){
     name = $('#name').html()
@@ -1783,7 +1797,8 @@ $(window).on('resize', function(){
     }
 })
 
-let mobileInterval
+var mobileInterval
+var runningActivities = {}
 
 function triggerResize(first=false){
     name = $('#name').html()
@@ -1821,7 +1836,7 @@ function triggerResize(first=false){
         toggleMobile(false)
     }
     if (first && !isMobile) {
-        $('.toolbarButton').on('mouseenter mouseleave', function(){
+        $('.btn-outline-secondary').on('mouseenter mouseleave', function(){
             $(this).toggleClass("btn-toolbar-hover")
         })
         $('#afterSearch').before($('#search').detach().toggleClass("mt-3 mx-4", false).css("color", ""))
@@ -1881,6 +1896,7 @@ $(document).ready(function(){
         document.cookie = "st={}; expires=" + expirationDate
     }
     name = $('#name').html()
+    document.cookie = "name=" + name + "; expires=" + expirationDate
     $('#mainText').autosize()
     validatePassword(name)
     

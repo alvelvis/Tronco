@@ -30,6 +30,7 @@ PyQt5-sip==12.8.0
 PyQtWebEngine==5.15.0
 python-pptx==0.6.18
 pytz==2020.1
+redis==3.5.3
 requests==2.24.0
 six==1.12.0
 sortedcontainers==2.2.2

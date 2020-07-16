@@ -457,9 +457,10 @@ def main(arquivoUD, criterio, parametros, limit=0, sent_id="", fastSearch=False,
 			for sent_id in corpus.sentences:
 				for col in indexed_conditions:
 					if col in corpus.sentences[sent_id].processed:
-						values = [x.strip() for x in re.findall(r"\n(" + indexed_conditions[col] + r")\n", "\n" + "\n\n".join(list(corpus.sentences[sent_id].processed[col])) + "\n") if x]
+						values = re.findall(r"\n(" + indexed_conditions[col] + r")\n", "\n" + "\n\n".join(list(corpus.sentences[sent_id].processed[col])) + "\n")
 						for value in values:
-							tokens[col].extend(corpus.sentences[sent_id].processed[col][value])
+							if value:
+								tokens[col].extend(corpus.sentences[sent_id].processed[col][value])
 			for col in tokens:
 				tokens[col] = set(tokens[col])
 			tokens_filtered = []

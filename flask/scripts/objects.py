@@ -9,9 +9,10 @@ import functions
 import psutil
 from ufal.udpipe import Model, Pipeline
 
-tronco_version = 1.63
+tronco_version = 1.64
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
+tronco_special_files = ["README", "ARCHIVE", "tronco.json"]
 tronco_default_language = "pt"
 root_path = ""
 computer_memory = psutil.virtual_memory().total/1024/1024
@@ -163,7 +164,7 @@ class AdvancedCorpora:
             if not metadata:
                 if params not in ['word = ".*"', '\\tNOUN\\t', "\\tADJ\\t", "\\tVERB\\t", "# text = .*"]:
                     self.corpora[name]['recent_queries'][params] = query_return
-                    self.save()
+                    self.save(name)
 
             return query_return
 
@@ -226,11 +227,11 @@ class AdvancedCorpora:
                 },
                 'recent_queries': {}
             }
-            self.save()
+            self.save(name)
 
     def load_file(self, name, filename, lang):
         
-        if filename != "README":
+        if filename not in tronco_special_files:
             filename_dir = os.path.join(root_path, "corpora", name, filename)
             if not lang in self.models:
                 self.models[lang] = Model.load(os.path.join(root_path, "udpipe", udpipe_models[lang]['path']))
@@ -255,13 +256,12 @@ class AdvancedCorpora:
     def remove_corpus(self, name):
         if name in self.corpora:
             del self.corpora[name]
-            self.save()
         if name in self.structured:
             del self.structured[name]
 
-    def save(self):
-        with open(self.config_file, "w") as f:
-            json.dump(self.corpora, f)
+    def save(self, name):
+        with open(os.path.join(root_path, "corpora", name, "tronco.json"), "w") as f:
+            json.dump(self.corpora[name], f)
 
     def get_number_sentences(self, name):
         if not name in self.structured and name in self.corpora:
@@ -278,10 +278,11 @@ class AdvancedCorpora:
         self.corpora = {}
         self.files = {}
         self.models = {}
-        self.config_file = os.path.join(root_path, "advanced_corpora.json")
-        if os.path.isfile(self.config_file):
-            with open(self.config_file, "r") as f:
-                self.corpora = json.load(f)
+        for corpus in os.listdir(os.path.join(root_path, "corpora")):
+            config_file = os.path.join(root_path, "corpora", corpus, "tronco.json")
+            if os.path.isfile(config_file):
+                with open(config_file, "r") as f:
+                    self.corpora[corpus] = json.load(f)
 
 class TroncoTokens:
 

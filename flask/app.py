@@ -22,6 +22,22 @@ temporary_objects = objects.TemporaryObjects()
 advanced_corpora = objects.AdvancedCorpora()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
+@app.route("/api/archiveFile", methods=["POST"])
+def archive_file():
+    name = request.values.get("name")
+    filename = request.values.get("filename")
+    archive_dir = os.path.join(objects.root_path, "corpora", name, "ARCHIVE")
+    password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "editar"): return None
+    if not os.path.isfile(archive_dir):
+        functions.create_new_file(name, "ARCHIVE")
+    new_filename = functions.upload_file(name + "/" + filename, filename)['filename']
+    with open(archive_dir) as f:
+        text = f.read()
+    functions.save_file(name, "ARCHIVE", "tronco/" + new_filename + "\n" + text)
+    functions.delete_file(name, filename)
+    return {'error': '0'}
+
 @app.route("/api/getProgress", methods=["POST"])
 def get_percentage():
     session_token = request.values.get("session_token")
@@ -95,7 +111,7 @@ def load_advanced_corpus():
         advanced_corpora.delete_corpus(name)
     if not name in advanced_corpora.corpora:
         n_files = len(os.listdir(corpus_dir))
-        temporary_objects.set_max_indexing_files('indexing', session_token, n_files-1)
+        temporary_objects.set_max_indexing_files('indexing', session_token, n_files-len(objects.tronco_special_files))
         for filename in os.listdir(corpus_dir):
             advanced_corpora.load_file(name, filename, corpus_language)
             temporary_objects.decrease_n_indexing_files('indexing', session_token, 1)
@@ -362,7 +378,7 @@ def update_files():
     password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
     if not tronco_config.has_permission(name, password, "visualizar"):
         return {'data': ""}
-    return {'data': "|".join(functions.update_files(name))}
+    return {'data': "|".join(functions.update_files(name)), 'has_archive': os.path.isfile(os.path.join(objects.root_path, "corpora", name, "ARCHIVE"))}
 
 @app.route('/api/changeTroncoConfig', methods=["POST"])
 def change_tronco_config():
@@ -408,7 +424,7 @@ def load_corpus(name):
     corpus_dir = os.path.join(objects.root_path, "corpora", name)
     if os.path.isdir(corpus_dir):
         filename = request.args.get("file", None)
-        if filename and filename != "README" and not os.path.isfile(os.path.join(objects.root_path, "corpora", name, filename)):
+        if filename and filename not in objects.tronco_special_files and not os.path.isfile(os.path.join(objects.root_path, "corpora", name, filename)):
             return redirect("/?load=false")
         return render_template('dashboard.html',
             name=name,

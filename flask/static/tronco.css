@@ -2,6 +2,10 @@
     display: none;
 }  
 
+.dropdown-toggle:hover {
+    color:white;
+}
+
  #sidebar, #filename, #mainHeadbar, #troncoHomeLabel, #saved, #savedSpan { /*#filename, #sidebar a*/
     -webkit-touch-callout: none;
     -webkit-user-select: none;

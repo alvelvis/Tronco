@@ -229,6 +229,15 @@
                 </a>
               </li>
             </ul>
+
+            <ul class="nav flex-column" style="display:none" id="archive">
+              <li class="nav-item pb-1">
+                <a class="nav-link files" file="ARCHIVE">
+                  <span data-feather="trash-2"></span>
+                  Lixeira
+                </a>
+              </li>
+            </ul>
             
             <ul id="files" class="nav flex-column">
 
@@ -306,6 +315,9 @@
                   <div id="builder-buttons" class="btn-group">
                     <button type="button" title="Buscar todas as palavras da coleção" params='word = ".*"' class="quickSearch btn btn-sm btn-outline-secondary">
                       Todas as palavras
+                    </button>
+                    <button type="button" title="Buscar todos os verbos da coleção" params='upos = "VERB"' class="quickSearch btn btn-sm btn-outline-secondary">
+                      Todos os verbos
                     </button>
                     <button type="button" title="Buscar todos os substantivos da coleção" params='upos = "NOUN"' class="quickSearch btn btn-sm btn-outline-secondary">
                       Todos os substantivos
@@ -407,7 +419,7 @@
                       <span data-feather="calendar"></span>
                       Data
                     </a>
-                    <a class="dropdown-item insertChecklist" href="#">
+                    <a class="dropdown-item insertChecklist" where="top" href="#">
                       <span data-feather="check-square"></span>
                       Checklist
                     </a>
@@ -490,6 +502,17 @@
             </div>
 
             <div toolbar="checklist" style="display:none" class="toolbar">
+              <div class="checklist-add btn-group pb-2">
+                <button type="button" where="top" class="insertChecklist btn btn-sm btn-outline-secondary">
+                  <span data-feather="arrow-up"></span>
+                  Novo item
+                </button>
+                <button type="button" where="bottom" class="insertChecklist btn btn-sm btn-outline-secondary">
+                  <span data-feather="arrow-down"></span>
+                  Novo item
+                </button>
+              </div>
+              <div class="checklist-items"></div>
             </div>
 
           </div>

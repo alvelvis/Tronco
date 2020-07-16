@@ -72,7 +72,10 @@ def upload_file(uploading, filename, corpus=False):
     if filename.lower() in files_in_folder or filename.lower() + ".txt" in files_in_folder:
         filename = "{}_{}{}".format(filename.rsplit(".", 1)[0], n_files, "." + filename.rsplit(".", 1)[1] if "." in filename else "")
     uploaded_dir = os.path.join(objects.root_path, "uploads", filename) if not corpus else os.path.join(objects.root_path, "corpora", corpus, filename)
-    uploading.save(uploaded_dir)
+    if not isinstance(uploading, str):
+        uploading.save(uploaded_dir)
+    else:
+        shutil.copyfile(os.path.join(objects.root_path, "corpora", uploading), uploaded_dir)
     if os.stat(uploaded_dir).st_size > 5000000:
         os.remove(uploaded_dir)
         return {'filename': filename, 'error': "1"}
@@ -125,21 +128,21 @@ def recent_files(name, key="", max_results=30):
     name_dir = os.path.join(objects.root_path, "corpora", name)
     files = {}
     for item in os.listdir(name_dir):
-        #if item != "README":
-        files[item] = {
-            'stats': [0, 0],
-            'text': ""
-        }
-        item_dir = os.path.join(objects.root_path, "corpora", name, item)
-        with open(item_dir) as f:
-            try:
-                text = f.read()
-            except:
-                text = ""
-        files[item]['text'] = text
-        if all(x in text for x in ["# times_seen = ", "# last_seen = "]):
-            files[item]['stats'][0] = float(text.split("# last_seen = ")[1].split("\n")[0])
-            files[item]['stats'][1] = int(text.split("# times_seen = ")[1].split("\n")[0])
+        if item not in objects.tronco_special_files:
+            files[item] = {
+                'stats': [0, 0],
+                'text': ""
+            }
+            item_dir = os.path.join(objects.root_path, "corpora", name, item)
+            with open(item_dir) as f:
+                try:
+                    text = f.read()
+                except:
+                    text = ""
+            files[item]['text'] = text
+            if all(x in text for x in ["# times_seen = ", "# last_seen = "]):
+                files[item]['stats'][0] = float(text.split("# last_seen = ")[1].split("\n")[0])
+                files[item]['stats'][1] = int(text.split("# times_seen = ")[1].split("\n")[0])
 
     return [x for x in sorted(files, key=lambda y: -files[y]['stats'][0]) if not key or (key and all((k.lower() in x.lower() or k.lower() in files[x]['text'].lower()) for k in key.split()))][:max_results]
 
@@ -208,7 +211,7 @@ def delete_file(name, filename):
 
 def update_files(name):
     corpus_dir = os.path.join(objects.root_path, "corpora", name)
-    return sorted([x for x in os.listdir(corpus_dir) if x != "README"], key=lambda y: y.lower().strip())
+    return sorted([x for x in os.listdir(corpus_dir) if x not in objects.tronco_special_files], key=lambda y: y.lower().strip())
 
 def save_file(name, filename, text):
     filename_dir = os.path.join(objects.root_path, "corpora", name, filename)
@@ -261,7 +264,7 @@ def create_new_file(name, filename, text=""):
 # last_seen = 0
 # first_seen = {time.time()}
 '''
-        if filename != "README":
+        if filename not in [objects.tronco_special_files]:
             with open(readme_dir) as f:
                 readme = f.read()
             readme_metadata = {
@@ -304,7 +307,7 @@ def load_corpora(key="", max_results=20, recent=""):
                     stats = (float(README.split("# last_seen = ")[1].split("\n")[0]), int(README.split("# times_seen = ")[1].split("\n")[0]))
 
             if os.path.isdir(item_dir):
-                corpora[item] = {'files': len([x for x in os.listdir(item_dir) if x != "README"]), 'stats': stats}
+                corpora[item] = {'files': len([x for x in os.listdir(item_dir) if x not in objects.tronco_special_files]), 'stats': stats}
 
     return {
         'sorted_list': sorted([{**{'name': x}, **corpora[x]} for x in corpora if not key.strip() or (key.strip() and all(k in x.lower() for k in key.lower().split()))], key=lambda y: -y['stats'][1])[:max_results],
