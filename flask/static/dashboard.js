@@ -574,7 +574,7 @@ function returnSearch(filename=$('#search').val()){
     .done(function(data){
         updateFiles("", load=data.data)
         $('#advancedSearch').find('a').toggleClass("active", false)
-        if (special_files.indexOf($(this).attr('file')) == -1) {
+        if (special_files.indexOf(filename) == -1) {
             $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + data.data + " - Tronco"))
         } else {
             $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + name + " - Tronco"))
@@ -1210,7 +1210,7 @@ function recentFiles(key = "", typing = ""){
         }
         for (x of data.data.split("|")){
             if (special_files.indexOf(x) == -1){
-                new_data = new_data + '<li class="breadcrumb-item"><a class="recentFiles" href="#" file="' + x + '">' + (x == "README" ? $('#name').html() : x) + '</a></li>'
+                new_data = new_data + '<li class="breadcrumb-item"><a class="recentFiles" href="#" file="' + x + '">' + $('#name').html() + '</a></li>'
             }
         }
         $('#recentFiles').html(data.data.length ? new_data : new_data + 'Nenhum arquivo encontrado.')
