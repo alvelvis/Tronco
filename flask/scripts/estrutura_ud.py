@@ -80,6 +80,36 @@ class Sentence:
 				if not linha.startswith("# ") and "\t" in linha:
 					tok = Token()
 					tok.string = linha
+					coluna = linha.split("\t")
+					tok.id = coluna[0]
+					tok.word = coluna[1]
+					tok.lemma = coluna[2]
+					tok.upos = coluna[3]
+					tok.xpos = coluna[4]
+					tok.feats = coluna[5]
+					tok.dephead = coluna[6]
+					tok.deprel = coluna[7]
+					tok.deps = coluna[8]
+					tok.misc = coluna[9]
+					tok.col["id"] = coluna[0]
+					tok.col["word"] = coluna[1]
+					tok.col["lemma"] = coluna[2]
+					tok.col["upos"] = coluna[3]
+					tok.col["xpos"] = coluna[4]
+					tok.col["feats"] = coluna[5]
+					tok.col["dephead"] = coluna[6]
+					tok.col["deprel"] = coluna[7]
+					tok.col["deps"] = coluna[8]
+					tok.col["sema"] = coluna[8]
+					tok.col["misc"] = coluna[9]
+					if tok.feats != "_":
+						for feat in tok.feats.split("|"):
+							if '=' in feat:
+								tok.col[feat.split("=")[0].lower()] = feat.split("=")[1]
+					if tok.misc != "_":
+						for misc in tok.misc.split("|"):
+							if '=' in misc:
+								tok.col[misc.split("=")[0].lower()] = misc.split("=")[1]
 					self.map_token_id[tok.id if not '<' in tok.id else re.sub(r"<.*?>", "", tok.id)] = n_token
 					self.tokens.append(tok)
 					n_token += 1
@@ -89,44 +119,15 @@ class Sentence:
 				sys.exit()
 		
 		for t, token in enumerate(self.tokens):
-			coluna = token.string.split("\t")
-			token.id = coluna[0]
-			token.word = coluna[1]
-			token.lemma = coluna[2]
-			token.upos = coluna[3]
-			token.xpos = coluna[4]
-			token.feats = coluna[5]
-			token.dephead = coluna[6]
-			token.deprel = coluna[7]
-			token.deps = coluna[8]
-			token.misc = coluna[9]
-			token.col["id"] = coluna[0]
-			token.col["word"] = coluna[1]
-			token.col["lemma"] = coluna[2]
-			token.col["upos"] = coluna[3]
-			token.col["xpos"] = coluna[4]
-			token.col["feats"] = coluna[5]
-			token.col["dephead"] = coluna[6]
-			token.col["deprel"] = coluna[7]
-			token.col["deps"] = coluna[8]
-			token.col["sema"] = coluna[8]
-			token.col["misc"] = coluna[9]
-			if token.feats != "_":
-				for feat in token.feats.split("|"):
-					if '=' in feat:
-						token.col[feat.split("=")[0].lower()] = feat.split("=")[1]
-			if token.misc != "_":
-				for misc in token.misc.split("|"):
-					if '=' in misc:
-						token.col[misc.split("=")[0].lower()] = misc.split("=")[1]
 			if not '-' in token.id:
 				for col in token.col:
 					self.processed[col][token.col[col]].append(self.sent_id + "<tok>" + str(t))
-				token_dephead = token.dephead if not '<' in token.dephead else re.sub(r"<.*?>", "", token.dephead)
-				token_id = token.id if not '<' in token.id else re.sub(r"<.*?>", "", token.id)
-				token.head_token = self.tokens[self.map_token_id[token_dephead]] if token_dephead in self.map_token_id else self.default_token
-				token.next_token = self.tokens[self.map_token_id[str(int(token_id)+1)]] if str(int(token_id)+1) in self.map_token_id else self.default_token
-				token.previous_token = self.tokens[self.map_token_id[str(int(token_id)-1)]] if str(int(token_id)-1) in self.map_token_id else self.default_token
+				if self.recursivo != False:
+					token_dephead = token.dephead if not '<' in token.dephead else re.sub(r"<.*?>", "", token.dephead)
+					token_id = token.id if not '<' in token.id else re.sub(r"<.*?>", "", token.id)
+					token.head_token = self.tokens[self.map_token_id[token_dephead]] if token_dephead in self.map_token_id else self.default_token
+					token.next_token = self.tokens[self.map_token_id[str(int(token_id)+1)]] if str(int(token_id)+1) in self.map_token_id else self.default_token
+					token.previous_token = self.tokens[self.map_token_id[str(int(token_id)-1)]] if str(int(token_id)-1) in self.map_token_id else self.default_token
 
 	def refresh_map_token_id(self):
 		self.map_token_id = {x.id: y for y, x in enumerate(self.tokens)}

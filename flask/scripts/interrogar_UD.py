@@ -545,7 +545,7 @@ for token_t in available_tokens:
 			
 	except Exception as e:
 		print(str(e))
-		print(linha)
+		print(token.to_str())
 		pass
 if corresponde and not separate:
 	corresponde = 0
