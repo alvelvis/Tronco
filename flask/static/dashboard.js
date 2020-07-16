@@ -1845,7 +1845,7 @@ function triggerResize(first=false){
         $('.navbar-brand').show()
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "").css("white-space", "")
-        $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons, #builder-recent').css('overflow-x', "")
+        $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons, #builder-recent').css('overflow-x', "auto")
         //$('#editingPanel').css("z-index", "1200").toggleClass("sticky-top", true)
         toggleMobile(false)
     }
