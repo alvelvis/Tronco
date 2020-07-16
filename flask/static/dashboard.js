@@ -239,7 +239,7 @@ function updateSearchTables(data, tables) {
 
         n = 1
         for (sentence of data.data.query_results) {
-            $('#query_results').find("table").append("<tr>" + "<td " + ($('#advancedSearchShowId').prop("checked") ? "" : "style='display:none'") + ">" + parseInt(n+((data.data.page-1)*100)).toString() + "</td>" + "<td " + ($('#advancedSearchShowFilename').prop("checked") ? "" : "style='display:none'") + "><a title='Ir para arquivo' style='text-decoration:underline' class='gotoFile'>" + sentence[0].rsplit("-", 1)[0] + "</td>" + "<td>" + sentence[1] + "</td></tr>")
+            $('#query_results').find("table").append("<tr>" + "<td " + ($('#advancedSearchShowId').prop("checked") ? "" : "style='display:none'") + ">" + parseInt(n+((data.data.page-1)*100)).toString() + "</td>" + "<td " + ($('#advancedSearchShowFilename').prop("checked") ? "" : "style='display:none'") + "><a title='Ir para arquivo' class='gotoFile'>" + sentence[0].rsplit("-", 1)[0] + "</td>" + "<td>" + sentence[1] + "</td></tr>")
             n ++
         }
         if ($('#advancedSearchShowGaps').prop('checked')) {
@@ -265,7 +265,7 @@ function updateSearchTables(data, tables) {
 
         n = 1
         for (word of data.data.word_distribution) {
-            $('#word_distribution').find("table").append("<tr><td>" + parseInt(n+((data.data.page-1)*100)).toString() + "</td><td><a title='Buscar esta palavra' style='text-decoration:underline' class='gotoWord'>" + word[0] + "</td><td>" + word[1] + "</td></tr>")
+            $('#word_distribution').find("table").append("<tr><td>" + parseInt(n+((data.data.page-1)*100)).toString() + "</td><td><a title='Buscar esta palavra' class='gotoWord'>" + word[0] + "</td><td>" + word[1] + "</td></tr>")
             n ++
         }
     }
@@ -288,7 +288,7 @@ function updateSearchTables(data, tables) {
 
         n = 1
         for (lemma of data.data.lemma_distribution) {
-            $('#lemma_distribution').find("table").append("<tr><td>" + parseInt(n+((data.data.page-1)*100)).toString() + "</td><td><a title='Buscar este lema' style='text-decoration:underline' class='gotoLemma'>" + lemma[0] + "</td><td>" + lemma[1] + "</td></tr>")
+            $('#lemma_distribution').find("table").append("<tr><td>" + parseInt(n+((data.data.page-1)*100)).toString() + "</td><td><a title='Buscar este lema' class='gotoLemma'>" + lemma[0] + "</td><td>" + lemma[1] + "</td></tr>")
             n ++
         }
     }
@@ -1719,7 +1719,7 @@ function loadConfigFromCheckboxes(){
 }
 
 var default_metadata = ["times_seen", "last_seen", "first_seen"]
-var special_files = ["README", "tronco.json", "ARCHIVE"]
+var special_files = ["README", "tronco.json", "ARCHIVE", "recent_queries.json"]
 
 function loadConfig(){
     name = $('#name').html()

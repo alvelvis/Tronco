@@ -12,7 +12,7 @@ from ufal.udpipe import Model, Pipeline
 tronco_version = 1.64
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
-tronco_special_files = ["README", "ARCHIVE", "tronco.json"]
+tronco_special_files = ["README", "ARCHIVE", "tronco.json", "recent_queries.json"]
 tronco_default_language = "pt"
 root_path = ""
 computer_memory = psutil.virtual_memory().total/1024/1024
@@ -125,7 +125,7 @@ class TemporaryObjects:
 class AdvancedCorpora:
 
     def query(self, name, params, metadata={}):
-        if metadata or not name in self.corpora or (not params in self.corpora[name]['default_queries'] and (not params in self.corpora[name]['recent_queries'])):
+        if metadata or not name in self.corpora or (not params in self.corpora[name]['default_queries'] and (not params in self.recent_queries[name])):
             corpus = self.structured[name]
             if metadata:
                 new_corpus = estrutura_ud.Corpus()
@@ -163,16 +163,16 @@ class AdvancedCorpora:
             
             if not metadata:
                 if params not in ['word = ".*"', '\\tNOUN\\t', "\\tADJ\\t", "\\tVERB\\t", "# text = .*"]:
-                    self.corpora[name]['recent_queries'][params] = query_return
-                    self.save(name)
+                    self.recent_queries[name][params] = query_return
+                    self.save_recent(name)
 
             return query_return
 
         else:
             if params in self.corpora[name]['default_queries']:
                 query = self.corpora[name]['default_queries'][params]
-            elif params in self.corpora[name]['recent_queries']:
-                query = self.corpora[name]['recent_queries'][params]
+            elif params in self.recent_queries[name]:
+                query = self.recent_queries[name][params]
             return {
                 "results": query['results'],
                 "sentences": query['sentences'],
@@ -192,6 +192,8 @@ class AdvancedCorpora:
             del self.metadata[name]
         if name in self.files:
             del self.files[name]
+        if name in self.recent_queries:
+            del self.recent_queries[name]
 
     def mount_corpus(self, name):
 
@@ -215,6 +217,7 @@ class AdvancedCorpora:
             del self.metadata[name]
 
             self.structured[name] = corpus
+            self.recent_queries[name] = {}
             self.corpora[name] = {
                 'corpus': corpus.to_str(), 
                 'metadata': list(all_metadata.keys()),
@@ -225,7 +228,6 @@ class AdvancedCorpora:
                     'upos = "VERB"': self.query(name, "\\tVERB\\t"),
                     "# text = .*": self.query(name, "# text = .*"),
                 },
-                'recent_queries': {}
             }
             self.save(name)
 
@@ -262,11 +264,13 @@ class AdvancedCorpora:
     def save(self, name):
         with open(os.path.join(root_path, "corpora", name, "tronco.json"), "w") as f:
             json.dump(self.corpora[name], f)
+    
+    def save_recent(self, name):
+        with open(os.path.join(root_path, "corpora", name, "recent_queries.json"), "w") as f:
+            json.dump(self.recent_queries[name], f)
 
     def get_number_sentences(self, name):
         if not name in self.structured and name in self.corpora:
-            if not 'recent_queries' in self.corpora[name]:
-                self.corpora[name]['recent_queries'] = {}
             corpus = estrutura_ud.Corpus(recursivo=True)
             corpus.build(self.corpora[name]['corpus'])
             self.structured[name] = corpus
@@ -276,13 +280,20 @@ class AdvancedCorpora:
         self.structured = {}
         self.metadata = {}
         self.corpora = {}
+        self.recent_queries = {}
         self.files = {}
         self.models = {}
         for corpus in os.listdir(os.path.join(root_path, "corpora")):
             config_file = os.path.join(root_path, "corpora", corpus, "tronco.json")
+            recent_queries_file = os.path.join(root_path, "corpora", corpus, "recent_queries.json")
             if os.path.isfile(config_file):
                 with open(config_file, "r") as f:
                     self.corpora[corpus] = json.load(f)
+            if os.path.isfile(recent_queries_file):
+                with open(recent_queries_file, "r") as f:
+                    self.recent_queries[corpus] = json.load(f)
+            else:
+                self.recent_queries[corpus] = {}
 
 class TroncoTokens:
 
