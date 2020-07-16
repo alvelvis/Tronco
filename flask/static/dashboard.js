@@ -95,6 +95,12 @@ function indexCorpus(force=false) {
                                 $('#advancedSearchSentences').html(" em " + data.data + " frases")
                                 configureRecentQueries(data.recent_queries)
                                 allMetadata = data.metadata
+                                $('#indexedTime').toggle(data.indexed_time.toString().length > 0)
+                                if (data.indexed_time.toString().length > 0) {
+                                    indexed_time = new Date(data.indexed_time * 1000)
+                                    indexed_date = indexed_time.getDate() + "/" + (parseInt(indexed_time.getMonth())+1).toString() + "/" + indexed_time.getFullYear() + " às " + indexed_time.getHours() + ":" + indexed_time.getMinutes()
+                                    $('#indexedTime').html("Indexado em " + indexed_date)
+                                }
                             }
                         })
                     }, 10000)
@@ -125,6 +131,12 @@ function indexCorpus(force=false) {
                 $('#advancedSearchSentences').html(" em " + data.data + " frases")
                 configureRecentQueries(data.recent_queries)
                 allMetadata = data.metadata
+                $('#indexedTime').toggle(data.indexed_time.toString().length > 0)
+                if (data.indexed_time.toString().length > 0) {
+                    indexed_time = new Date(data.indexed_time * 1000)
+                    indexed_date = indexed_time.getDate() + "/" + (parseInt(indexed_time.getMonth())+1).toString() + "/" + indexed_time.getFullYear() + " às " + indexed_time.getHours() + ":" + indexed_time.getMinutes()
+                    $('#indexedTime').html("Indexado em " + indexed_date)
+                }
                 break
             case '1':
                 alert("Você não tem permissão")
@@ -614,7 +626,7 @@ String.prototype.rsplit = function(sep, maxsplit) {
 
 $('.insertDate').click(function(){
     date = new Date()
-    $('#mainText').val($('#mainText').val() + "\n" + date.getDate() + "/" + (parseInt(date.getMonth())+1).toString() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes())
+    $('#mainText').val(date.getDate() + "/" + (parseInt(date.getMonth())+1).toString() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + "\n" + $('#mainText').val())
     saveFile()
     $('#mainText').trigger("input")
     toggleInsertSuccess()
@@ -623,17 +635,20 @@ $('.insertDate').click(function(){
 $('.insertChecklist').click(function(){
     n_checklists = $('#mainText').val().match(/\[(x)?\]/gi)
     where_to_insert = $(this).attr('where')
-    switch (where_to_insert) {
-        case 'bottom':
-            $('#mainText').val($('#mainText').val() + "\n[] Item " + (n_checklists ? n_checklists.length+1 : 1).toString())
-            break
-        case 'top':
-            $('#mainText').val("[] Item " + (n_checklists ? n_checklists.length+1 : 1).toString() + "\n" + $('#mainText').val())
-            break
+    item_label = prompt("Novo item de checklist:", "Item " + (n_checklists ? n_checklists.length+1 : 1).toString())
+    if (item_label && item_label.length) {
+        switch (where_to_insert) {
+            case 'bottom':
+                $('#mainText').val($('#mainText').val() + "\n[] " + item_label)
+                break
+            case 'top':
+                $('#mainText').val("[] " + item_label + "\n" + $('#mainText').val())
+                break
+        }
+        saveFile()
+        $('#mainText').trigger("input")
+        toggleInsertSuccess()
     }
-    saveFile()
-    $('#mainText').trigger("input")
-    toggleInsertSuccess()
 });
 
 $('.insertImage').click(function(){
@@ -648,11 +663,11 @@ $('.uploadFile').change(function(){
     formdata = new FormData()
     if($(this).prop('files').length > 0)
     {
-        toggleProgress("Enviando...")
         file = $(this).prop('files')[0]
         extension = file.name.rsplit(".")[1]
         filename = prompt("Dê um nome para o arquivo:", file.name.rsplit(".")[0])
         if (filename.length) {
+            toggleProgress("Enviando...")
             formdata.append("uploading", file)
             formdata.append("filename", filename + "." + extension)
             formdata.append("tronco_token", getTroncoToken())
@@ -665,7 +680,7 @@ $('.uploadFile').change(function(){
                 contentType: false,
                 success: function (result) {
                     if (result.error == "0") {
-                        $('#mainText').val($('#mainText').val() + "\ntronco/" + result.filename)
+                        $('#mainText').val("tronco/" + result.filename + "\n" + $('#mainText').val())
                         saveFile()
                         $('#mainText').trigger("input")
                         toggleInsertSuccess()
@@ -1922,7 +1937,7 @@ $(document).ready(function(){
     var mainTextDropzone = new Dropzone("#mainText", { url: "/api/uploadDrop", clickable: false })
     mainTextDropzone.on("success", function(file, result){
         if (result.error == "0") {
-            $('#mainText').val($('#mainText').val() + "\ntronco/" + result.filename)
+            $('#mainText').val("tronco/" + result.filename + "\n" + $('#mainText').val())
             saveFile()
             $('#mainText').trigger("input")
             toggleInsertSuccess()

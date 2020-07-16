@@ -2,6 +2,7 @@ import time
 import json
 import os
 import re
+import collections
 import sys
 import estrutura_ud
 import interrogar_UD
@@ -228,6 +229,7 @@ class AdvancedCorpora:
                     'upos = "VERB"': self.query(name, "\\tVERB\\t"),
                     "# text = .*": self.query(name, "# text = .*"),
                 },
+                'indexed_time': time.time(),
             }
             self.save(name)
 
@@ -288,12 +290,17 @@ class AdvancedCorpora:
             recent_queries_file = os.path.join(root_path, "corpora", corpus, "recent_queries.json")
             if os.path.isfile(config_file):
                 with open(config_file, "r") as f:
-                    self.corpora[corpus] = json.load(f)
-            if os.path.isfile(recent_queries_file):
-                with open(recent_queries_file, "r") as f:
-                    self.recent_queries[corpus] = json.load(f)
-            else:
-                self.recent_queries[corpus] = {}
+                    f_text = f.read()
+                    if f_text:
+                        self.corpora[corpus] = json.loads(f_text)
+                if os.path.isfile(recent_queries_file):
+                    with open(recent_queries_file, "r") as w:
+                        w_text = w.read()
+                        if w_text:
+                            self.recent_queries[corpus] = json.loads(w_text)
+                if not corpus in self.recent_queries:
+                    self.recent_queries[corpus] = {}
+
 
 class TroncoTokens:
 

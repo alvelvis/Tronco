@@ -122,7 +122,8 @@ def load_advanced_corpus():
         'error': '0', 
         'data': advanced_corpora.get_number_sentences(name), 
         'metadata': advanced_corpora.corpora[name]['metadata'],
-        'recent_queries': list(advanced_corpora.recent_queries[name])
+        'recent_queries': list(advanced_corpora.recent_queries[name]),
+        'indexed_time': advanced_corpora.corpora[name]['indexed_time'] if 'indexed_time' in advanced_corpora.corpora[name] else ""
         }
 
 @app.route("/api/saveMetadata", methods=["POST"])
