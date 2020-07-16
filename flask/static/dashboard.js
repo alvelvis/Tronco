@@ -712,14 +712,13 @@ function updateToolbar(){
     files = []
     checklist = []
 
-    list_images = $('#mainText').val().matchAll(/tronco\/(\S+\.(png|jpe?g|bmp|gif|ico))(\s|$|\n)/gi)
-    for (image of list_images) {
-        images.push([image[1], "/media/" + image[1]])
-    }
-
-    list_files = $('#mainText').val().matchAll(/tronco\/(\S+\.(zip|rar|pdf|rtf|txt|htm|html|doc|docx|tsv|csv|xls|xlsx))(\s|$|\n)/gi)
-    for (file of list_files) {
-        files.push([file[1], "/media/" + file[1]])
+    list_media = $('#mainText').val().matchAll(/tronco\/(\S+)(\s|$|\n)/gi)
+    for (media of list_media) {
+        if (media[1].match(/.*\.(png|jpe?g|bmp|gif|ico)$/)) {
+            images.push([media[1], "/media/" + media[1]])
+        } else {
+            files.push([media[1], "/media/" + media[1]])
+        }
     }
 
     list_check = $('#mainText').val().matchAll(/\[(x)?\]\s?(.+)($|\n)/gi)
