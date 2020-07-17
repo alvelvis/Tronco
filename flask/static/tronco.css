@@ -2,7 +2,7 @@
     display: none;
 }  
 
-.dropdown-toggle:hover {
+.dropdown-toggle:hover .insertLabel {
     color:white;
 }
 

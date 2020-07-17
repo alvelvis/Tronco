@@ -22,40 +22,52 @@
     <!-- Custom styles for this template -->
     <link href="{{url_for('static', filename='dashboard.css')}}?version=5" rel="stylesheet">
     <link href="{{url_for('static', filename='dropzone.css')}}" rel="stylesheet">
-    <link href="{{url_for('static', filename='tronco.css')}}?version=7" rel="stylesheet">
+    <link href="{{url_for('static', filename='tronco.css')}}?version=8" rel="stylesheet">
 
   </head>
 
   <body>
 
     <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px" id="context-menu-metadata">
-      <a class="dropdown-item removeMetadata" href="#">Remover</a>
+      <a class="dropdown-item removeMetadata">Remover</a>
     </div>
 
     <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px" id="context-menu-file">
-      <a class="dropdown-item renameFileContext" href="#">Renomear</a>
-      <a class="dropdown-item deleteFileContext" href="#">Excluir</a>
+      <a class="dropdown-item renameFileContext">Renomear</a>
+      <a class="dropdown-item deleteFileContext">Excluir</a>
     </div>
 
     <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px" id="context-menu-checklist">
-      <a class="dropdown-item moveTopCheckbox" href="#"><span data-feather="chevrons-up"></span> Mover item</a>
-      <a class="dropdown-item moveUpCheckbox" href="#"><span data-feather="chevron-up"></span> Mover item</a>
-      <a class="dropdown-item moveDownCheckbox" href="#"><span data-feather="chevron-down"></span> Mover item</a>
-      <a class="dropdown-item moveBottomCheckbox" href="#"><span data-feather="chevrons-down"></span> Mover item</a>
+      <a class="dropdown-item moveTopCheckbox"><span data-feather="chevrons-up"></span> Mover item</a>
+      <a class="dropdown-item moveUpCheckbox"><span data-feather="chevron-up"></span> Mover item</a>
+      <a class="dropdown-item moveDownCheckbox"><span data-feather="chevron-down"></span> Mover item</a>
+      <a class="dropdown-item moveBottomCheckbox"><span data-feather="chevrons-down"></span> Mover item</a>
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item editCheckbox" href="#">Editar</a>
-      <a class="dropdown-item deleteCheckbox" href="#">Apagar</a>
+      <a class="dropdown-item editCheckbox">Editar</a>
+      <a class="dropdown-item deleteCheckbox">Apagar</a>
     </div>
 
     <a id="mobileTronco" style="position:fixed; display:none; background-color:#62330f; z-index:101; padding:14px 16px; width:56px; height:56px; color:white;" class="mobile-btn rounded-circle">
       <img src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
     </a>
 
+    <a id="mobileMenu2" style="position:fixed; display:none; z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="toggleSettings mobile-btn rounded-circle bg-dark">
+      <span data-feather="menu"></span>
+    </a>
+
+    <a id="mobileMenu" style="position:fixed; display:none; z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="toggleSettings mobile-btn rounded-circle bg-dark">
+      <span data-feather="menu"></span>
+    </a>
+
+    <a id="mobileHome" style="position:fixed; display:none; background-color:#bf6724; z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="mobile-btn rounded-circle">
+      <span data-feather="home"></span>
+    </a>
+
     <a id="mobileLeft" style="position:fixed; display:none; background-color:gray; z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="mobile-btn rounded-circle">
       <span data-feather="arrow-left"></span>
     </a>
 
-    <a id="mobileSearch" style="position:fixed; display:none; background-color:#bf6724; z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="mobile-btn-secondary rounded-circle">
+    <a id="mobileSearch" style="position:fixed; display:none; background-color:#bf6724; z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="mobile-btn rounded-circle">
       <span data-feather="search"></span>
     </a>
     
@@ -67,7 +79,7 @@
         <a title="Voltar para coleções (Ctrl+E)" id="troncoHome">
           <img class="ml-3 mr-3" style="display:none" id="troncoLogo" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
         </a>
-        <span id="troncoHomeLabel" settings="corpusSettings" style="width:100%" class='toggleSettings'><a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'><span class='mr-2' data-feather='menu'></span> Tronco / {{name}}</a></span>
+        <span id="troncoHomeLabel" settings="corpusSettings" style="width:100%" class='toggleSettings'><a class='mt-4 mb-0' style='max-width:70vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / {{name}}</a></span>
       </span>
       <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white; display:none;">
         <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
@@ -413,24 +425,24 @@
                 <input id="upload-image" class="uploadFile" style="display:none" type="file" accept="image/*">
                 <input id="upload-document" class="uploadFile" style="display:none" type="file" accept=".zip, .rar, .pdf, .rtf, .txt, .htm, .html, .doc, .docx, .tsv, .csv, .xls, .xlsx">
                 <div id="dropdown" class="pr-1 dropdown" style="display:none">
-                  <a class="btn btn-sm btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <a class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="insertLabel">Inserir</span>
                   </a>
                 
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item insertDate" href="#">
+                    <a class="dropdown-item insertDate">
                       <span data-feather="calendar"></span>
                       Data
                     </a>
-                    <a class="dropdown-item insertChecklist" where="top" href="#">
+                    <a class="dropdown-item insertChecklist" where="top">
                       <span data-feather="check-square"></span>
                       Checklist
                     </a>
-                    <a class="dropdown-item insertImage" href="#">
+                    <a class="dropdown-item insertImage">
                       <span data-feather="image"></span>
                       Imagem
                     </a>
-                    <a class="dropdown-item insertDocument" href="#">
+                    <a class="dropdown-item insertDocument">
                       <span data-feather="file"></span>
                       Documento
                     </a>
@@ -524,6 +536,8 @@
       </div>
     </div>
 
+    <nav 
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -544,7 +558,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=14"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=120"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=121"></script>
   
   </body>
 </html>
