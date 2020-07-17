@@ -265,15 +265,16 @@ def create_new_file(name, filename, text=""):
 # first_seen = {time.time()}
 '''
         if filename not in [objects.tronco_special_files]:
-            with open(readme_dir) as f:
-                readme = f.read()
-            readme_metadata = {
-                y.split(" = ")[0].split("# ")[1]: y.split(" = ", 1)[1] 
-                for y in [x for x in readme.splitlines() if x.strip().startswith("# ") and " = " in x]
-                }
-            for metadata in readme_metadata:
-                if metadata not in objects.tronco_metadata:
-                    text = '# ' + metadata + " = " + readme_metadata[metadata] + "\n" + text
+            if os.path.isfile(readme_dir):
+                with open(readme_dir) as f:
+                    readme = f.read()
+                readme_metadata = {
+                    y.split(" = ")[0].split("# ")[1]: y.split(" = ", 1)[1] 
+                    for y in [x for x in readme.splitlines() if x.strip().startswith("# ") and " = " in x]
+                    }
+                for metadata in readme_metadata:
+                    if metadata not in objects.tronco_metadata:
+                        text = '# ' + metadata + " = " + readme_metadata[metadata] + "\n" + text
         with open(filename_dir, "w") as f:
             f.write(text)
         return filename
