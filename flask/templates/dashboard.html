@@ -53,7 +53,7 @@
     </a>
 
     <a id="mobileSearch" style="position:fixed; display:none; background-color:#bf6724; z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="mobile-btn-secondary rounded-circle">
-      <span data-feather="plus"></span>
+      <span data-feather="search"></span>
     </a>
     
     <div id="blurHeadbar" style="display:none" class="navbar navbar-dark bg-dark flex-md-nowrap p-4 sticky-top form-control-dark">
@@ -73,8 +73,7 @@
         </a>   
       </span>
       <a id="afterSearch" class="d-none d-md-block col-md-2"></a>
-    </nav>
-    
+    </nav>    
 
     <div class="container-fluid">
       <div class="row">
@@ -253,7 +252,7 @@
           </div>
         </nav>
 
-        <input class="form-control mt-3 my-1 mx-4 form-control-dark w-100" id="search" autocomplete="off" type="search" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Procure ou crie novos arquivos..." aria-label="Search">
+        <input class="form-control mt-3 my-1 mx-4 form-control-dark w-100" id="search" style="display:none" autocomplete="off" type="search" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Procure ou crie novos arquivos..." aria-label="Search">
 
         <main id="main" role="main" class="py-2" style="width:100%;">
           
@@ -542,7 +541,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=14"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=118"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=119"></script>
   
   </body>
 </html>

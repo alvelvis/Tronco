@@ -486,7 +486,7 @@ $('#newMetadata').click(function(){
 
 function loadMetadata(metadata, readme=false) {
     first_seen = new Date(metadata.first_seen * 1000)
-    first_seen_string = "<hr><span data-feather='calendar'></span> Data de criação: " + first_seen.getDate() + "/" + (parseInt(first_seen.getMonth())+1).toString() + "/" + first_seen.getFullYear() + " às " + first_seen.getHours() + ":" + first_seen.getMinutes()
+    first_seen_string = "<div class='py-2'><span data-feather='calendar'></span> Data de criação: " + first_seen.getDate() + "/" + (parseInt(first_seen.getMonth())+1).toString() + "/" + first_seen.getFullYear() + " às " + first_seen.getHours() + ":" + first_seen.getMinutes() + "</div>"
     if (readme) {
         metadataItems = "<div class='pb-2'>Dica: Os metadados deste arquivo serão aplicados a todos os outros arquivos da coleção.<br>" + first_seen_string + "</div>"
     } else {
@@ -612,6 +612,7 @@ $('#mobileTronco').click(function(){
 })
 
 $('#mobileSearch').click(function(){
+    $('#search').show()
     $('#search').focus()
 })
 
@@ -777,6 +778,8 @@ function updateToolbar(){
         })
 
         $('.checkbox-item-subdiv').on('contextmenu', function(e) {
+            $('.checkbox-item-subdiv').css('background-color', '')
+            $(this).css("background-color", "orange")
             checkboxdiv = $(this)
             var top = e.pageY
             var left = e.pageX
@@ -786,13 +789,6 @@ function updateToolbar(){
                 left: left
             }).addClass("show")
             return false //blocks default Webbrowser right click menu
-        })
-        .on("click", function() {
-            $("#context-menu-checklist").removeClass("show").hide()
-        })
-
-        $("#context-menu-checklist a").on("click", function() {
-            $(this).parent().removeClass("show").hide()
         })
 
     } else {
@@ -923,7 +919,7 @@ $('#mainText').on("focus", function(){
 $('#mainText').on("blur", function(){
     if (isMobile) {
         $('#mainHeadbar').toggle(true)
-        $('#search').toggle(permView)
+        $('#search').toggle(permView && !isMobile)
         $('#troncoHome').toggle(true)
         $('#toolbarRow, #toolbar').toggle(true)
         toggleMobile(permEdit ? "mobileSearch" : "mobileTronco")
@@ -939,7 +935,10 @@ $('#search').on('focus', function(){
     toggleMobile("mobileTronco")
 })
 
-$('#search').on('blur', function(){
+$('#search').on('blur', function(){    
+    if (isMobile) {
+        $('#search').toggle(false)
+    }
     toggleMobile(permEdit ? "mobileSearch" : "mobileTronco")
 })
 
@@ -1039,7 +1038,6 @@ function validatePassword (name){
         $('#uploadTextDiv').toggle(permEdit)
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
-            $('#search').toggle(permView)
             toggleMobile(permEdit ? "mobileSearch" : "mobileTronco")
         }
         $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
@@ -1290,7 +1288,6 @@ $('.toggleSettings').click(function(){
     if (isMobile){
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
-        $('#search').toggle($('#sidebar').hasClass("d-none") && permView)
         toggleMobile($('#sidebar').hasClass("d-none") && permEdit ? "mobileSearch" : "mobileTronco")
         if (permSetup) {
             $("#" + $(this).attr('settings')).css('display', $('#sidebar').css('display'))
@@ -1405,6 +1402,8 @@ function updateFiles(key = "", load = ""){
         })
 
         $('[file!=README][file!=ARCHIVE].files').on('contextmenu', function(e) {
+            $('.files').css('background-color', '')
+            $(this).css('background-color', 'orange')
             filedivcontext = $(this)
             var top = e.pageY
             var left = e.pageX
@@ -1414,15 +1413,9 @@ function updateFiles(key = "", load = ""){
                 left: left
             }).addClass("show")
             return false //blocks default Webbrowser right click menu
-        }).on("click", function() {
-            $("#context-menu-file").removeClass("show").hide()
         })
         $('[file=README], [file=ARCHIVE]').on('contextmenu', function(e) {
             e.preventDefault()
-        })
-
-        $("#context-menu-file a").on("click", function() {
-            $(this).parent().removeClass("show").hide()
         })
 
         if (load) {
@@ -1442,6 +1435,7 @@ function updateFiles(key = "", load = ""){
 $('#newFile').click(function(){
     if (isMobile) {
         $('.toggleSettings')[0].click()
+        $('#search').show()
     }
     $('#search').focus()
 })
@@ -1479,7 +1473,6 @@ function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val(
     if (permEdit || permSetup) {
 
         name = $('#name').html()
-        updateToolbar()
 
         $.ajax({
             url: "/api/whoClaimedAccess",
@@ -1579,6 +1572,7 @@ $('#mainText').on('change', function(){
     } else {
         textModified(true)
     }
+    updateToolbar()
 })
 
 function textModified(state){
@@ -1854,6 +1848,7 @@ function triggerResize(first=false){
             $(this).toggleClass("btn-toolbar-hover")
         })
         $('#afterSearch').before($('#search').detach().toggleClass("mt-3 mx-4", false).css("color", ""))
+        $('#search').show()
     }
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').toggleClass("mt-0", isMobile).toggleClass("mb-3 ml-3", isMobile)
@@ -1961,6 +1956,7 @@ $(document).ready(function(){
     })
     $(document).on("click touchmove", function(){
         $("#context-menu-checklist, #context-menu-file, #context-menu-metadata").removeClass("show").hide()
+        $('.checkbox-item-subdiv, .files').css('background-color', '')
     })
     triggerResize(true)
     checkTheme()
