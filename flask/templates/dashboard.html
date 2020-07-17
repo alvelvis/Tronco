@@ -38,8 +38,11 @@
     </div>
 
     <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px" id="context-menu-checklist">
-      <a class="dropdown-item moveTopCheckbox" href="#">Mover p/ início</a>
-      <a class="dropdown-item moveBottomCheckbox" href="#">Mover p/ fim</a>
+      <a class="dropdown-item moveTopCheckbox" href="#"><span data-feather="chevrons-up"></span> Mover item</a>
+      <a class="dropdown-item moveUpCheckbox" href="#"><span data-feather="chevron-up"></span> Mover item</a>
+      <a class="dropdown-item moveDownCheckbox" href="#"><span data-feather="chevron-down"></span> Mover item</a>
+      <a class="dropdown-item moveBottomCheckbox" href="#"><span data-feather="chevrons-down"></span> Mover item</a>
+      <div class="dropdown-divider"></div>
       <a class="dropdown-item editCheckbox" href="#">Editar</a>
       <a class="dropdown-item deleteCheckbox" href="#">Apagar</a>
     </div>
@@ -541,7 +544,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=14"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=119"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=120"></script>
   
   </body>
 </html>

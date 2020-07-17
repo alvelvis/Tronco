@@ -514,6 +514,42 @@ $('.deleteFileContext').click(function(){
     deleteFile(filedivcontext.attr('file'))
 })
 
+$('.moveUpCheckbox').click(function(){
+    if ($('.checkbox-item-subdiv').index(checkboxdiv) != 0) {
+        checkboxString = checkboxdiv.find(".custom-control-label").text()
+        pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
+        is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
+
+        top_is_checked = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').index(checkboxdiv)-1]).find("[type=checkbox]").prop("checked")//$('.checkbox-item-subdiv').length-1
+        topString = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').index(checkboxdiv)-1]).find(".custom-control-label").text()
+        topPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(topString), "g")
+        
+        if (topString != checkboxString) {
+            $('#mainText').val($('#mainText').val().replace(pattern, "").replace(topPattern, "[" + (is_checked ? "x" : "") + "] " + checkboxString + "\n" + "[" + (top_is_checked ? "x" : "") + "] " + topString))
+            saveFile()
+        }
+        updateToolbar()
+    }
+})
+
+$('.moveDownCheckbox').click(function(){
+    if ($('.checkbox-item-subdiv').index(checkboxdiv) != $('.checkbox-item-subdiv').length-1) {
+        checkboxString = checkboxdiv.find(".custom-control-label").text()
+        pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
+        is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
+
+        bottom_is_checked = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').index(checkboxdiv)+1]).find("[type=checkbox]").prop("checked")
+        bottomString = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').index(checkboxdiv)+1]).find(".custom-control-label").text()
+        bottomPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(bottomString), "g")
+        
+        if (bottomString != checkboxString) {
+            $('#mainText').val($('#mainText').val().replace(pattern, "").replace(bottomPattern, "[" + (bottom_is_checked ? "x" : "") + "] " + bottomString + "\n" + "[" + (is_checked ? "x" : "") + "] " + checkboxString))
+            saveFile()
+        }
+        updateToolbar()
+    }
+})
+
 $('.moveBottomCheckbox').click(function(){
     checkboxString = checkboxdiv.find(".custom-control-label").text()
     pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
@@ -527,6 +563,7 @@ $('.moveBottomCheckbox').click(function(){
         $('#mainText').val($('#mainText').val().replace(pattern, "").replace(bottomPattern, "[" + (bottom_is_checked ? "x" : "") + "] " + bottomString + "\n" + "[" + (is_checked ? "x" : "") + "] " + checkboxString))
         saveFile()
     }
+    updateToolbar()
 })
 
 $('.moveTopCheckbox').click(function(){
@@ -542,6 +579,7 @@ $('.moveTopCheckbox').click(function(){
         $('#mainText').val($('#mainText').val().replace(pattern, "").replace(topPattern, "[" + (is_checked ? "x" : "") + "] " + checkboxString + "\n" + "[" + (top_is_checked ? "x" : "") + "] " + topString))
         saveFile()
     }
+    updateToolbar()
 })
 
 $('.editCheckbox').click(function(){
@@ -553,6 +591,7 @@ $('.editCheckbox').click(function(){
         $('#mainText').val($('#mainText').val().replace(pattern, "[" + (is_checked ? "x" : "") + "] " + newString))
         saveFile()
     }
+    updateToolbar()
 })
 
 $('.deleteCheckbox').click(function(){
@@ -560,10 +599,12 @@ $('.deleteCheckbox').click(function(){
     pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
     $('#mainText').val($('#mainText').val().replace(pattern, ""))
     saveFile()
+    updateToolbar()
 })
 
 function toggleInsertSuccess(){
     $('.insertLabel').html("Adicionado!")
+    updateToolbar()
     $('.dropdown-toggle').toggleClass("btn-outline-secondary", false).toggleClass("btn-success", true)
     setTimeout(() => { 
         $('.insertLabel').html("Inserir")

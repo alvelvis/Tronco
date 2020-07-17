@@ -291,12 +291,12 @@ class AdvancedCorpora:
             if os.path.isfile(config_file):
                 with open(config_file, "r") as f:
                     f_text = f.read()
-                    if f_text:
+                    if len(f_text.strip()):
                         self.corpora[corpus] = json.loads(f_text)
                 if os.path.isfile(recent_queries_file):
                     with open(recent_queries_file, "r") as w:
                         w_text = w.read()
-                        if w_text:
+                        if len(w_text.strip()):
                             self.recent_queries[corpus] = json.loads(w_text)
                 if not corpus in self.recent_queries:
                     self.recent_queries[corpus] = {}
