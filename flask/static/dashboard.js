@@ -1225,7 +1225,7 @@ function recentFiles(key = "", typing = ""){
         }
         for (x of data.data.split("|")){
             if (special_files.indexOf(x) == -1){
-                new_data = new_data + '<li class="breadcrumb-item"><a class="recentFiles" href="#" file="' + x + '">' + $('#name').html() + '</a></li>'
+                new_data = new_data + '<li class="breadcrumb-item"><a class="recentFiles" href="#" file="' + x + '">' + x + '</a></li>'
             }
         }
         $('#recentFiles').html(data.data.length ? new_data : new_data + 'Nenhum arquivo encontrado.')
