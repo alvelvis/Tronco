@@ -650,7 +650,7 @@ function toggleMobile(el) {
                 $('#mobileMenu').show()
                 $('#mobileSearch').show()
                 $('#mobileTronco').show()
-                $('#mobileEdit').toggle(permEdit)
+                $('.mobileEdit').toggle(permEdit)
                 $('#mobileMenu').toggleClass("mobile-btn-active", false)
                 break
             case "mobileAdvancedSearch":
@@ -668,7 +668,6 @@ function toggleMobile(el) {
                 break
             case "mobileSidebar":
                 $('#mobileMenu').show()
-                $('#mobileTronco').show()
                 $('#mobileMenu').toggleClass("mobile-btn-active", true)
                 break
             case "mobileLeft":
