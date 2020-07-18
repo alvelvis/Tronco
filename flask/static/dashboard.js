@@ -663,6 +663,7 @@ function toggleMobile(el) {
             case "mobileNoPerm":
                 $('#mobileMenu').show()
                 $('#mobileTronco').show()
+                $('#mobileMenu').toggleClass("mobile-btn-active", false)
                 break
             case "mobileSidebar":
                 $('#mobileMenu').show()
