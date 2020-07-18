@@ -650,6 +650,7 @@ function toggleMobile(el) {
                 $('#mobileMenu').show()
                 $('#mobileSearch').show()
                 $('#mobileTronco').show()
+                $('#mobileEdit').toggle(permEdit)
                 $('#mobileMenu').toggleClass("mobile-btn-active", false)
                 break
             case "mobileTronco":
@@ -681,8 +682,12 @@ $('#mobileSearch').click(function(){
     $('#search').focus()
 })
 
+$('#mobileEdit').click(function(){
+    mainTextEdit()
+})
+
 $('#mobileLeft').click(function(){
-    $('#mainText').blur()
+    mainTextBlur()
 })
 
 String.prototype.rsplit = function(sep, maxsplit) {
@@ -971,7 +976,7 @@ $('#shareText').click(function(){
     }, 2000)
 })
 
-$('#mainText').on("focus", function(){
+function mainTextEdit(){
     if (isMobile) {
         $('#mainHeadbar').toggle(false)
         $('#search').toggle(false)
@@ -980,21 +985,21 @@ $('#mainText').on("focus", function(){
         $('#sidebar').toggleClass("d-none", true)
         $('#toolbarRow, #toolbar').toggle(false)
         $('#breadcrumb-nav').toggle(false)
+        $('#mainText').prop('readonly', false)
         //$('#blurHeadbar').toggle(true)
     }
-})
+}
 
-$('#mainText').on("blur", function(){
+function mainTextBlur(){
     if (isMobile) {
         $('#mainHeadbar').toggle(true)
         $('#search').toggle(permView && !isMobile)
         $('#troncoHome').toggle(true)
         $('#toolbarRow, #toolbar').toggle(true)
         toggleMobile(permView ? "mobileSearch" : "mobileTronco")
-        //$('#blurHeadbar').toggle(false)
-        //$('#breadcrumb-nav').toggle(true)
+        $('#mainText').prop('readonly', true)
     }
-})
+}
 
 $('#search').on('focus', function(){
     window.scrollTo(0, 0)    
@@ -1101,7 +1106,7 @@ function validatePassword (name){
             toggleMobile(permView ? "mobileSearch" : "mobileTronco")
         }
         $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
-        $('#mainText').prop('readonly', !permEdit).toggleClass("p-3", !permEdit)
+        $('#mainText').prop('readonly', (isMobile) || (!isMobile && !permEdit)).toggleClass("p-3", !permEdit)
         $('#saveModifications').attr('disabled', !permEdit)
         $('#menu-svg').toggle(permSetup)
         storeSessionToken(data.token)
