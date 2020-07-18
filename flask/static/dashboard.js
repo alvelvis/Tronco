@@ -414,7 +414,7 @@ $('#advancedSearchGo').click(function(){
 
 $('#advancedSearch').click(function(){
     $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + $('#name').html() + " - Tronco"))
-    $('#mobileHome').toggleClass("mobile-btn-active", false)
+    toggleMobile('mobileAdvancedSearch')
     indexCorpus()
 })
 
@@ -645,7 +645,7 @@ function toggleMobile(el) {
     if (el && isMobile) {
         $('#mobile-nav').toggle(true)
         switch (el) {
-            case "mobileSearch":
+            case "mobileFile":
                 $('#mobileHome').show()
                 $('#mobileMenu').show()
                 $('#mobileSearch').show()
@@ -653,7 +653,18 @@ function toggleMobile(el) {
                 $('#mobileEdit').toggle(permEdit)
                 $('#mobileMenu').toggleClass("mobile-btn-active", false)
                 break
-            case "mobileTronco":
+            case "mobileAdvancedSearch":
+                $('#mobileHome').show()
+                $('#mobileMenu').show()
+                $('#mobileSearch').show()
+                $('#mobileTronco').show()
+                $('#mobileMenu').toggleClass("mobile-btn-active", false)
+                break
+            case "mobileNoPerm":
+                $('#mobileMenu').show()
+                $('#mobileTronco').show()
+                break
+            case "mobileSidebar":
                 $('#mobileMenu').show()
                 $('#mobileTronco').show()
                 $('#mobileMenu').toggleClass("mobile-btn-active", true)
@@ -996,7 +1007,7 @@ function mainTextBlur(){
         $('#search').toggle(permView && !isMobile)
         $('#troncoHome').toggle(true)
         $('#toolbarRow, #toolbar').toggle(true)
-        toggleMobile(permView ? "mobileSearch" : "mobileTronco")
+        toggleMobile(permView ? "mobileFile" : "mobileNoPerm")
         $('#mainText').prop('readonly', true)
     }
 }
@@ -1103,7 +1114,7 @@ function validatePassword (name){
         $('#uploadTextDiv').toggle(permEdit)
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
-            toggleMobile(permView ? "mobileSearch" : "mobileTronco")
+            toggleMobile(permView ? "mobileFile" : "mobileNoPerm")
         }
         $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
         $('#mainText').prop('readonly', (isMobile) || (!isMobile && !permEdit)).toggleClass("p-3", !permEdit)
@@ -1197,7 +1208,7 @@ $('#advancedSearchInput, #search')
     //toggleMobile(false)
 })
 .on('blur', function(){
-    //toggleMobile(permView && $('#sidebar').hasClass("d-none") ? 'mobileSearch' : 'mobileTronco')
+    //toggleMobile(permView && $('#sidebar').hasClass("d-none") ? "mobileFile" : "mobileSidebar")
 })
 
 $('#advancedSearchInput').on('keyup', function(e){
@@ -1361,7 +1372,19 @@ $('.toggleSettings').click(function(){
     if (isMobile){
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
-        toggleMobile($('#sidebar').hasClass("d-none") && permView ? "mobileSearch" : "mobileTronco")
+        if ($('#sidebar').hasClass("d-none")) {
+            if (permView) {
+                if ($('#mainText:visible').length) {
+                    toggleMobile("mobileFile")
+                } else {
+                    toggleMobile("mobileAdvancedSearch")
+                }
+            } else {
+                toggleMobile("mobileNoPerm")
+            }
+        } else {
+            toggleMobile("mobileSidebar")
+        }
         if (permSetup) {
             $("#" + $(this).attr('settings')).css('display', $('#sidebar').css('display'))
         } else {
@@ -1685,6 +1708,7 @@ function loadFile(filename){
             textModified(false)
             $('#search').val('')
             toggleMain("file")
+            toggleMobile(permView ? "mobileFile" : "mobileNoPerm")
             $('#mobileHome').toggleClass("mobile-btn-active", filename == 'README')
             $('#filename').html(special_files.indexOf(filename) >= 0 ? name : filename)
             $('.filename').html(special_files.indexOf(filename) >= 0 ? name : filename)
@@ -2030,7 +2054,7 @@ $(document).ready(function(){
     })
     $(document).on("click touchmove", function(){
         if ($('.dropdown-menu:visible').length > 0) {
-            toggleMobile($('#sidebar').hasClass('d-none') && permView ? 'mobileSearch' : 'mobileTronco')
+            toggleMobile($('#sidebar').hasClass('d-none') && permView ? "mobileFile" : "mobileSidebar")
         }
         $("#context-menu-checklist, #context-menu-file, #context-menu-metadata").removeClass("show").hide()
         $('.checkbox-item-subdiv, .files').css('background-color', '')
