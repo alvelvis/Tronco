@@ -1917,7 +1917,7 @@ function triggerResize(first=false){
             $('#settings').append($('#renameCorpus, #deleteCorpus, #permissionsSettings').detach())
             mobileInterval = window.setInterval(function(){
                 $('#mobileLeft').css({top: window.innerHeight-75, left: window.innerWidth-75})
-                $('#mobileEdit').css({top: window.innerHeight-54-27, left: (window.innerWidth/2)-27})
+                $('#mobileEdit').css({top: window.innerHeight-60-15, left: (window.innerWidth/2)-30})
             })
         }
         isMobile = true
@@ -1980,16 +1980,18 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
     elements = "#main, .prepend, .page-link, .page-item.active, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
-    elements2 = "#corpusSettings, #mobile-nav, #settings .custom-control-label, #corpusLanguageDiv, #mainHeadbar, #troncoHomeBar"
+    elements2 = "#corpusSettings, #settings .custom-control-label, #corpusLanguageDiv, #mainHeadbar, #troncoHomeBar"
+    elements3 = "#mobile-nav"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
-        $(elements2).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
+        $(elements2 + ", " + elements3).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
         if (isMobile) {
             $('#search').toggleClass("form-control-dark", false).css("background-color", "#343a40").css("color", "white").css("border-style", "none")
         }
     } else {
         $(elements).css("background-color", "white").css("color", "black")
         $(elements2).css("background-color", "white").css("color", "white").toggleClass("bg-dark", true)
+        $(elements3).css("color", "black").toggleClass("form-control", true)
         if (isMobile) {
             $('#search').toggleClass("form-control-dark", true).css("background-color", "white").css("color", "black").css("border-style", "")
         }
