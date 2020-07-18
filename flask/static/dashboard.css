@@ -7,7 +7,7 @@
 }
 
 .mobile-btn-active {
-  border-top: 4px solid #e4853c;
+  border-bottom: 4px solid #e4853c;
 }
 
 #mainText:focus {
