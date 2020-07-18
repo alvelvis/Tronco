@@ -1921,7 +1921,7 @@ function triggerResize(first=false){
             })
         }
         isMobile = true
-        $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:90vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / " + name + "</a>")
+        $('#troncoHomeLabel').html("<span class='mt-4 mb-0' style='max-width:90vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / " + name + "</span>")
         $('#troncoLogo').hide()
         $('.navbar-brand').hide()
         $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #advancedSearchToolbarRow .btn-group, #toolbar, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
