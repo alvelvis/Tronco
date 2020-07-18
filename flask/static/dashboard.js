@@ -168,6 +168,7 @@ $('.toggleSearch').click(function(){
 
 function toggleMain(panel) {
     $('#filename-div, #filename, #mainText, #saved, #toolbarRow, #toolbar, #hr, #breadcrumb-nav').toggle(false)
+    $('#search').toggle(!isMobile)
     $('#searchMain').toggle(false)
     $('#advancedSearch').find('a').toggleClass("active", false)
     $('.files').toggleClass("active", false)
