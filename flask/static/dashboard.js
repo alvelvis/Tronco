@@ -1188,10 +1188,10 @@ function revokePassword(name){
 
 $('#advancedSearchInput, #search')
 .on('focus', function(){
-    toggleMobile(false)
+    //toggleMobile(false)
 })
 .on('blur', function(){
-    toggleMobile(permView && $('#sidebar').hasClass("d-none") ? 'mobileSearch' : 'mobileTronco')
+    //toggleMobile(permView && $('#sidebar').hasClass("d-none") ? 'mobileSearch' : 'mobileTronco')
 })
 
 $('#advancedSearchInput').on('keyup', function(e){
