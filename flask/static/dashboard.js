@@ -1184,6 +1184,14 @@ function revokePassword(name){
     })
 }
 
+$('#advancedSearchInput, #search')
+.on('focus', function(){
+    toggleMobile(false)
+})
+.on('blur', function(){
+    toggleMobile(permView && $('#sidebar').hasClass("d-none") ? 'mobileSearch' : 'mobileTronco')
+})
+
 $('#advancedSearchInput').on('keyup', function(e){
     if (e.which == 13){
         $('#advancedSearchGo').click()
