@@ -413,6 +413,7 @@ $('#advancedSearchGo').click(function(){
 
 $('#advancedSearch').click(function(){
     $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + $('#name').html() + " - Tronco"))
+    $('#mobileHome').toggleClass("mobile-btn-active", false)
     indexCorpus()
 })
 
