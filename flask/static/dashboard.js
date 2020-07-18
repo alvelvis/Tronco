@@ -658,6 +658,7 @@ function toggleMobile(el) {
                 $('#mobileMenu').toggleClass("mobile-btn-active", true)
                 break
             case "mobileLeft":
+                $('#mobile-nav').toggle(false)
                 $('#mobileLeft').show()
                 break
         }
@@ -1884,6 +1885,9 @@ function triggerResize(first=false){
             isMobileFromBeginning = true
             $('#sidebar').css("max-width", "")
             $('#settings').append($('#renameCorpus, #deleteCorpus, #permissionsSettings').detach())
+            mobileInterval = window.setInterval(function(){
+                $('#mobileLeft').css({top: window.innerHeight-70, left: window.innerWidth-70})
+            })
         }
         isMobile = true
         $('#troncoHomeLabel').html("<a class='mt-4 mb-0' style='max-width:90vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / " + name + "</a>")

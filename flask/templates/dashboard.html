@@ -20,7 +20,7 @@
     <link href="{{url_for('static', filename='bootstrap.css')}}?version=2" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="{{url_for('static', filename='dashboard.css')}}?version=6" rel="stylesheet">
+    <link href="{{url_for('static', filename='dashboard.css')}}?version=7" rel="stylesheet">
     <link href="{{url_for('static', filename='dropzone.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename='tronco.css')}}?version=8" rel="stylesheet">
 
@@ -512,11 +512,11 @@
       </div>
     </div>
 
+    <a id="mobileLeft" style="position:fixed; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); background-color:gray; display:none; width:54px; height:54px; padding: 16px 19px; color:white;" class="mobile-btn rounded-circle">
+      <span data-feather="arrow-left"></span>
+    </a>
+
     <nav id="mobile-nav" style="height:60px" class="px-4 nav navbar fixed-bottom">  
-      
-      <a id="mobileLeft" style="display:none; color:white;" class="mobile-btn">
-        <span data-feather="arrow-left"></span>
-      </a>
 
       <a id="mobileMenu" style="display:none; color:white;" class="toggleSettings mobile-btn">
         <span data-feather="menu"></span>
@@ -556,7 +556,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=14"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=130"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=131"></script>
   
   </body>
 </html>
