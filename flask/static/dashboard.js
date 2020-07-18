@@ -20,15 +20,15 @@ $('#clearAdvancedSearchMetadata').click(function(){
 
 $('.toggleAdvancedSearchToolbar').click(function(){
     $(".advanced-toolbar-panel").toggle(false)
-    if ($(this).hasClass("btn-primary")) {
+    if ($(this).hasClass("btn-secondary")) {
         $("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']").toggle(true)
     }
-    $('.toggleAdvancedSearchToolbar').toggleClass("btn-primary", false).toggleClass("btn-outline-secondary", true)
+    $('.toggleAdvancedSearchToolbar').toggleClass("btn-secondary", false).toggleClass("btn-outline-secondary", true)
     if ($("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']") && $("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']").length) {
         $("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']").toggle()
     }
     if ($("[advanced-toolbar-panel='" + $(this).attr('advanced-toolbar') + "']:visible").length) {
-        $(this).toggleClass("btn-primary", true).toggleClass("btn-outline-secondary", false)
+        $(this).toggleClass("btn-secondary", true).toggleClass("btn-outline-secondary", false)
     }
     $('.advancedSearchMetadataItem').each(function(){
         if (!$(this).find("input").val().length){
@@ -639,16 +639,20 @@ function returnSearch(filename=$('#search').val()){
 
 function toggleMobile(el) {
     $('.mobile-btn').toggle(false)
+    $('#mobile-nav').toggle(false)
     if (el && isMobile) {
         $('#' + el).toggle(true)
+        $('#mobile-nav').toggle(true)
+        $('#mobileHome').show()
+        $('#mobileMenu').show()
+        $('#mobileSearch').show()
+        $('#mobileTronco').show()
         switch (el) {
             case "mobileSearch":
-                //$('#mobileTronco').show()
-                $('#mobileHome').show()
-                $('#mobileMenu').show()
+                $('#mobileMenu').toggleClass("mobile-btn-active", false)
                 break
             case "mobileTronco":
-                $('#mobileMenu2').show()
+                $('#mobileMenu').toggleClass("mobile-btn-active", true)
                 break
         }
     }
@@ -663,6 +667,9 @@ $('#mobileHome').click(function(){
 })
 
 $('#mobileSearch').click(function(){
+    if (isMobile && !$('#sidebar').hasClass('d-none')) {
+        $('.toggleSettings')[0].click()
+    }
     $('#search').show()
     $('#search').focus()
 })
@@ -830,6 +837,7 @@ function updateToolbar(){
         })
 
         $('.checkbox-item-subdiv').on('contextmenu', function(e) {
+            toggleMobile(false)
             $('.checkbox-item-subdiv').css('background-color', '')
             $(this).css("background-color", "orange")
             checkboxdiv = $(this)
@@ -985,11 +993,6 @@ $('#search').on('focus', function(){
     window.scrollTo(0, 0)    
     $('#breadcrumb-nav').toggle(true)
     $('.breadcrumb').scrollLeft(0)
-    toggleMobile(false)
-})
-
-$('#search').on('blur', function(){
-    toggleMobile(permEdit ? "mobileSearch" : "mobileTronco")
 })
 
 $('.togglePerm').on('change', function(){
@@ -1452,6 +1455,7 @@ function updateFiles(key = "", load = ""){
         })
 
         $('[file!=README][file!=ARCHIVE].files').on('contextmenu', function(e) {
+            toggleMobile(false)
             $('.files').css('background-color', '')
             $(this).css('background-color', 'orange')
             filedivcontext = $(this)
@@ -1661,6 +1665,7 @@ function loadFile(filename){
             textModified(false)
             $('#search').val('')
             toggleMain("file")
+            $('#mobileHome').toggleClass("mobile-btn-active", filename == 'README')
             $('#filename').html(special_files.indexOf(filename) >= 0 ? name : filename)
             $('.filename').html(special_files.indexOf(filename) >= 0 ? name : filename)
             $('.files').toggleClass("active", false)
@@ -1861,13 +1866,6 @@ var runningActivities = {}
 function triggerResize(first=false){
     name = $('#name').html()
     if ($('#sidebar:hidden').length || $(window).width() < 600) {
-        mobileInterval = window.setInterval(() => {
-            $('#mobileTronco, #mobileLeft').css({left: $(window).width()-70, top: window.innerHeight-70})
-            $('#mobileMenu2').css({left: $(window).width()-70, top: window.innerHeight-70-64})
-            $('#mobileHome').css({left: ($(window).width()/2)-28-64, top: window.innerHeight-70})
-            $('#mobileSearch').css({left: ($(window).width()/2)-28+64, top: window.innerHeight-70})
-            $('#mobileMenu').css({left: ($(window).width()/2)-28, top: window.innerHeight-70})
-        }, 200)
         if (first) {
             isMobileFromBeginning = true
             $('#sidebar').css("max-width", "")
@@ -1933,7 +1931,7 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
     elements = "#main, .prepend, .page-link, .page-item.active, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
-    elements2 = "#corpusSettings, #settings .custom-control-label, #corpusLanguageDiv, #mainHeadbar, #troncoHomeBar"
+    elements2 = "#corpusSettings, #mobile-nav, #settings .custom-control-label, #corpusLanguageDiv, #mainHeadbar, #troncoHomeBar"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
         $(elements2).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
@@ -2010,6 +2008,7 @@ $(document).ready(function(){
     $(document).on("click touchmove", function(){
         $("#context-menu-checklist, #context-menu-file, #context-menu-metadata").removeClass("show").hide()
         $('.checkbox-item-subdiv, .files').css('background-color', '')
+        toggleMobile($('#sidebar').hasClass('d-none') ? 'mobileSearch' : 'mobileTronco')
     })
     triggerResize(true)
     checkTheme()

@@ -28,16 +28,16 @@
 
   <body>
 
-    <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px" id="context-menu-metadata">
+    <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px; z-index:1031" id="context-menu-metadata">
       <a class="dropdown-item removeMetadata">Remover</a>
     </div>
 
-    <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px" id="context-menu-file">
+    <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px; z-index:1031" id="context-menu-file">
       <a class="dropdown-item renameFileContext">Renomear</a>
       <a class="dropdown-item deleteFileContext">Excluir</a>
     </div>
 
-    <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px" id="context-menu-checklist">
+    <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px; z-index:1031" id="context-menu-checklist">
       <a class="dropdown-item moveTopCheckbox"><span data-feather="chevrons-up"></span> Mover item</a>
       <a class="dropdown-item moveUpCheckbox"><span data-feather="chevron-up"></span> Mover item</a>
       <a class="dropdown-item moveDownCheckbox"><span data-feather="chevron-down"></span> Mover item</a>
@@ -46,30 +46,6 @@
       <a class="dropdown-item editCheckbox">Editar</a>
       <a class="dropdown-item deleteCheckbox">Apagar</a>
     </div>
-
-    <a id="mobileTronco" style="position:fixed; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); background-color:#62330f; z-index:101; padding:14px 16px; width:56px; height:56px; color:white;" class="mobile-btn rounded-circle">
-      <img src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
-    </a>
-
-    <a id="mobileMenu2" style="position:fixed; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="toggleSettings bg-dark mobile-btn rounded-circle">
-      <span data-feather="menu"></span>
-    </a>
-
-    <a id="mobileMenu" style="position:fixed; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="toggleSettings bg-dark mobile-btn rounded-circle">
-      <span data-feather="menu"></span>
-    </a>
-
-    <a id="mobileHome" style="position:fixed; display:none; background-color:#bf6724; z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="mobile-btn rounded-circle">
-      <span data-feather="home"></span>
-    </a>
-
-    <a id="mobileLeft" style="position:fixed; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); background-color:gray; z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="mobile-btn rounded-circle">
-      <span data-feather="arrow-left"></span>
-    </a>
-
-    <a id="mobileSearch" style="position:fixed; display:none; background-color:#bf6724; z-index:101; padding:16px 20px; width:56px; height:56px; color:white;" class="mobile-btn rounded-circle">
-      <span data-feather="search"></span>
-    </a>
     
     <div id="blurHeadbar" style="display:none" class="navbar navbar-dark bg-dark flex-md-nowrap p-4 sticky-top form-control-dark">
       <span data-feather="arrow-left"></span>
@@ -536,7 +512,32 @@
       </div>
     </div>
 
-    <nav 
+    <nav id="mobile-nav" class="nav navbar fixed-bottom">  
+      <a id="mobileMenu2" style="display:none; color:white;" class="toggleSettings mobile-btn">
+        <span data-feather="menu"></span>
+      </a>
+  
+      <a id="mobileMenu" style="display:none; color:white;" class="toggleSettings mobile-btn">
+        <span data-feather="menu"></span>
+      </a>
+  
+      <a id="mobileLeft" style="display:none; color:white;" class="mobile-btn">
+        <span data-feather="arrow-left"></span>
+      </a>
+
+      <a id="mobileHome" style="display:none; color:white;" class="mobile-btn">
+        <span data-feather="home"></span>
+      </a>
+
+      <a id="mobileSearch" style="display:none; color:white;" class="mobile-btn">
+        <span data-feather="search"></span>
+      </a>
+
+      <a id="mobileTronco" style="display:none; color:white;" class="mobile-btn">
+        <img src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
+      </a>
+
+    </nav>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -558,7 +559,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=14"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=123"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=125"></script>
   
   </body>
 </html>

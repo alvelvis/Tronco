@@ -2,6 +2,14 @@
   transform: translateY(4px);
 }
 
+.mobile-btn {
+  padding: 10px
+}
+
+.mobile-btn-active {
+  border-top: 4px solid #e4853c;
+}
+
 #mainText:focus {
   box-shadow: none;
 }
