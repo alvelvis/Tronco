@@ -20,7 +20,7 @@
     <link href="{{url_for('static', filename='bootstrap.css')}}?version=2" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="{{url_for('static', filename='dashboard.css')}}?version=8" rel="stylesheet">
+    <link href="{{url_for('static', filename='dashboard.css')}}?version=10" rel="stylesheet">
     <link href="{{url_for('static', filename='dropzone.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename='tronco.css')}}?version=8" rel="stylesheet">
 
@@ -512,8 +512,12 @@
       </div>
     </div>
 
-    <a id="mobileLeft" style="position:fixed; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); background-color:gray; display:none; width:54px; height:54px; padding: 16px 19px; color:white;" class="mobile-btn rounded-circle">
+    <a id="mobileLeft" style="position:fixed; background-color:gray; display:none; width:54px; height:54px; padding: 16px 19px; color:white;" class="mobile-btn rounded-circle">
       <span data-feather="arrow-left"></span>
+    </a>
+
+    <a id="mobileEdit" style="position:fixed; background-color:#bf6724; z-index:1031; color:white; display:none; width:54px; height:54px; padding: 16px 19px;" class="mobile-btn rounded-circle">
+      <span data-feather="edit"></span>
     </a>
 
     <nav id="mobile-nav" style="height:50px" class="px-4 nav navbar fixed-bottom">  
@@ -526,8 +530,8 @@
         <span data-feather="home"></span>
       </a>
 
-      <a id="mobileEdit" style="display:none; color:white;" class="mobile-btn">
-        <span data-feather="edit"></span>
+      <a style="color:white;" class="px-1">
+        
       </a>
 
       <a id="mobileSearch" style="display:none; color:white;" class="mobile-btn">
@@ -560,7 +564,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=14"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=138"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=141"></script>
   
   </body>
 </html>
