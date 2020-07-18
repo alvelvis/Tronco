@@ -1886,7 +1886,7 @@ function triggerResize(first=false){
             $('#sidebar').css("max-width", "")
             $('#settings').append($('#renameCorpus, #deleteCorpus, #permissionsSettings').detach())
             mobileInterval = window.setInterval(function(){
-                $('#mobileLeft').css({top: window.innerHeight-70, left: window.innerWidth-70})
+                $('#mobileLeft').css({top: window.innerHeight-75, left: window.innerWidth-75})
             })
         }
         isMobile = true
