@@ -98,7 +98,9 @@ function loadCorpora(key = ""){
         }
         new_data = ""
         for (x of data.data.split("|")) {
-            new_data = new_data + '<li class="list-group-item"><a class="openCorpus" corpus="' + x.split(":l")[0] + '" href="/corpus/' + x.split(":l")[0] + '?file=README">' + (x.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" title="Visitantes não podem visualizar" data-feather="lock"></span>' : "") + "<span>" + x.split(":l")[0] + '</span></a></li>'
+            if (is_local || key.length) {
+                new_data = new_data + '<li class="list-group-item"><a class="openCorpus" corpus="' + x.split(":l")[0] + '" href="/corpus/' + x.split(":l")[0] + '?file=README">' + (x.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" title="Visitantes não podem visualizar" data-feather="lock"></span>' : "") + "<span>" + x.split(":l")[0] + '</span></a></li>'
+            }
         }
         if (pre_list.length) {
             $('#randomTip').html(pre_list)
@@ -148,8 +150,12 @@ function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
     elements = "#mainDiv, #footer, li, #openCorpus, #filterOpenCorpus, html"
     if (theme == "dark") {
+        $('#moon-div').html("<span data-feather='sun'></span>")
+        feather.replace()
         $(elements).css("background-color", "#343a40").css("color", "white")
     } else {
+        $('#moon-div').html("<span data-feather='moon'></span>")
+        feather.replace()
         $(elements).css("background-color", "").css("color", "")
     }
 }

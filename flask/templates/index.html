@@ -34,7 +34,7 @@
     <title>Tronco</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="{{url_for('static', filename='bootstrap.css')}}?version=1" rel="stylesheet">
+    <link href="{{url_for('static', filename='bootstrap.css')}}?version=2" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="{{url_for('static', filename='pricing.css')}}" rel="stylesheet">
@@ -51,7 +51,7 @@
         <!--a href="#" class="p-2 text-dark">Carregar projeto</a-->
         <a href="https://github.com/alvelvis/Tronco#Dispositivos" id="downloadTronco" style="display:none" target="_blank" class="p-2 text-light">Dispositivos</a>
         <a href="#" id="toggleTheme" style="display:none;" title="Ativar modo escuro" class="text-light">
-          <span data-feather="moon"></span>
+          <span id="moon-div"></span>
         </a>
       </nav>
       <!--a class="btn btn-outline-primary">Sign up</a-->
@@ -78,7 +78,7 @@
             <div class="card-body pt-0 mt-0">
               <!--h1 class="card-title pricing-card-title"><small class="text-muted">Hoje eu quero...</small></h1-->
               <div class="input-group mb-3">
-                <input type="text" class="mt-0 form-control" placeholder="Crie uma coleção" id="filterOpenCorpus">
+                <input type="text" class="mt-0 form-control" placeholder="Crie ou procure uma coleção" id="filterOpenCorpus">
                 <div class="input-group-append">
                   <button type="button" class="btn btn-primary" id="indexGo">OK</span>
                 </div>
@@ -140,8 +140,8 @@
     <script src="{{url_for('static', filename='popper.js')}}"></script>
     <script src="{{url_for('static', filename='bootstrap.js')}}"></script>
     <script src="{{url_for('static', filename='holder.js')}}"></script>
-    <script src="{{url_for('static', filename='tronco.js')}}?version=14"></script>
-    <script src="{{url_for('static', filename='index.js')}}?version=13"></script>
+    <script src="{{url_for('static', filename='tronco.js')}}?version=15"></script>
+    <script src="{{url_for('static', filename='index.js')}}?version=14"></script>
     <script src="{{url_for('static', filename='feather.js')}}"></script>
     <script>
       Holder.addTheme('thumb', {

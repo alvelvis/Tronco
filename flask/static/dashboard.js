@@ -1921,7 +1921,7 @@ function triggerResize(first=false){
             })
         }
         isMobile = true
-        $('#troncoHomeLabel').html("<span class='mt-4 mb-0' style='max-width:90vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / " + name + "</span>")
+        $('#troncoHomeLabel').html("<span class='mt-3 mb-0' style='max-width:90vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / " + name + "</span>")
         $('#troncoLogo').hide()
         $('.navbar-brand').hide()
         $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #advancedSearchToolbarRow .btn-group, #toolbar, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
@@ -1951,8 +1951,8 @@ function triggerResize(first=false){
         $('#search').show()
     }
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
-    $('#troncoHomeBar').toggleClass("mt-0", isMobile).toggleClass("mb-3 ml-3", isMobile)
-    $('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "58px" : '54px') : '10px')
+    $('#troncoHomeBar').toggleClass("mt-0", isMobile).toggleClass("mb-2 ml-3", isMobile)
+    $('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "42px" : '54px') : '10px')
     $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")
     //$('#main').css('margin-left', !isMobile ? '260px' : '0px')
     $('#main').toggleClass("col-md-9 ml-sm-auto col-lg-10", !isMobile)
@@ -1979,7 +1979,7 @@ $('.dropdown').on('hidden.bs.dropdown', function() {
 
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
-    elements = "#main, .prepend, .page-link, .page-item.active, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
+    elements = "#main, .prepend, .dropdown-toggle, .page-link, .page-item.active, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
     elements2 = "#corpusSettings, #settings .custom-control-label, #corpusLanguageDiv, #mainHeadbar, #troncoHomeBar"
     elements3 = "#mobile-nav"
     if (theme == "dark") {
