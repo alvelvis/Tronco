@@ -239,8 +239,8 @@ function updateSearchTables(data, tables) {
         $('#query_results').find('.dynamic').html(`
         <table class="searchTable table" style="word-break:break-all">
             <tr>
-                <th style="cursor:pointer; min-width:50px; ` + ($('#advancedSearchShowId').prop('checked') ? "" : "display:none") + `" onclick="sortTable(0, 'float')" scope="col">#</th>
-                <th style="cursor:pointer; min-width:100px; ` + ($('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
+                <th style="cursor:pointer; min-width:50px; ` + (!$('#advancedSearchShowId').prop('checked') ? "" : "display:none") + `" onclick="sortTable(0, 'float')" scope="col">#</th>
+                <th style="cursor:pointer; min-width:100px; ` + (!$('#advancedSearchShowFilename').prop('checked') ? "" : "display:none") + `" onclick="sortTable(1, 'string')" scope="col">Arquivo</th>
                 <th style="cursor:pointer;" onclick="sortTable(2, 'string')" scope="col">Frase</th>
             </tr>
         </table>
@@ -252,7 +252,7 @@ function updateSearchTables(data, tables) {
 
         n = 1
         for (sentence of data.data.query_results) {
-            $('#query_results').find("table").append("<tr>" + "<td " + ($('#advancedSearchShowId').prop("checked") ? "" : "style='display:none'") + ">" + parseInt(n+((data.data.page-1)*100)).toString() + "</td>" + "<td " + ($('#advancedSearchShowFilename').prop("checked") ? "" : "style='display:none'") + "><a title='Ir para arquivo' class='gotoFile'>" + sentence[0].rsplit("-", 1)[0] + "</td>" + "<td>" + sentence[1] + "</td></tr>")
+            $('#query_results').find("table").append("<tr>" + "<td " + (!$('#advancedSearchShowId').prop("checked") ? "" : "style='display:none'") + ">" + parseInt(n+((data.data.page-1)*100)).toString() + "</td>" + "<td " + (!$('#advancedSearchShowFilename').prop("checked") ? "" : "style='display:none'") + "><a title='Ir para arquivo' class='gotoFile'>" + sentence[0].rsplit("-", 1)[0] + "</td>" + "<td>" + sentence[1] + "</td></tr>")
             n ++
         }
         if ($('#advancedSearchShowGaps').prop('checked')) {
