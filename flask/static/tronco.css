@@ -2,9 +2,9 @@
     display: none;
 }  
 
-/*.dropdown-toggle:hover .insertLabel {
-    color:white;
-}*/
+.dropdown-toggle:hover .insertLabel {
+    color:inherit;
+}
 
  #sidebar, #filename, #mainHeadbar, #troncoHomeLabel, #saved, #savedSpan { /*#filename, #sidebar a*/
     -webkit-touch-callout: none;
