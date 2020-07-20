@@ -98,7 +98,7 @@ function indexCorpus(force=false) {
                                 $('#indexedTime').toggle(data.indexed_time.toString().length > 0)
                                 if (data.indexed_time.toString().length > 0) {
                                     indexed_time = new Date(data.indexed_time * 1000)
-                                    indexed_date = indexed_time.getDate() + "/" + (parseInt(indexed_time.getMonth())+1).toString() + "/" + indexed_time.getFullYear() + " às " + indexed_time.getHours() + ":" + indexed_time.getMinutes()
+                                    indexed_date = indexed_time.getDate() + "/" + (parseInt(indexed_time.getMonth())+1).toString() + "/" + indexed_time.getFullYear() + " às " + indexed_time.getHours() + ":" + (indexed_time.getMinutes().toString().length == 1 ? "0" + indexed_time.getMinutes() : indexed_time.getMinutes())
                                     $('#indexedTime').html("Indexado em " + indexed_date)
                                 }
                             }
@@ -134,7 +134,7 @@ function indexCorpus(force=false) {
                 $('#indexedTime').toggle(data.indexed_time.toString().length > 0)
                 if (data.indexed_time.toString().length > 0) {
                     indexed_time = new Date(data.indexed_time * 1000)
-                    indexed_date = indexed_time.getDate() + "/" + (parseInt(indexed_time.getMonth())+1).toString() + "/" + indexed_time.getFullYear() + " às " + indexed_time.getHours() + ":" + indexed_time.getMinutes()
+                    indexed_date = indexed_time.getDate() + "/" + (parseInt(indexed_time.getMonth())+1).toString() + "/" + indexed_time.getFullYear() + " às " + indexed_time.getHours() + ":" + (indexed_time.getMinutes().toString().length == 1 ? "0" + indexed_time.getMinutes() : indexed_time.getMinutes())
                     $('#indexedTime').html("Indexado em " + indexed_date)
                 }
                 break
@@ -488,7 +488,7 @@ $('#newMetadata').click(function(){
 
 function loadMetadata(metadata, readme=false) {
     first_seen = new Date(metadata.first_seen * 1000)
-    first_seen_string = "<div class='py-2'><span data-feather='calendar'></span> Data de criação: " + first_seen.getDate() + "/" + (parseInt(first_seen.getMonth())+1).toString() + "/" + first_seen.getFullYear() + " às " + first_seen.getHours() + ":" + first_seen.getMinutes() + "</div>"
+    first_seen_string = "<div class='py-2'><span data-feather='calendar'></span> Data de criação: " + first_seen.getDate() + "/" + (parseInt(first_seen.getMonth())+1).toString() + "/" + first_seen.getFullYear() + " às " + first_seen.getHours() + ":" + (first_seen.getMinutes().toString().length == 1 ? "0" + first_seen.getMinutes() : first_seen.getMinutes()) + "</div>"
     if (readme) {
         metadataItems = "<div class='pb-2'>Dica: Os metadados deste arquivo serão aplicados a todos os outros arquivos da coleção.<br>" + first_seen_string + "</div>"
     } else {
@@ -709,7 +709,7 @@ String.prototype.rsplit = function(sep, maxsplit) {
 
 $('.insertDate').click(function(){
     date = new Date()
-    $('#mainText').val(date.getDate() + "/" + (parseInt(date.getMonth())+1).toString() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + "\n" + $('#mainText').val())
+    $('#mainText').val(date.getDate() + "/" + (parseInt(date.getMonth())+1).toString() + "/" + date.getFullYear() + " " + date.getHours() + ":" + (date.getMinutes().toString().length == 1 ? "0" + date.getMinutes() : date.getMinutes()) + "\n" + $('#mainText').val())
     saveFile()
     $('#mainText').trigger("input")
     toggleInsertSuccess()
@@ -718,7 +718,7 @@ $('.insertDate').click(function(){
 $('.insertChecklist').click(function(){
     n_checklists = $('#mainText').val().match(/\[(x)?\]/gi)
     where_to_insert = $(this).attr('where')
-    item_label = prompt("Novo item de checklist:", "Item " + (n_checklists ? n_checklists.length+1 : 1).toString())
+    item_label = prompt("Novo item de checklist:", "")
     if (item_label && item_label.length) {
         switch (where_to_insert) {
             case 'bottom':
@@ -1371,6 +1371,7 @@ $('.toggleSettings').click(function(){
         return false
     }
     if (isMobile){
+        $('#corpusSettings').toggle(false)
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         if ($('#sidebar').hasClass("d-none")) {
@@ -1626,7 +1627,7 @@ function saveFile(filename=$('#filename').attr('file'), text=$('#mainText').val(
                             },2000)
                             textModified(true)
                             date = new Date()
-                            $('#savedSpan').html("Salvo às " + date.getHours() + ":" + date.getMinutes())
+                            $('#savedSpan').html("Salvo às " + date.getHours() + ":" + (date.getMinutes().toString().length == 1 ? "0" + date.getMinutes() : date.getMinutes()))
                         })
                         .fail(function(){
                             if (!failedSave) {
