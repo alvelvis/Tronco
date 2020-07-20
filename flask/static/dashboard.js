@@ -1371,7 +1371,7 @@ $('.toggleSettings').click(function(){
         return false
     }
     if (isMobile){
-        $('#corpusSettings').toggle(false)
+        $('#settings').toggle(false)
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         if ($('#sidebar').hasClass("d-none")) {
