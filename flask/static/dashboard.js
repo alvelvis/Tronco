@@ -925,7 +925,7 @@ function updateToolbar(){
     }
 
     $('#shareText').toggle(!is_local)
-    $('#dropdown').toggle(permEdit)
+    $('#dropdown, .insertChecklist').toggle(permEdit)
     if (isMobile) {
         $('#toolbarRow').scrollLeft(0)
     }
@@ -1467,7 +1467,7 @@ function updateFiles(key = "", load = ""){
         }
     })
     .done(function(data){
-        $('#archive').toggle(data.has_archive)
+        $('#archive').toggle(data.has_archive && permEdit)
         $('#files').html("")
         $('#nFiles').html(data.data.split("|").length)
         
@@ -1918,7 +1918,7 @@ function triggerResize(first=false){
             $('#settings').append($('#renameCorpus, #deleteCorpus, #permissionsSettings').detach())
             mobileInterval = window.setInterval(function(){
                 $('#mobileLeft').css({top: window.innerHeight-75, left: window.innerWidth-75})
-                $('#mobileEdit').css({top: window.innerHeight-70, left: (window.innerWidth/2)-30})
+                $('#mobileEdit').css({top: window.innerHeight-67, left: (window.innerWidth/2)-30})
             })
         }
         isMobile = true
