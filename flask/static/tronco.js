@@ -1,3 +1,5 @@
+var expirationDate = 'Fri, 31 Dec 9999 23:59:59 GMT'
+
 if (document.cookie.indexOf("theme=") == -1){
     document.cookie = "theme=light; expires=" + expirationDate
 }
@@ -33,7 +35,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 if (window.location.href.match(/127\.0\.0\.1|localhost/)){
     $('[target="_blank"]').attr('target', "")
     target_href = ""
-    is_local = false //true
+    is_local = true //true
 } else {
     target_href = "_blank"
     is_local = false
