@@ -973,7 +973,6 @@ $('#reloadPage').click(function(){
 })
 
 function shareFile(filename, share) {
-    console.log(share)
     $.ajax({
         url: "/api/shareFile",
         method: "POST",
