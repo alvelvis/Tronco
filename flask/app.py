@@ -22,6 +22,24 @@ temporary_objects = objects.TemporaryObjects()
 advanced_corpora = objects.AdvancedCorpora()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
+@app.route("/api/shareFile", methods=["POST"])
+def shareFile():
+    name = request.values.get("name")
+    filename = request.values.get("filename")
+    password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "editar"): return None
+    share = request.values.get("share")
+    if share == "true" and (not "shared_files" in tronco_config.corpora[name]['permissions'] or not filename in tronco_config.corpora[name]['permissions']['shared_files']):
+        if not 'shared_files' in tronco_config.corpora[name]['permissions']:
+            tronco_config.corpora[name]['permissions']['shared_files'] = []
+        tronco_config.corpora[name]['permissions']['shared_files'].append(filename)
+        tronco_config.save()
+    elif share == "false":
+        if 'shared_files' in tronco_config.corpora[name]['permissions'] and filename in tronco_config.corpora[name]['permissions']['shared_files']:
+            tronco_config.corpora[name]['permissions']['shared_files'].remove(filename)
+            tronco_config.save()
+    return {'error': '0'}
+
 @app.route("/api/archiveFile", methods=["POST"])
 def archive_file():
     name = request.values.get("name")
@@ -307,6 +325,10 @@ def rename_file():
     filename = request.values.get("filename")
     new_filename = request.values.get("new_filename")
     result = functions.rename_file(name, filename, new_filename)
+    if 'shared_files' in tronco_config.corpora[name]['permissions'] and filename in tronco_config.corpora[name]['permissions']['shared_files']:
+        tronco_config.corpora[name]['permissions']['shared_files'].remove(filename)
+        tronco_config.corpora[name]['permissions']['shared_files'].append(result)
+        tronco_config.save()
     if result:
         return {'data': result}
     else:
@@ -408,7 +430,7 @@ def load_file():
     name = request.values.get('name')
     password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
     filename = request.values.get('filename')
-    if not tronco_config.has_permission(name, password, "visualizar"):#filename != "README" and 
+    if not tronco_config.has_permission(name, password, "visualizar") and (not 'shared_files' in tronco_config.corpora[name]['permissions'] or not filename in tronco_config.corpora[name]['permissions']['shared_files']):#filename != "README" and 
         return {'error': 2}
     text = functions.load_file(name, filename)
     if text:

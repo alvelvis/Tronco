@@ -407,7 +407,8 @@ class TroncoConfig:
             self.corpora[name] = {
                 'permissions': {
                     'password': "default",
-                    'disconnected': ["visualizar"]
+                    'disconnected': ["visualizar"],
+                    'shared_files': [],
                     },
                 'settings': {
                     'auto_wrap': "true",

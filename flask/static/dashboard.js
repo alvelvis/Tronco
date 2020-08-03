@@ -972,20 +972,60 @@ $('#reloadPage').click(function(){
     window.location.reload()
 })
 
+function shareFile(filename, share) {
+    console.log(share)
+    $.ajax({
+        url: "/api/shareFile",
+        method: "POST",
+        data: {
+            'name': $('#name').html(),
+            'filename': filename,
+            'tronco_token': getTroncoToken(),
+            'share': share
+        }
+    })
+    .done(function(data){
+        switch (data.error) {
+            case '0':
+                if (share == "true") {
+                    
+                } else {
+                    $('#shareText').click()
+                    $('#shareLinkLabel').html("Acesso revogado")
+                    $('#shareText').toggleClass("btn-danger", true)
+                    $('#shareText').toggleClass("btn-outline-secondary", false)
+                    setTimeout(function(){
+                        $('#shareText').toggleClass("btn-danger", false)
+                        $('#shareText').toggleClass("btn-outline-secondary", true)
+                        $('#shareLinkLabel').html("Compartilhar")
+                    }, 2000)
+                }
+                break
+        }
+    })
+}
+
 $('#shareText').click(function(){
-    $('#shareLink').show()
-    $('#shareLink').val(window.location.href.match(/^.*\//)[0] + $('#name').html().replace(/\s/g, "%20") + "?file=" + $('#filename').attr('file').replace(/\s/g, "%20"))
-    $('#shareLink').select()
-    document.execCommand('copy')
-    $('#shareLink').hide()
-    $('#shareLinkLabel').html("Link copiado!")
-    $('#shareText').toggleClass("btn-success", true)
-    $('#shareText').toggleClass("btn-outline-secondary", false)
-    setTimeout(function(){
-        $('#shareText').toggleClass("btn-success", false)
-        $('#shareText').toggleClass("btn-outline-secondary", true)
-        $('#shareLinkLabel').html("Compartilhar")
-    }, 2000)
+    $('[toolbar=shareText]').find('span').html("Visitantes " + (visitant_view_perm ? "" : " não ") + "podem visualizar esta coleção" + (visitant_view_perm ? ", basta compartilhar o link deste arquivo." : ", apenas este arquivo." + (permEdit ? " <a href='#' id='revokeFileAccess'>Revogar acesso.</a>" : "")))
+    $('#revokeFileAccess').unbind('click').click(function(){
+        shareFile(filename, "false")
+    })
+    if ($('[toolbar=shareText]:visible').length) {
+        shareFile($('#filename').attr('file'), "true")
+        $('#shareLink').show()
+        $('#shareLink').val(window.location.href.match(/^.*\//)[0] + $('#name').html().replace(/\s/g, "%20") + "?file=" + $('#filename').attr('file').replace(/\s/g, "%20"))
+        $('#shareLink').select()
+        document.execCommand('copy')
+        $('#shareLink').hide()
+        $('#shareLinkLabel').html("Link copiado!")
+        $('#shareText').toggleClass("btn-success", true)
+        $('#shareText').toggleClass("btn-outline-secondary", false)
+        setTimeout(function(){
+            $('#shareText').toggleClass("btn-success", false)
+            $('#shareText').toggleClass("btn-outline-secondary", true)
+            $('#shareLinkLabel').html("Compartilhar")
+        }, 2000)
+    }
 })
 
 function mainTextEdit(){
