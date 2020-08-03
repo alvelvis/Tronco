@@ -1007,7 +1007,7 @@ function shareFile(filename, share) {
 $('#shareText').click(function(){
     $('[toolbar=shareText]').find('span').html("Visitantes " + (visitant_view_perm ? "" : " não ") + "podem visualizar esta coleção" + (visitant_view_perm ? ", basta compartilhar o link deste arquivo." : ", apenas este arquivo." + (permEdit ? " <a href='#' id='revokeFileAccess'>Revogar acesso.</a>" : "")))
     $('#revokeFileAccess').unbind('click').click(function(){
-        shareFile(filename, "false")
+        shareFile($('#filename').attr('file'), "false")
     })
     if ($('[toolbar=shareText]:visible').length) {
         shareFile($('#filename').attr('file'), "true")
