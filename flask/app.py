@@ -54,6 +54,9 @@ def archive_file():
         text = f.read()
     functions.save_file(name, "ARCHIVE", "tronco/" + new_filename + "\n" + text)
     functions.delete_file(name, filename)
+    if 'shared_files' in tronco_config.corpora[name]['permissions'] and filename in tronco_config.corpora[name]['permissions']['shared_files']:
+        tronco_config.corpora[name]['permissions']['shared_files'].remove(filename)
+        tronco_config.save()
     return {'error': '0'}
 
 @app.route("/api/getProgress", methods=["POST"])
@@ -393,6 +396,9 @@ def delete_files():
     if not tronco_config.has_permission(name, password, "editar"): return None
     filename = request.values.get("filename")
     functions.delete_file(name, filename)
+    if 'shared_files' in tronco_config.corpora[name]['permissions'] and filename in tronco_config.corpora[name]['permissions']['shared_files']:
+        tronco_config.corpora[name]['permissions']['shared_files'].remove(filename)
+        tronco_config.save()
     return {'data': ''}
 
 @app.route("/api/updateFiles")
