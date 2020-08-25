@@ -1964,7 +1964,8 @@ function triggerResize(first=false){
         $('#troncoHomeLabel').html("<span class='mt-3 mb-2' style='max-width:90vw; width:100%; display:inline-block; white-space: nowrap; overflow:hidden; font-weight:bold; text-overflow:ellipsis'>Tronco / " + name + "</span>")
         $('#troncoLogo').hide()
         $('.navbar-brand').hide()
-        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #advancedSearchToolbarRow .btn-group, #toolbar, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
+        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #toolbar, #advancedSearchToolbarRow .btn-group, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
+        $('#toolbar').toggleClass("px-4", false)
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons, #builder-recent').css('overflow-x', "scroll")
@@ -1973,7 +1974,7 @@ function triggerResize(first=false){
             clearInterval(mobileInterval)
         }
         isMobile = false
-        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #advancedSearchToolbarRow .btn-group, #toolbar, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
+        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #toolbar,#advancedSearchToolbarRow .btn-group, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').show()
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()
@@ -2021,7 +2022,7 @@ function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
     elements = "#main, .prepend, .dropdown-toggle, .page-link, .page-item.active, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
     elements2 = "#corpusSettings, #settings .custom-control-label, #corpusLanguageDiv, #mainHeadbar, #troncoHomeBar"
-    elements3 = "#mobile-nav"
+    elements3 = "#mobile-nav, .toolbar"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
         $(elements2 + ", " + elements3).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
