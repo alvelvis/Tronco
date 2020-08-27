@@ -1541,7 +1541,7 @@ function updateFiles(key = "", load = ""){
         $('[file!=README][file!=ARCHIVE].files').on('contextmenu', function(e) {
             toggleMobile(false)
             $('.files').css('background-color', '')
-            $(this).css('background-color', '#bf6724')
+            $(this).css('background-color', 'orange')
             filedivcontext = $(this)
             var top = e.pageY
             var left = e.pageX
