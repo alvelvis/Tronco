@@ -863,7 +863,7 @@ function updateToolbar(){
         $('.checkbox-item-subdiv').on('contextmenu', function(e) {
             toggleMobile(false)
             $('.checkbox-item-subdiv').css('background-color', '')
-            $(this).css("background-color", "orange")
+            $(this).css("background-color", "#bf6724")
             checkboxdiv = $(this)
             var top = e.pageY
             var left = e.pageX
@@ -1541,7 +1541,7 @@ function updateFiles(key = "", load = ""){
         $('[file!=README][file!=ARCHIVE].files').on('contextmenu', function(e) {
             toggleMobile(false)
             $('.files').css('background-color', '')
-            $(this).css('background-color', 'orange')
+            $(this).css('background-color', '#bf6724')
             filedivcontext = $(this)
             var top = e.pageY
             var left = e.pageX
