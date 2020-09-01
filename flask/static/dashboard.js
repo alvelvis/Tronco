@@ -863,7 +863,7 @@ function updateToolbar(){
         $('.checkbox-item-subdiv').on('contextmenu', function(e) {
             toggleMobile(false)
             $('.checkbox-item-subdiv').css('background-color', '')
-            $(this).css("background-color", "#bf6724")
+            $(this).css("background-color", "orange")
             checkboxdiv = $(this)
             var top = e.pageY
             var left = e.pageX
