@@ -1535,6 +1535,9 @@ function updateFiles(key = "", load = ""){
         }
 
         $('.files').unbind('click').click(function(){
+            $('.files').toggleClass("active", false)
+            $(this).toggleClass('active', true)
+            $('#advancedSearch').find('a').toggleClass("active", false)
             returnSearch($(this).attr('file'))
         })
 
@@ -1753,13 +1756,15 @@ function loadFile(filename){
             $('#mobileHome').toggleClass("mobile-btn-active", filename == 'README')
             $('#filename').html(special_files.indexOf(filename) >= 0 ? name : filename)
             $('.filename').html(special_files.indexOf(filename) >= 0 ? name : filename)
-            $('.files').toggleClass("active", false)
-            if ($('[file="' + filename + '"].files')) {
-                $('[file="' + filename + '"].files').toggleClass('active', true)
-                $('#advancedSearch').find('a').toggleClass("active", false)
-            }
             $('#filename').attr('file', filename)
             $('#filename').scrollLeft(0)
+            if (!$('.files.active').length) {
+                $('.files').toggleClass("active", false)
+                if ($('[file="' + filename + '"].files')) {
+                    $('[file="' + filename + '"].files').toggleClass('active', true)
+                    $('#advancedSearch').find('a').toggleClass("active", false)
+                }
+            }
             $('#mainText').val(data.data.text)
             loadMetadata(data.data.metadata, filename == "README")
             updateToolbar()
