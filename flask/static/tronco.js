@@ -35,7 +35,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 if (window.location.href.match(/127\.0\.0\.1|localhost/)){
     $('[target="_blank"]').attr('target', "")
     target_href = ""
-    is_local = false //true
+    is_local = true //false for debugging
 } else {
     target_href = "_blank"
     is_local = false
