@@ -1536,7 +1536,7 @@ function updateFiles(key = "", load = ""){
 
         $('.files').unbind('click').click(function(){
             $('.files').toggleClass("active", false)
-            $(this).toggleClass('active', true)
+            $(this).toggleClass("active", true)
             $('#advancedSearch').find('a').toggleClass("active", false)
             returnSearch($(this).attr('file'))
         })
@@ -1562,7 +1562,7 @@ function updateFiles(key = "", load = ""){
         if (load) {
             loadFile(load)
         } else {
-            if ($('[file="' + $('#filename').attr('file') + '"].files')) {
+            if ($('[file="' + $('#filename').attr('file') + '"].files').length) {
                 $('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active', true)
                 $('#advancedSearch').find('a').toggleClass("active", false)
             }
@@ -1771,6 +1771,15 @@ function loadFile(filename){
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             recentFiles()
+            if (data.is_public && !visitant_view_perm) {
+                $('#shareLinkLabel').html("Público")
+                $('#shareText').toggleClass("btn-success", true)
+                $('#shareText').toggleClass("btn-outline-secondary", false)
+            } else {
+                $('#shareLinkLabel').html("Compartilhar")
+                $('#shareText').toggleClass("btn-success", false)
+                $('#shareText').toggleClass("btn-outline-secondary", true)
+            }
             if (!isMobile) {
                 //$('#mainText').focus()
             }
@@ -1979,7 +1988,7 @@ function triggerResize(first=false){
             clearInterval(mobileInterval)
         }
         isMobile = false
-        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #toolbar,#advancedSearchToolbarRow .btn-group, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
+        $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #toolbar, #advancedSearchToolbarRow .btn-group, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').show()
         $('#troncoHomeLabel').html("")
         $('.navbar-brand').show()

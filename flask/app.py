@@ -443,7 +443,8 @@ def load_file():
         return {
             'data': text, 
             'error': 0,
-            'who_claimed_access': session_tokens.who_claimed_access(name, filename)
+            'who_claimed_access': session_tokens.who_claimed_access(name, filename),
+            'is_public': 'shared_files' in tronco_config.corpora[name]['permissions'] and filename in tronco_config.corpora[name]['permissions']['shared_files']
             }
     else:
         return {'error': 3}
