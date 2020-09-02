@@ -1972,7 +1972,7 @@ function triggerResize(first=false){
             $('#settings').append($('#renameCorpus, #deleteCorpus, #permissionsSettings').detach())
             mobileInterval = window.setInterval(function(){
                 $('#mobileLeft').css({top: window.innerHeight-75, left: window.innerWidth-75})
-                $('#mobileEdit').css({top: window.innerHeight-67, left: (window.innerWidth/2)-30})
+                $('#mobileEdit').css({top: window.innerHeight-66, left: (window.innerWidth/2)-30})
             })
         }
         isMobile = true
@@ -1984,6 +1984,7 @@ function triggerResize(first=false){
         $('#hr').show()
         $('.breadcrumb, #filename').css('overflow-x', "scroll").css("white-space", "nowrap")
         $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons, #builder-recent').css('overflow-x', "scroll")
+        $('#sidebar-scroll').unbind('mouseenter').unbind('mouseleave').css({'overflow-y': 'auto'})
     } else {
         if (mobileInterval) {
             clearInterval(mobileInterval)
@@ -1998,6 +1999,11 @@ function triggerResize(first=false){
         $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons, #builder-recent').css('overflow-x', "auto")
         //$('#editingPanel').css("z-index", "1200").toggleClass("sticky-top", true)
         toggleMobile(false)
+        $('#sidebar-scroll').on('mouseenter', function(){
+            $(this).css({'overflow-y': 'auto'})
+        }).on('mouseleave', function(){
+            $(this).css({'overflow-y': 'hidden'})
+        })
     }
     if (first && !isMobile) {
         $('.btn-outline-secondary').on('mouseenter mouseleave', function(){
@@ -2038,9 +2044,11 @@ function checkTheme(){
     elements = "#main, .prepend, .dropdown-toggle, .page-link, .page-item.active, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #sidebar, html"
     elements2 = "#corpusSettings, #settings .custom-control-label, #corpusLanguageDiv, #mainHeadbar, #troncoHomeBar"
     elements3 = "#mobile-nav, .toolbar"
+    elements4 = "#sidebar-scroll"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
         $(elements2 + ", " + elements3).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
+        $(elements4).css('background-color', '#2e3238')
         if (isMobile) {
             $('#search').toggleClass("form-control-dark", false).css("background-color", "#343a40").css("color", "white").css("border-style", "none")
         }
@@ -2048,6 +2056,7 @@ function checkTheme(){
         $(elements).css("background-color", "white").css("color", "black")
         $(elements2).css("background-color", "white").css("color", "white").toggleClass("bg-dark", true)
         $(elements3).css("color", "black").toggleClass("form-control", true)
+        $(elements4).css("background-color", "rgb(243, 243, 243)")
         if (isMobile) {
             $('#search').toggleClass("form-control-dark", true).css("background-color", "white").css("color", "black").css("border-style", "")
         }

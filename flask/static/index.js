@@ -149,10 +149,12 @@ $('#filterOpenCorpus').on('keyup', function(e){
 function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
     elements = "#mainDiv, #footer, li, #openCorpus, #filterOpenCorpus, html"
+    elements2 = "#header"
     if (theme == "dark") {
         $('#moon-div').html("<span data-feather='sun'></span>")
         feather.replace()
         $(elements).css("background-color", "#343a40").css("color", "white")
+        $(elements2).css('background-color', "#272b30").css('color', 'white').toggleClass('bg-dark', false)
     } else {
         $('#moon-div').html("<span data-feather='moon'></span>")
         feather.replace()
