@@ -1418,7 +1418,7 @@ $('.toggleSettings').click(function(){
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         if ($('#sidebar').hasClass("d-none")) {
-            $('#mainText').toggle(true)
+            $('#main').toggle(true)
             if (permView) {
                 if ($('#mainText:visible').length) {
                     toggleMobile("mobileFile")
@@ -1429,7 +1429,7 @@ $('.toggleSettings').click(function(){
                 toggleMobile("mobileNoPerm")
             }
         } else {
-            $('#mainText').toggle(false)
+            $('#main').toggle(false)
             toggleMobile("mobileSidebar")
         }
         if (permSetup) {
