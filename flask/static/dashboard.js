@@ -1527,7 +1527,7 @@ function updateFiles(key = "", load = ""){
                 $('#files').append(`
                 <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
                     <a class="nav-link files d-flex align-items-center ` + (load.length && load == x ? 'active' : '') + `" style="width:100%;" file="` + x + `">
-                        <span data-feather="file-text"></span>
+                        <!--span data-feather="file-text"></span-->
                         <span style="max-width: 98%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;">` + x + `</span>
                     </a>
                 </li>`)

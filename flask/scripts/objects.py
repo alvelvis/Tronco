@@ -292,7 +292,6 @@ class AdvancedCorpora:
                 with open(config_file, "r") as f:
                     f_text = f.read()
                     if len(f_text.strip()):
-                        print(corpus)
                         self.corpora[corpus] = json.loads(f_text)
                 if os.path.isfile(recent_queries_file):
                     with open(recent_queries_file, "r") as w:
