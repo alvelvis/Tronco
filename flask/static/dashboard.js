@@ -1425,9 +1425,9 @@ $('.toggleSettings').click(function(){
                 }
             } else {
                 toggleMobile("mobileNoPerm")
-                $('#mainText').toggle(false)
             }
         } else {
+            $('#mainText').toggle(false)
             toggleMobile("mobileSidebar")
         }
         if (permSetup) {
