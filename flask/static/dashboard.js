@@ -1007,7 +1007,7 @@ function shareFile(filename, share) {
 }
 
 $('#shareText').click(function(){
-    $('[toolbar=shareText]').find('span').html("Visitantes " + (visitant_view_perm ? "" : " não ") + "podem visualizar esta coleção" + (visitant_view_perm ? ", basta compartilhar o link deste arquivo." : ", apenas este arquivo." + (permEdit ? " <a href='#' id='revokeFileAccess'>Revogar acesso.</a>" : "")))
+    $('[toolbar=shareText]').find('span').html("Visitantes " + (visitant_view_perm ? "" : " não ") + "podem visualizar esta coleção" + (visitant_view_perm ? ", basta compartilhar o link deste arquivo." : ", apenas este arquivo." + (permEdit ? " <a href='#' id='revokeFileAccess'>Revogar acesso.</a><br>" : "")))
     link = window.location.href.match(/^.*\//)[0] + $('#name').html().replace(/\s/g, "%20") + "?file=" + $('#filename').attr('file').replace(/\s/g, "%20")
     $('[toolbar=shareText]').find('span').append("<br><a href='" + link + "'>" + link + "</a>")
     $('#revokeFileAccess').unbind('click').click(function(){
