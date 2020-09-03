@@ -668,6 +668,8 @@ function toggleMobile(el) {
                 break
             case "mobileSidebar":
                 $('#mobileMenu').show()
+                $('#mobileTronco').show()
+                $('#mobileSearch').show()
                 $('#mobileMenu').toggleClass("mobile-btn-active", true)
                 break
             case "mobileLeft":
@@ -1414,6 +1416,7 @@ $('.toggleSettings').click(function(){
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         if ($('#sidebar').hasClass("d-none")) {
+            $('#mainText').toggle(true)
             if (permView) {
                 if ($('#mainText:visible').length) {
                     toggleMobile("mobileFile")
@@ -1422,6 +1425,7 @@ $('.toggleSettings').click(function(){
                 }
             } else {
                 toggleMobile("mobileNoPerm")
+                $('#mainText').toggle(false)
             }
         } else {
             toggleMobile("mobileSidebar")
@@ -1928,7 +1932,9 @@ $(document).on('touchstart', function(e){
         return true
     }
     if (isMobile && e.originalEvent.touches[0].pageX < 20 && !$('#sidebar:visible').length) {
-        openingPanel = true
+        if (e.originalEvent.touches[0].pageY > $('#toolbar-group').offset().top + $('#toolbar-group').height() || e.originalEvent.touches[0].pageY < $('#toolbar-group').offset().top) {
+            openingPanel = true
+        }
     }
     if (isMobile && e.originalEvent.touches[0].pageX > ($(window).width()-20) && $('#sidebar:visible').length){
         closingPanel = true

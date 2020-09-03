@@ -20,7 +20,7 @@
     <link href="{{url_for('static', filename='bootstrap.css')}}?version=3" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="{{url_for('static', filename='dashboard.css')}}?version=10" rel="stylesheet">
+    <link href="{{url_for('static', filename='dashboard.css')}}?version=17" rel="stylesheet">
     <link href="{{url_for('static', filename='dropzone.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename='tronco.css')}}?version=9" rel="stylesheet">
 
@@ -182,6 +182,13 @@
                     </a>
                   </li>
 
+                  <li class="nav-item" id="newFile">
+                    <button class="btn btn-sm btn-success ml-2 pr-3 mt-3" title="Criar novo arquivo (Ctrl+P)">
+                      <span data-feather="plus" class="mr-1"></span>
+                      Novo arquivo
+                    </button>
+                  </li>
+
                     <!--li class="nav-item" style="margin-left:10px">
                         <span class="nav-link" id="permissions">
                         </span>
@@ -206,9 +213,6 @@
             
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
               <span>Arquivos (<span id="nFiles"></span>)</span>
-              <a class="d-flex align-items-center text-muted" id="newFile" title="Criar novo arquivo (Ctrl+P)">
-                <span data-feather="plus-circle"></span>
-              </a>
             </h6>
 
             <ul class="nav flex-column">
@@ -568,7 +572,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=15"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=162"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=163"></script>
   
   </body>
 </html>
