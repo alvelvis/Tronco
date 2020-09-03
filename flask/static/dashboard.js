@@ -1,3 +1,12 @@
+function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;")
+}
+
 updateQuickSearch()
 function updateQuickSearch() {
     $('.quickSearch').unbind('click').click(function(){
@@ -850,7 +859,7 @@ function updateToolbar(){
         $('#checklistLabel').html("Checklist (" + checklist.filter(x => x[0]).length + "/" + checklist.length + ")")
         $('[toolbar=checklist] .checklist-items').html('')
         for (check in checklist) {
-            $('[toolbar=checklist] .checklist-items').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + checklist[check][1] + '</label></div></div></div>')
+            $('[toolbar=checklist] .checklist-items').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + escapeHtml(checklist[check][1]) + '</label></div></div></div>')
         }
         $('.checkbox-item-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
         $('.file-checkbox').change(function(){
@@ -887,7 +896,7 @@ function updateToolbar(){
         $('#linksLabel').html("Links (" + links.length + ")")
         $('[toolbar=links]').html("")
         for (link in links) {
-            $('[toolbar=links]').append('<div class="link-div"><a target="_blank" class="px-1" href="' + links[link][1] + '">' + links[link][0] + '</a></div>' + (link == links.length -1 ? "" : ""))
+            $('[toolbar=links]').append('<div class="link-div"><a target="_blank" class="px-1" href="' + links[link][1] + '">' + escapeHtml(links[link][0]) + '</a></div>' + (link == links.length -1 ? "" : ""))
             changeATitle(links[link][1])
         }
         $('.link-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
@@ -901,7 +910,7 @@ function updateToolbar(){
         $('#imagesLabel').html("Imagens (" + images.length + ")")
         $('[toolbar=images]').html("")
         for (link in images) {
-            $('[toolbar=images]').append('<div class="image-div"><a target="_blank" class="px-1" href="' + images[link][1] + '">' + images[link][0] + '</a></div>' + (link == images.length -1 ? "" : ""))
+            $('[toolbar=images]').append('<div class="image-div"><a target="_blank" class="px-1" href="' + images[link][1] + '">' + escapeHtml(images[link][0]) + '</a></div>' + (link == images.length -1 ? "" : ""))
         }
         $('.image-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
     } else {
@@ -915,9 +924,9 @@ function updateToolbar(){
         $('[toolbar=filesLink]').html("")
         for (link in files) {
             if (files[link][1].indexOf("/media/") >= 0) {
-                $('[toolbar=filesLink]').append('<div class="file-div"><a href="' + files[link][1] + '" target="' + target_href + '" class="px-1">' + files[link][0] + '</a></div>' + (link == files.length -1 ? "" : ""))
+                $('[toolbar=filesLink]').append('<div class="file-div"><a href="' + files[link][1] + '" target="' + target_href + '" class="px-1">' + escapeHtml(files[link][0]) + '</a></div>' + (link == files.length -1 ? "" : ""))
             } else {
-                $('[toolbar=filesLink]').append('<div class="file-div"><a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + files[link].split(":")[0] + '</a></div>' + (link == files.length -1 ? "" : ""))
+                $('[toolbar=filesLink]').append('<div class="file-div"><a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + escapeHtml(files[link].split(":")[0]) + '</a></div>' + (link == files.length -1 ? "" : ""))
             }
         }
         $('.file-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
