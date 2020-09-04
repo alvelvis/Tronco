@@ -678,7 +678,7 @@ function toggleMobile(el) {
             case "mobileSidebar":
                 $('#mobileMenu').show()
                 $('#mobileTronco').show()
-                $('#mobileSearch').show()
+                $('#mobileSearch').toggle(permView)
                 $('#mobileMenu').toggleClass("mobile-btn-active", true)
                 break
             case "mobileLeft":
@@ -1162,6 +1162,8 @@ function validatePassword (name){
         if (permSetup) { permEdit = true }
         if (!permEdit) { permSetup = false }
         $('#login').toggle(!is_local)
+        $('#setPermissions').toggle(!is_local)
+        $('#setPassword').toggle(!is_local)
         $('#conected').html(!data.has_password && permSetup ? "Crie uma senha" : (permSetup ? "Você é dono" : (permEdit ? "Você pode editar" : (permView ? "Você pode visualizar" : "Você não pode visualizar"))))
         $('#permissionsSettings').toggle(!data.has_password ? false : (permSetup ? true : false))
         $('#uploadTextDiv').toggle(permEdit)
