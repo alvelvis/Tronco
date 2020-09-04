@@ -1991,7 +1991,7 @@ function triggerResize(first=false){
             $('#settings').append($('#renameCorpus, #deleteCorpus, #permissionsSettings').detach())
             mobileInterval = window.setInterval(function(){
                 $('#mobileLeft').css({top: window.innerHeight-75, left: window.innerWidth-75})
-                $('#mobileEdit').css({top: window.innerHeight-66, left: (window.innerWidth/2)-30})
+                $('#mobileEdit').css({top: window.innerHeight-68, left: (window.innerWidth/2)-28})
             })
         }
         isMobile = true
