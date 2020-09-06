@@ -295,8 +295,7 @@ class AdvancedCorpora:
                         try:
                             self.corpora[corpus] = json.loads(f_text)
                         except:
-                            sys.stderr.write(corpus)
-                            exit()
+                            exit(corpus)
                 if os.path.isfile(recent_queries_file):
                     with open(recent_queries_file, "r") as w:
                         w_text = w.read()
