@@ -38,27 +38,28 @@ def save_metadata(name, filename, metadata):
 
     if filename == "README":
         for ordinary_file in os.listdir(corpus_dir):
-            ordinary_filename = os.path.join(objects.root_path, "corpora", name, ordinary_file)
-            with open(ordinary_filename) as f:
-                ordinary_text = f.read().splitlines()
-            ordinary_metadata = {
-                x.split("# ", 1)[1].split(" = ", 1)[0]: x.split(" = ")[1]
-                for x in ordinary_text if x.strip().startswith("# ") and " = " in x
-            }
-            ordinary_text = "\n".join([x for x in ordinary_text if not x.strip().startswith("# ") and not ' = ' in x])
-            for metadado in metadata:
-                if metadado not in objects.tronco_metadata:
-                    if metadado not in ordinary_metadata:
-                        ordinary_metadata[metadado] = metadata[metadado]
-                    elif metadado in ordinary_metadata and metadado in text_metadata and ordinary_metadata[metadado] == text_metadata[metadado]:
-                        ordinary_metadata[metadado] = metadata[metadado]
-            for metadado in text_metadata:
-                if metadado not in objects.tronco_metadata:
-                    if metadado in text_metadata and metadado in ordinary_metadata and metadado not in metadata and ordinary_metadata[metadado] == text_metadata[metadado]:
-                        del ordinary_metadata[metadado]
+            if not ordinary_file in objects.tronco_special_files:
+                ordinary_filename = os.path.join(objects.root_path, "corpora", name, ordinary_file)
+                with open(ordinary_filename) as f:
+                    ordinary_text = f.read().splitlines()
+                ordinary_metadata = {
+                    x.split("# ", 1)[1].split(" = ", 1)[0]: x.split(" = ")[1]
+                    for x in ordinary_text if x.strip().startswith("# ") and " = " in x
+                }
+                ordinary_text = "\n".join([x for x in ordinary_text if not x.strip().startswith("# ") and not ' = ' in x])
+                for metadado in metadata:
+                    if metadado not in objects.tronco_metadata:
+                        if metadado not in ordinary_metadata:
+                            ordinary_metadata[metadado] = metadata[metadado]
+                        elif metadado in ordinary_metadata and metadado in text_metadata and ordinary_metadata[metadado] == text_metadata[metadado]:
+                            ordinary_metadata[metadado] = metadata[metadado]
+                for metadado in text_metadata:
+                    if metadado not in objects.tronco_metadata:
+                        if metadado in text_metadata and metadado in ordinary_metadata and metadado not in metadata and ordinary_metadata[metadado] == text_metadata[metadado]:
+                            del ordinary_metadata[metadado]
 
-            with open(ordinary_filename, "w") as f:
-                f.write("\n".join(["# " + x + " = " + y for x, y in ordinary_metadata.items()]) + "\n" + ordinary_text)
+                with open(ordinary_filename, "w") as f:
+                    f.write("\n".join(["# " + x + " = " + y for x, y in ordinary_metadata.items()]) + "\n" + ordinary_text)
                         
     return {'error': '0'}
 
