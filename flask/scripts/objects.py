@@ -295,7 +295,7 @@ class AdvancedCorpora:
                         try:
                             self.corpora[corpus] = json.loads(f_text)
                         except:
-                            exit(corpus)
+                            sys.stderr.write(">>>>>>>>> error while reading AdvancedCorpora: " + corpus)
                 if os.path.isfile(recent_queries_file):
                     with open(recent_queries_file, "r") as w:
                         w_text = w.read()
