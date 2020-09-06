@@ -1171,7 +1171,7 @@ function validatePassword (name){
             $('#corpusSettings').toggle(permSetup)
             toggleMobile(permView ? "mobileFile" : "mobileNoPerm")
         }
-        $('#newFile').css('visibility', permEdit ? "visible" : "hidden")
+        $('#newFile').toggle(permEdit)
         $('#mainText').prop('readonly', (isMobile) || (!isMobile && !permEdit)).toggleClass("p-3", !permEdit)
         $('#saveModifications').attr('disabled', !permEdit)
         $('#menu-svg').toggle(permSetup)
