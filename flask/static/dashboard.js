@@ -485,7 +485,7 @@ $('#newMetadata').click(function(){
         if (default_metadata.indexOf(newKey) >= 0 || $('[key="' + newKey + '"]').length) {
             alert("Metadado já existe!")
         } else {
-            $('#metadataItems').append('<div class="input-group mb-3 metadataDiv"><div class="input-group-prepend"><a class="metadataKey removeMetadata input-group-text"><span title="Remover metadado" class="removeMetadata" data-feather="x"></span>' + newKey + '</a></div><input type="text" class="metadataItem form-control" key="' + newKey + '"></div>')
+            $('#metadataItems').append('<div class="input-group pb-3 metadataDiv"><div class="input-group-prepend"><a class="metadataKey removeMetadata input-group-text"><span title="Remover metadado" class="removeMetadata" data-feather="x"></span>' + newKey + '</a></div><input type="text" class="metadataItem form-control" key="' + newKey + '"></div>')
             checkTheme()
             updateMetadataRemove()
             metadataItemUpdate()
@@ -505,7 +505,7 @@ function loadMetadata(metadata, readme=false) {
     }
     for (key of Object.keys(metadata)) {
         if (default_metadata.indexOf(key) == -1)
-        metadataItems = metadataItems + '<div class="input-group mb-3 metadataDiv"><div class="input-group-prepend"><a class="metadataKey removeMetadata input-group-text"><span title="Remover metadado" data-feather="x"></span>' + key + '</a></div><input type="text" class="metadataItem form-control" key="' + key + '"></div>'
+        metadataItems = metadataItems + '<div class="input-group pb-3 metadataDiv"><div class="input-group-prepend"><a class="metadataKey removeMetadata input-group-text"><span title="Remover metadado" data-feather="x"></span>' + key + '</a></div><input type="text" class="metadataItem form-control" key="' + key + '"></div>'
     }
     $('#metadataItems').html(metadataItems)
     $('.metadataItem').each(function(){
