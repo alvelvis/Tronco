@@ -624,28 +624,38 @@ function toggleInsertSuccess(){
     
 }
 
-function returnSearch(filename=$('#search').val(), forceUpdate = false){
+function returnSearch(filename=$('#search').val(), forceUpdate = false, skipFind = false){
     toggleMain(false)
-    $.ajax({
-        url: '/api/findOrCreateFile',
-        method: 'POST',
-        data: {
-            "name": $('#name').html(),
-            "filename": filename,
-            "tronco_token": getTroncoToken()
-        }
-    })
-    .done(function(data){
-        updateFiles("", load=data.data, forceUpdate)
+    if (skipFind) {
+        updateFiles("", load=filename, forceUpdate)
         $('#advancedSearch').find('a').toggleClass("active", false)
         if (special_files.indexOf(filename) == -1) {
-            $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + data.data + " - Tronco"))
+            $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + filename + " - Tronco"))
         } else {
-            $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + name + " - Tronco"))
+            $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + $('#name').html() + " - Tronco"))
         }
-        $('#search').val('')
-        $('#search').blur()
-    })
+    } else {
+        $.ajax({
+            url: '/api/findOrCreateFile',
+            method: 'POST',
+            data: {
+                "name": $('#name').html(),
+                "filename": filename,
+                "tronco_token": getTroncoToken()
+            }
+        })
+        .done(function(data){
+            updateFiles("", load=data.data, forceUpdate)
+            $('#advancedSearch').find('a').toggleClass("active", false)
+            if (special_files.indexOf(filename) == -1) {
+                $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + data.data + " - Tronco"))
+            } else {
+                $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + $('#name').html() + " - Tronco"))
+            }
+            $('#search').val('')
+            $('#search').blur()
+        })
+    }
 }
 
 function toggleMobile(el) {
@@ -1562,7 +1572,7 @@ function updateFiles(key = "", load = "", forceUpdate = false){
                 $('.files').toggleClass("active", false)
                 $('[file="' + $(this).attr('file') + '"].files').toggleClass("active", true)
                 $('#advancedSearch').find('a').toggleClass("active", false)
-                returnSearch($(this).attr('file'))
+                returnSearch($(this).attr('file'), false, true)
             })
 
             $('[file!=README][file!=ARCHIVE].files').on('contextmenu', function(e) {
@@ -1587,9 +1597,10 @@ function updateFiles(key = "", load = "", forceUpdate = false){
 
             if (load) {
                 loadFile(load)
+                recentFiles()
             } else {
                 if ($('[file="' + $('#filename').attr('file') + '"].files').length) {
-                    $('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active', true)
+                    //$('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active', true)
                     $('#advancedSearch').find('a').toggleClass("active", false)
                 }
             }
@@ -1601,7 +1612,7 @@ function updateFiles(key = "", load = "", forceUpdate = false){
             loadFile(load)
         } else {
             if ($('[file="' + $('#filename').attr('file') + '"].files').length) {
-                $('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active', true)
+                //$('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active', true)
                 $('#advancedSearch').find('a').toggleClass("active", false)
             }
         }
@@ -1806,7 +1817,6 @@ function loadFile(filename){
             updateToolbar()
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
-            recentFiles()
             if (data.is_public && !visitant_view_perm) {
                 $('#shareLinkLabel').html("Público")
                 $('#shareText').toggleClass("btn-success", true)
