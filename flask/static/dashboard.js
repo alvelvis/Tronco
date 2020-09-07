@@ -624,7 +624,7 @@ function toggleInsertSuccess(){
     
 }
 
-function returnSearch(filename=$('#search').val()){
+function returnSearch(filename=$('#search').val(), forceUpdate = false){
     toggleMain(false)
     $.ajax({
         url: '/api/findOrCreateFile',
@@ -636,7 +636,7 @@ function returnSearch(filename=$('#search').val()){
         }
     })
     .done(function(data){
-        updateFiles("", load=data.data)
+        updateFiles("", load=data.data, forceUpdate)
         $('#advancedSearch').find('a').toggleClass("active", false)
         if (special_files.indexOf(filename) == -1) {
             $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + data.data + " - Tronco"))
@@ -1202,9 +1202,9 @@ function validatePassword (name){
             }
             checkTheme()
             $('#advancedSearch').click()
-            updateFiles()
+            updateFiles("", "", true)
         } else {
-            returnSearch($('#filename').attr('file'))
+            returnSearch($('#filename').attr('file'), true)
         }
     })
     return true
@@ -1277,7 +1277,11 @@ $('#search').on('keyup', function(e){
     clearTimeout(searchTimer)
     searchTimer = setTimeout(doneSearch, doneSearchInterval)
     if (e.which == 13){
-        returnSearch()
+        if (!$('[file="' + filename + '"].files').length) {
+            returnSearch(filename, true)
+        } else {
+            returnSearch(filename, false)
+        }
     }
 })
 
@@ -1469,9 +1473,9 @@ function deleteFile(filename){
         })
         .done(function(){
             if ($('#filename').attr('file') == filename) {
-                returnSearch("README")
+                returnSearch("README", true)
             } else {
-                updateFiles()
+                updateFiles("", "", true)
             }
         })
     }
@@ -1497,9 +1501,9 @@ function renameFile(filename) {
         .done(function(data){
             if (data.data != "false") {
                 if ($('#filename').attr('file') == filename) {
-                    returnSearch(data.data)
+                    returnSearch(data.data, true)
                 } else {
-                    updateFiles()
+                    updateFiles("", "", true)
                 }
             } else {
                 alert("Arquivo " + new_filename + " já existe!")
@@ -1512,69 +1516,86 @@ $('#renameFile').click(function(){
     renameFile($('#filename').attr('file'))
 })
 
-function updateFiles(key = "", load = ""){
+function updateFiles(key = "", load = "", forceUpdate = false){
     name = $('#name').html()
-    $.ajax({
-        url: '/api/updateFiles',
-        data: {
-            'name': name,
-            'key': key,
-            "tronco_token": getTroncoToken()
-        }
-    })
-    .done(function(data){
-        $('#archive').toggle(data.has_archive && permEdit)
-        $('#files').html("")
-        $('#nFiles').html(data.data.split("|").length)
+    if (forceUpdate) {
+        $.ajax({
+            url: '/api/updateFiles',
+            async: false,
+            data: {
+                'name': name,
+                'key': key,
+                "tronco_token": getTroncoToken()
+            }            
+        })
+        .done(function(data){
+            $('#archive').toggle(data.has_archive && permView)
         
-        n = 0
-        $('#divFullUpdateFiles').toggle(data.data.split("|").length >= max_update_files)
-        for (x of data.data.split("|")){
-            n ++
-            if (n == max_update_files) {
-                break
+            $('#files').html("")
+            $('#nFiles').html(data.data.split("|").length)
+            
+            n = 0
+            $('#divFullUpdateFiles').toggle(data.data.split("|").length >= max_update_files)
+            for (x of data.data.split("|")){
+                n ++
+                if (n == max_update_files) {
+                    break
+                }
+                if (x.length) {
+                    $('#files').append(`
+                    <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
+                        <a class="nav-link files d-flex align-items-center ` + (load.length && load == x ? 'active' : '') + `" style="width:100%;" file="` + x + `">
+                            <!--span data-feather="file-text"></span-->
+                            <span style="max-width: 98%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;">` + x + `</span>
+                        </a>
+                    </li>`)
+                }
             }
-            if (x.length) {
-                $('#files').append(`
-                <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
-                    <a class="nav-link files d-flex align-items-center ` + (load.length && load == x ? 'active' : '') + `" style="width:100%;" file="` + x + `">
-                        <!--span data-feather="file-text"></span-->
-                        <span style="max-width: 98%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;">` + x + `</span>
-                    </a>
-                </li>`)
-            }
-        }
 
-        if (!isMobile) {
-            $('.one-of-the-files').on('mouseenter mouseleave', function(){
-                $(this).toggleClass("files-hover")
+            if (!isMobile) {
+                $('.one-of-the-files').on('mouseenter mouseleave', function(){
+                    $(this).toggleClass("files-hover")
+                })
+            }
+
+            $('.files').unbind('click').click(function(){
+                $('.files').toggleClass("active", false)
+                $(this).toggleClass("active", true)
+                $('#advancedSearch').find('a').toggleClass("active", false)
+                returnSearch($(this).attr('file'))
             })
-        }
 
-        $('.files').unbind('click').click(function(){
-            $('.files').toggleClass("active", false)
-            $(this).toggleClass("active", true)
-            $('#advancedSearch').find('a').toggleClass("active", false)
-            returnSearch($(this).attr('file'))
-        })
+            $('[file!=README][file!=ARCHIVE].files').on('contextmenu', function(e) {
+                toggleMobile(false)
+                $('.files').css('background-color', '')
+                $(this).css('background-color', 'orange')
+                filedivcontext = $(this)
+                var top = e.pageY
+                var left = e.pageX
+                $("#context-menu-file").css({
+                    display: "block",
+                    top: top,
+                    left: left
+                }).addClass("show")
+                return false //blocks default Webbrowser right click menu
+            })
+            $('[file=README], [file=ARCHIVE]').on('contextmenu', function(e) {
+                e.preventDefault()
+            })
 
-        $('[file!=README][file!=ARCHIVE].files').on('contextmenu', function(e) {
-            toggleMobile(false)
-            $('.files').css('background-color', '')
-            $(this).css('background-color', 'orange')
-            filedivcontext = $(this)
-            var top = e.pageY
-            var left = e.pageX
-            $("#context-menu-file").css({
-                display: "block",
-                top: top,
-                left: left
-            }).addClass("show")
-            return false //blocks default Webbrowser right click menu
+            feather.replace()
+
+            if (load) {
+                loadFile(load)
+            } else {
+                if ($('[file="' + $('#filename').attr('file') + '"].files').length) {
+                    $('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active', true)
+                    $('#advancedSearch').find('a').toggleClass("active", false)
+                }
+            }
+
         })
-        $('[file=README], [file=ARCHIVE]').on('contextmenu', function(e) {
-            e.preventDefault()
-        })
+    } else {
 
         if (load) {
             loadFile(load)
@@ -1584,10 +1605,8 @@ function updateFiles(key = "", load = ""){
                 $('#advancedSearch').find('a').toggleClass("active", false)
             }
         }
+    }
 
-        feather.replace()
-
-    })
 }
 
 $('#newFile').click(function(){
@@ -1919,6 +1938,7 @@ function loadConfig(){
         visitant_edit_perm = data.edit_perm
         visitant_setup_perm = data.setup_perm
         default_metadata = data.default_metadata
+        $('#corpusLanguage').html("")
         for (language in data.languages) {
             $('#corpusLanguage').append("<option value='" + language + "'>" + data.languages[language].label + "</option>")
         }
@@ -2106,7 +2126,7 @@ $(document).ready(function(){
         }
     })
     .on("queuecomplete", function(){
-        returnSearch("README")
+        returnSearch("README", true)
         toggleProgress(false)
     })
     .on("sending", function(file, xhr, formData){
