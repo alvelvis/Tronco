@@ -179,16 +179,16 @@ function toggleMain(panel) {
     $('#filename-div, #filename, #mainText, #saved, #toolbarRow, #toolbar, #hr, #breadcrumb-nav').toggle(false)
     $('#search').toggle(!isMobile)
     $('#searchMain').toggle(false)
-    $('#advancedSearch').find('a').toggleClass("active", false)
-    $('.files').toggleClass("active", false)
     if (panel) {
         switch (panel) {
             case "file":
+                $('#advancedSearch').find('a').toggleClass("active", false)
                 $('#filename-div, #filename, #saved, #mainText, #toolbarRow, #toolbar, #hr').toggle(true)
                 break
             case "search":
                 $('#searchMain').toggle(true)
                 $('#advancedSearchToolbarRow').scrollLeft(0)
+                $('.files').toggleClass("active", false)
                 break
         }
     }
@@ -626,6 +626,11 @@ function toggleInsertSuccess(){
 
 function returnSearch(filename=$('#search').val(), forceUpdate = false, skipFind = false){
     toggleMain(false)
+    $('.files').toggleClass("active", false)
+    if ($('[file="' + filename + '"].files')) {
+        $('[file="' + filename + '"].files').toggleClass('active', true)
+        $('#advancedSearch').find('a').toggleClass("active", false)
+    }
     if (skipFind) {
         updateFiles("", load=filename, forceUpdate)
         $('#advancedSearch').find('a').toggleClass("active", false)
@@ -1569,9 +1574,6 @@ function updateFiles(key = "", load = "", forceUpdate = false){
             }
 
             $('.files').unbind('click').click(function(){
-                $('.files').toggleClass("active", false)
-                $('[file="' + $(this).attr('file') + '"].files').toggleClass("active", true)
-                $('#advancedSearch').find('a').toggleClass("active", false)
                 returnSearch($(this).attr('file'), false, true)
             })
 
@@ -1598,11 +1600,9 @@ function updateFiles(key = "", load = "", forceUpdate = false){
             if (load) {
                 loadFile(load)
                 recentFiles()
+                $('[file="' + load + '"].files').toggleClass('active', true)
             } else {
-                if ($('[file="' + $('#filename').attr('file') + '"].files').length) {
-                    //$('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active', true)
-                    $('#advancedSearch').find('a').toggleClass("active", false)
-                }
+                
             }
 
         })
@@ -1611,10 +1611,7 @@ function updateFiles(key = "", load = "", forceUpdate = false){
         if (load) {
             loadFile(load)
         } else {
-            if ($('[file="' + $('#filename').attr('file') + '"].files').length) {
-                //$('[file="' + $('#filename').attr('file') + '"].files').toggleClass('active', true)
-                $('#advancedSearch').find('a').toggleClass("active", false)
-            }
+           
         }
     }
 
@@ -1805,13 +1802,6 @@ function loadFile(filename){
             $('.filename').html(special_files.indexOf(filename) >= 0 ? name : filename)
             $('#filename').attr('file', filename)
             $('#filename').scrollLeft(0)
-            if (!$('.files.active').length) {
-                $('.files').toggleClass("active", false)
-                if ($('[file="' + filename + '"].files')) {
-                    $('[file="' + filename + '"].files').toggleClass('active', true)
-                    $('#advancedSearch').find('a').toggleClass("active", false)
-                }
-            }
             $('#mainText').val(data.data.text)
             loadMetadata(data.data.metadata, filename == "README")
             updateToolbar()
