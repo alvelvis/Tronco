@@ -406,7 +406,7 @@ def update_files():
     name = request.values.get("name")
     password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
     if not tronco_config.has_permission(name, password, "visualizar"):
-        return {'data': ""}
+        return {'data': "", 'has_archive': False}
     return {'data': "|".join(functions.update_files(name)), 'has_archive': os.path.isfile(os.path.join(objects.root_path, "corpora", name, "ARCHIVE"))}
 
 @app.route('/api/changeTroncoConfig', methods=["POST"])

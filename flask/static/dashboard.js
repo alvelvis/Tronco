@@ -1529,7 +1529,7 @@ function updateFiles(key = "", load = "", forceUpdate = false){
             }            
         })
         .done(function(data){
-            $('#archive').toggle(data.has_archive && permView)
+            $('#archive').toggle(data.has_archive && permEdit)
         
             $('#files').html("")
             $('#nFiles').html(data.data.split("|").length)
@@ -1560,7 +1560,7 @@ function updateFiles(key = "", load = "", forceUpdate = false){
 
             $('.files').unbind('click').click(function(){
                 $('.files').toggleClass("active", false)
-                $(this).toggleClass("active", true)
+                $('[file="' + $(this).attr('file') + '"].files').toggleClass("active", true)
                 $('#advancedSearch').find('a').toggleClass("active", false)
                 returnSearch($(this).attr('file'))
             })
