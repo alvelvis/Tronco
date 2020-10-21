@@ -77,9 +77,15 @@ body {
   color: white;
 }
 
+.sidebar .nav-link.active:hover,
+.sidebar .nav-link.active:hover .feather {
+  color:white;
+}
+
 .sidebar .nav-link:hover .feather,
 .sidebar .nav-link.active .feather {
   color: inherit;
+  /*font-weight:bold;*/
 }
 
 .sidebar-heading {
