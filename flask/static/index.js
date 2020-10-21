@@ -99,6 +99,7 @@ function loadCorpora(key = ""){
             if (key.length && data.data.split("|").length && isMobile) {
                 $('#recentCorpora, #recentCorporaHr').hide()
                 $('#openCorpus').show()
+                $('#footer').hide()
             }
         }
         if (key.length && data.data.toLowerCase().replace(/:l/g, "").split("|").indexOf(key.toLowerCase()) >= 0) {
@@ -232,5 +233,6 @@ $('#recentCorpora').click(function(){
     $(this).hide()
     $('#recentCorporaHr').hide()
     $('#openCorpus').show()
+    $('#footer').hide()
     window.scrollTo(0, $('#filterOpenCorpus').offset().top-80)
 })
