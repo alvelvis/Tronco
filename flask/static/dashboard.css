@@ -82,6 +82,10 @@ body {
   color:white;
 }
 
+.sidebar .files:hover {
+  font-weight:bold;
+}
+
 .sidebar .nav-link:hover .feather,
 .sidebar .nav-link.active .feather {
   color: inherit;
