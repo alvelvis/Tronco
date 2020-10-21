@@ -414,7 +414,7 @@ class TroncoConfig:
                     'auto_wrap': "true",
                     'auto_save': "true",
                     'corpus_language': tronco_default_language,
-                    'advanced_editing': "true",
+                    'advanced_editing': "false",
                     }
                 }
             self.save()

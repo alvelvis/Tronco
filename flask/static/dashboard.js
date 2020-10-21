@@ -1447,6 +1447,9 @@ $('.toggleSettings').click(function(){
         $('#settings').toggle(false)
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
+        if (theme == "light") {
+            $('#mainHeadbar, #troncoHomeBar').css('background-color', ($('#sidebar').hasClass('d-none') ? "#bf6724" : 'white')).toggleClass('bg-dark', !$('#sidebar').hasClass('d-none'))
+        }
         if ($('#sidebar').hasClass("d-none")) {
             $('#main').toggle(true)
             if (permView) {
@@ -2094,6 +2097,9 @@ function checkTheme(){
     } else {
         $(elements).css("background-color", "white").css("color", "black")
         $(elements2).css("background-color", "white").css("color", "white").toggleClass("bg-dark", true)
+        if (isMobile) {
+            $('#mainHeadbar, #troncoHomeBar').css('background-color', "#bf6724").toggleClass('bg-dark', false)
+        }
         $(elements3).css("color", "black").toggleClass("form-control", true)
         $(elements4).css("background-color", "rgb(243, 243, 243)")
         if (isMobile) {

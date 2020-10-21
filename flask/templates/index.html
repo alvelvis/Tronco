@@ -66,7 +66,7 @@
         </div>
         <br>
         {% endif %}
-        <img src="{{url_for('static', filename='favicon.png')}}" class="mb-2" alt="" width="96">
+        <img src="{{url_for('static', filename='favicon.png')}}" class="mt-3 mb-2" alt="" width="96">
         <h1 class="display-5">Tronco te ajuda a organizar coleções de texto</h1>
         <p id="leadToggle" class="lead">Crie uma coleção, organize seus arquivos pessoais ou de trabalho, acesse de onde quiser e compartilhe com quem quiser. Crie uma senha apenas se assim desejar.</p>
         <p class="lead">Vamos começar?</p>
@@ -75,7 +75,7 @@
       <div class="container pt-0 mt-0">
         <div class="pt-0 mt-0 card-deck mb-3 text-center">
           <!--div class="card mb-4 box-shadow"-->
-            <div class="card-body pt-0 mt-0">
+            <div class="card-body pt-0 mt-0 mb-0 pb-0">
               <!--h1 class="card-title pricing-card-title"><small class="text-muted">Hoje eu quero...</small></h1-->
               <div class="input-group mb-3">
                 <input type="text" class="mt-0 form-control" placeholder="Crie ou procure uma coleção" id="filterOpenCorpus">
@@ -84,7 +84,10 @@
                 </div>
               </div>
               <span class="text-muted" id="randomTip"></span><!--{{ random_tip }}-->
-              <ul id="openCorpus" style="overflow:auto; margin-bottom:40px" class="list-group list-group-flush py-3">
+
+              <hr id="recentCorporaHr">
+              <button type="button" style="display:none" id="recentCorpora" class="btn btn-outline-primary">Coleções recentes</button>
+              <ul id="openCorpus" style="display:none; overflow:auto; margin-bottom:40px" class="list-group list-group-flush py-3">
                 
               </ul>
               <!--ul class="list-unstyled mt-3 mb-4">
@@ -141,7 +144,7 @@
     <script src="{{url_for('static', filename='bootstrap.js')}}"></script>
     <script src="{{url_for('static', filename='holder.js')}}"></script>
     <script src="{{url_for('static', filename='tronco.js')}}?version=15"></script>
-    <script src="{{url_for('static', filename='index.js')}}?version=14"></script>
+    <script src="{{url_for('static', filename='index.js')}}?version=15"></script>
     <script src="{{url_for('static', filename='feather.js')}}"></script>
     <script>
       Holder.addTheme('thumb', {

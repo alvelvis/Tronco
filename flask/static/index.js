@@ -87,6 +87,10 @@ function loadCorpora(key = ""){
         }
     })
     .done(function(data){
+        if (!key.length && data.data.length && isMobile) {
+            $('#recentCorpora, #recentCorporaHr').show()
+            $('#openCorpus').hide()
+        }
         if (key.length && data.data.toLowerCase().replace(/:l/g, "").split("|").indexOf(key.toLowerCase()) >= 0) {
             pre_list = "<a class='text-muted'>Abrir " + key + "?</a>"
         }
@@ -99,7 +103,7 @@ function loadCorpora(key = ""){
         new_data = ""
         for (x of data.data.split("|")) {
             if (is_local || key.length) {
-                new_data = new_data + '<li class="list-group-item"><a class="openCorpus" corpus="' + x.split(":l")[0] + '" href="/corpus/' + x.split(":l")[0] + '?file=README">' + (x.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" title="Visitantes não podem visualizar" data-feather="lock"></span>' : "") + "<span>" + x.split(":l")[0] + '</span></a></li>'
+                new_data = new_data + '<li class="list-group-item" style="border-bottom:0px"><a class="openCorpus" corpus="' + x.split(":l")[0] + '" href="/corpus/' + x.split(":l")[0] + '?file=README">' + (x.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" title="Visitantes não podem visualizar" data-feather="lock"></span>' : "") + "<span>" + x.split(":l")[0] + '</span></a></li>'
             }
         }
         if (pre_list.length) {
@@ -107,7 +111,7 @@ function loadCorpora(key = ""){
         }
         $('#openCorpus').html("")
         if (key.length) {
-            $("#openCorpus").append(data.data.length ? new_data : new_data + "<span class='mt-3'>Nada encontrado.</span>")
+            $("#openCorpus").append(data.data.length ? new_data : new_data + "<span>Nada encontrado.</span>")
         } else {
             let recent = data["new_recent"]
             setRecent(recent.replace(/:l/g, ""))
@@ -138,6 +142,10 @@ $('#filterOpenCorpus').on('keyup', function(e){
     key = $(this).val()
     if (e.key != "ArrowUp" && e.key != "ArrowDown") {
         loadCorpora(key)
+        if ($('#recentCorpora:visible').length) {
+            $('#recentCorpora, #recentCorporaHr').hide()
+            $('#openCorpus').show()
+        }
     } else {
         $('#filterOpenCorpus').blur()
     }
@@ -159,6 +167,9 @@ function checkTheme(){
         $('#moon-div').html("<span data-feather='moon'></span>")
         feather.replace()
         $(elements).css("background-color", "").css("color", "")
+        if (isMobile) {
+            $(elements2).css('background-color', "#bf6724").css('color', 'white').toggleClass('bg-dark', false)
+        }
     }
 }
 
@@ -186,6 +197,10 @@ $(window).ready(function(){
     $('#filterOpenCorpus').val("")
     if (!isMobile) {
         $('#filterOpenCorpus').focus()
+        $('#recentCorpora, #recentCorporaHr').hide()
+        $('#openCorpus').show()
+    } else {
+        
     }
     scrollTo(0,0)
     if (window.location.href.match(/app=true/)) {
@@ -196,4 +211,11 @@ $(window).ready(function(){
     }
     $('#leadToggle').toggle(!is_local)
     checkTheme()
+})
+
+$('#recentCorpora').click(function(){
+    $(this).hide()
+    $('#recentCorporaHr').hide()
+    $('#openCorpus').show()
+    window.scrollTo(0, $('#filterOpenCorpus').offset().top-80)
 })
