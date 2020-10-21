@@ -181,6 +181,7 @@ function checkTheme(){
         $('#moon-div').html("<span data-feather='moon'></span>")
         feather.replace()
         $(elements).css("background-color", "").css("color", "")
+        $('#footer').css('background-color', "white")
         if (isMobile) {
             $(elements2).css('background-color', "#bf6724").css('color', 'white').toggleClass('bg-dark', false)
         }
@@ -206,7 +207,7 @@ $(window).ready(function(){
     } else {
         isMobile = false
     }
-    $('#footer').toggleClass("fixed-bottom", !isMobile)
+    //$('#footer').toggleClass("fixed-bottom", true)
     loadCorpora()
     $('#filterOpenCorpus').val("")
     if (!isMobile) {
