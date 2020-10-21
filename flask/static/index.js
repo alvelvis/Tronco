@@ -87,9 +87,19 @@ function loadCorpora(key = ""){
         }
     })
     .done(function(data){
-        if (!key.length && data.data.length && isMobile) {
+        if (!key.length) {
+            $('#randomTip').hide()
+        } else {
+            $('#randomTip').show()
+        }
+        if (((!key.length && getRecent().recent)) && isMobile) {
             $('#recentCorpora, #recentCorporaHr').show()
             $('#openCorpus').hide()
+        } else {
+            if (key.length && data.data.split("|").length && isMobile) {
+                $('#recentCorpora, #recentCorporaHr').hide()
+                $('#openCorpus').show()
+            }
         }
         if (key.length && data.data.toLowerCase().replace(/:l/g, "").split("|").indexOf(key.toLowerCase()) >= 0) {
             pre_list = "<a class='text-muted'>Abrir " + key + "?</a>"
@@ -102,8 +112,10 @@ function loadCorpora(key = ""){
         }
         new_data = ""
         for (x of data.data.split("|")) {
-            if (is_local || key.length) {
-                new_data = new_data + '<li class="list-group-item" style="border-bottom:0px"><a class="openCorpus" corpus="' + x.split(":l")[0] + '" href="/corpus/' + x.split(":l")[0] + '?file=README">' + (x.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" title="Visitantes não podem visualizar" data-feather="lock"></span>' : "") + "<span>" + x.split(":l")[0] + '</span></a></li>'
+            if (x.trim().length) {
+                if (is_local || key.length) {
+                    new_data = new_data + '<li class="list-group-item" style="border-bottom:0px"><a class="openCorpus" corpus="' + x.split(":l")[0] + '" href="/corpus/' + x.split(":l")[0] + '?file=README">' + (x.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" title="Visitantes não podem visualizar" data-feather="lock"></span>' : "") + "<span>" + x.split(":l")[0] + '</span></a></li>'
+                }
             }
         }
         if (pre_list.length) {
@@ -116,7 +128,9 @@ function loadCorpora(key = ""){
             let recent = data["new_recent"]
             setRecent(recent.replace(/:l/g, ""))
             for (name of recent.split("|").reverse()){
-                $('#openCorpus').append('<li class="list-group-item"><a class="openCorpus" corpus="' + name.split(":l")[0] + '" href="/corpus/' + name.split(":l")[0] + '?file=README">' + (name.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" title="Visitantes não podem visualizar" data-feather="lock"></span>' : "") + "<span>" + name.split(":l")[0] + '</span></a></li>')
+                if (name.trim().length) {
+                    $('#openCorpus').append('<li class="list-group-item"><a class="openCorpus" corpus="' + name.split(":l")[0] + '" href="/corpus/' + name.split(":l")[0] + '?file=README">' + (name.indexOf(":l") >= 0 ? '<span class="pt-2 mr-1" title="Visitantes não podem visualizar" data-feather="lock"></span>' : "") + "<span>" + name.split(":l")[0] + '</span></a></li>')
+                }
             }
             $("#openCorpus").append(new_data)
         }
