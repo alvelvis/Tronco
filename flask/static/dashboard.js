@@ -190,6 +190,7 @@ function toggleMain(panel) {
                 $('#searchMain').toggle(true)
                 $('#advancedSearchToolbarRow').scrollLeft(0)
                 $('.files').toggleClass("active", false)
+                $('#filenameMobile').html("")
                 break
         }
     }
