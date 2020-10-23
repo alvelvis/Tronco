@@ -152,7 +152,7 @@ function indexCorpus(force=false) {
                 break
             case '2':
                 alert("Falha na indexação")
-                returnSearch("README")
+                gotoFile("README")
                 break
         }
     })
@@ -326,7 +326,7 @@ function updateSearchTables(data, tables) {
     })
 
     $('.gotoFile').click(function(){
-        returnSearch($(this).text())
+        gotoFile($(this).text())
     })
 
     $('[table="query_results"], [table="word_distribution"], [table="lemma_distribution"]').unbind('click').click(function(){
@@ -624,7 +624,7 @@ function toggleInsertSuccess(){
     
 }
 
-function returnSearch(filename=$('#search').val(), forceUpdate = false, skipFind = false){
+function gotoFile(filename=$('#search').val(), forceUpdate=false, skipFind=false){
     toggleMain(false)
     $('.files').toggleClass("active", false)
     if ($('[file="' + filename + '"].files')) {
@@ -939,9 +939,9 @@ function updateToolbar(){
         $('[toolbar=filesLink]').html("")
         for (link in files) {
             if (files[link][1].indexOf("/media/") >= 0) {
-                $('[toolbar=filesLink]').append('<div class="file-div"><a href="' + files[link][1] + '" target="' + target_href + '" class="px-1">' + escapeHtml(files[link][0]) + '</a></div>' + (link == files.length -1 ? "" : ""))
+                $('[toolbar=filesLink]').append('<div class="file-div"><a href="' + files[link][1] + '" target="' + target_href + '" class="openFileLink px-1">' + escapeHtml(files[link][0]) + '</a></div>' + (link == files.length -1 ? "" : ""))
             } else {
-                $('[toolbar=filesLink]').append('<div class="file-div"><a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + escapeHtml(files[link].split(":")[0]) + '</a></div>' + (link == files.length -1 ? "" : ""))
+                $('[toolbar=filesLink]').append('<div class="file-div"><a href="/corpus/' + (files[link].indexOf(":") == -1 ? $('#name').html() : files[link].split(":")[1]) + '?file=' + files[link].split(":")[0] + '" class="openFileLink px-1">' + (files[link].indexOf(":") == -1 ? "" : "(" + files[link].split(":")[1] + ") ") + escapeHtml(files[link].split(":")[0]) + '</a></div>' + (link == files.length -1 ? "" : ""))
             }
         }
         $('.file-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
@@ -950,7 +950,8 @@ function updateToolbar(){
         $('[toolbar=filesLink]').toggle(false)
     }
 
-    $('#shareText').toggle(!is_local)
+    $('#shareText').toggle(!is_local && $('#filename').attr('file') != "ARCHIVE")
+    $('#metadata').toggle($('#advancedEditingCheckbox').prop('checked') && permView && $('#filename').attr('file') != "ARCHIVE")
     $('#dropdown, .insertChecklist').toggle(permEdit)
     if (isMobile) {
         $('#toolbarRow').scrollLeft(0)
@@ -961,6 +962,49 @@ function updateToolbar(){
     } else {
         $('#mainText').css("margin-top", "")
     }*/
+
+    $('.openFileLink').click(function(e){
+        name = $('#name').html()
+        filename = $(this).text()
+        if ($('#filename').attr('file') == "ARCHIVE") {
+            e.preventDefault()
+            if (confirm('Deseja restaurar o arquivo "' + filename + '"?')) {
+                $.ajax({
+                    url: '/api/restoreFile',
+                    method: "POST",
+                    data: {
+                        'name': name,
+                        'tronco_token': getTroncoToken(),
+                        'filename': filename,
+                    }
+                })
+                .done(function(data){
+                    switch(data.error) {
+                        case '0':
+                            pattern = RegExp("tronco/" + filename + "\n", "g")
+                            saveFile("ARCHIVE", $('#mainText').val().replace(pattern, ""))
+                            gotoFile(filename, true)
+                            break
+                        case '1':
+                            alert('Permissões inválidas.')
+                            break
+                        case '2':
+                            alert("Arquvo não está mais na lixeira.")
+                            break
+                    }                    
+                })
+            }
+        }
+    })
+
+    if ($('.toolbarButton.btn-primary').length) {
+        if ($('.toolbarButton.btn-primary').is(":visible")) {
+            $('[toolbar=' + $('.toolbarButton.btn-primary').attr('id') + ']').show()
+        } else {
+            $('[toolbar=' + $('.toolbarButton.btn-primary').attr('id') + ']').hide()
+        }
+    }
+
 }
 
 $('#troncoHome').click(function(){
@@ -971,7 +1015,11 @@ function shouldReload(should){
     $('#mainText').prop("readOnly", should)
     $('#reloadPage').toggle(should)
     if (should) {
+        $('#mobileEdit').toggle(false)
         reloadPage.scrollIntoView()
+        $('#saved').remove()
+        $('.toolbarButton, #dropdown').remove()
+        $('.toolbar').remove()
     }
 }
 
@@ -1031,9 +1079,9 @@ function shareFile(filename, share) {
 }
 
 $('#shareText').click(function(){
-    $('[toolbar=shareText]').find('span').html("Visitantes " + (visitant_view_perm ? "" : " não ") + "podem visualizar esta coleção" + (visitant_view_perm ? ", basta compartilhar o link deste arquivo." : ", apenas este arquivo." + (permEdit ? " <a href='#' id='revokeFileAccess'>Revogar acesso.</a><br>" : "")))
+    $('[toolbar=shareText]').find('span').html("Visitantes " + (visitant_view_perm ? "" : " não ") + "podem visualizar esta coleção" + (visitant_view_perm ? ", basta compartilhar o link deste arquivo." : ", apenas este arquivo, que está público." + (permEdit ? "<br><a href='#' id='revokeFileAccess'>Clique aqui para tornar o arquivo privado.</a><br>" : "")))
     link = window.location.href.match(/^.*\//)[0] + $('#name').html().replace(/\s/g, "%20") + "?file=" + $('#filename').attr('file').replace(/\s/g, "%20")
-    $('[toolbar=shareText]').find('span').append("<br><a href='" + link + "'>" + link + "</a>")
+    $('[toolbar=shareText]').find('span').append("<br>Link para o arquivo: <a href='" + link + "'>" + link + "</a>")
     $('#revokeFileAccess').unbind('click').click(function(){
         shareFile($('#filename').attr('file'), "false")
     })
@@ -1219,7 +1267,7 @@ function validatePassword (name){
             $('#advancedSearch').click()
             updateFiles("", "", true)
         } else {
-            returnSearch($('#filename').attr('file'), true)
+            gotoFile($('#filename').attr('file'), true)
         }
     })
     return true
@@ -1293,9 +1341,9 @@ $('#search').on('keyup', function(e){
     searchTimer = setTimeout(doneSearch, doneSearchInterval)
     if (e.which == 13){
         if (!$('[file="' + filename + '"].files').length) {
-            returnSearch(filename, true)
+            gotoFile(filename, true)
         } else {
-            returnSearch(filename, false)
+            gotoFile(filename, false)
         }
     }
 })
@@ -1386,7 +1434,7 @@ function recentFiles(key = "", typing = ""){
         }
         $('#recentFiles').html(data.data.length ? new_data : new_data + 'Nenhum arquivo encontrado.')
         $('.recentFiles').unbind('click').click(function(){
-            returnSearch($(this).attr('file'))
+            gotoFile($(this).attr('file'))
         })
     })
 }
@@ -1490,10 +1538,14 @@ function deleteFile(filename){
             }
         })
         .done(function(){
-            if ($('#filename').attr('file') == filename) {
-                returnSearch("README", true)
+            if ($('#filename').attr('file') == "ARCHIVE") {
+                gotoFile("ARCHIVE", true)
             } else {
-                updateFiles("", "", true)
+                if ($('#filename').attr('file') == filename) {
+                    gotoFile("README", true)
+                } else {
+                    updateFiles("", "", true)
+                }
             }
         })
     }
@@ -1519,7 +1571,7 @@ function renameFile(filename) {
         .done(function(data){
             if (data.data != "false") {
                 if ($('#filename').attr('file') == filename) {
-                    returnSearch(data.data, true)
+                    gotoFile(data.data, true)
                 } else {
                     updateFiles("", "", true)
                 }
@@ -1577,7 +1629,7 @@ function updateFiles(key = "", load = "", forceUpdate = false){
             }
 
             $('.files').unbind('click').click(function(){
-                returnSearch($(this).attr('file'), false, true)
+                gotoFile($(this).attr('file'), false, true)
             })
 
             $('[file!=README][file!=ARCHIVE].files').on('contextmenu', function(e) {
@@ -1831,7 +1883,7 @@ function loadFile(filename){
             } else {
                 if (data.error == 3){
                     alert("Este arquivo não existe")
-                    returnSearch("README")
+                    gotoFile("README")
                     return false
                 }
             }
@@ -1843,7 +1895,7 @@ function loadFile(filename){
             window.location.href = "/?load=false"
             return false
         } else {
-            returnSearch("README")
+            gotoFile("README")
         }
     })
 }
@@ -1913,11 +1965,11 @@ $('#wrapTextCheckbox').on('change', function(){
 
 function loadConfigFromCheckboxes(){
     $('#corpusLanguageDiv, #advancedSearch').toggle($('#advancedEditingCheckbox').prop('checked') && permView)
-    $('#metadata').toggle($('#advancedEditingCheckbox').prop('checked') && permView)
     $('.changeMetadata').toggle(permEdit)
     $('#saveModifications').toggle(!$('#autoSaveCheckbox').prop('checked'))
     $('#mainText').attr('wrap', $('#wrapTextCheckbox').prop('checked') ? 'on' : 'off')
     $('#mainText').css('overflow', $('#wrapTextCheckbox').prop('checked') ? "hidden" : "auto")
+    updateToolbar()
 }
 
 var default_metadata = ["times_seen", "last_seen", "first_seen"]
@@ -2132,7 +2184,7 @@ $(document).ready(function(){
         }
     })
     .on("queuecomplete", function(){
-        returnSearch("README", true)
+        gotoFile("README", true)
         toggleProgress(false)
     })
     .on("sending", function(file, xhr, formData){

@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, shutil
 import requests
 import random
 import json
@@ -21,6 +21,19 @@ tronco_tokens = objects.TroncoTokens()
 temporary_objects = objects.TemporaryObjects()
 advanced_corpora = objects.AdvancedCorpora()
 app.jinja_env.globals.update(tronco_config=tronco_config)
+
+@app.route("/api/restoreFile", methods=["POST"])
+def restoreFile():
+    name = request.values.get("name")
+    filename = request.values.get("filename")
+    upload_dir = os.path.join(objects.root_path, "uploads")
+    password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "editar"):
+        return {'error': '1'}
+    if not os.path.isfile(os.path.join(upload_dir, filename)):
+        return {'error': '2'}
+    shutil.move(os.path.join(upload_dir, filename), os.path.join(objects.root_path, "corpora", name))
+    return {'error': '0'}
 
 @app.route("/api/shareFile", methods=["POST"])
 def shareFile():
@@ -292,16 +305,19 @@ def validate_password():
     if not token:
         token = str(uuid4())
     password = tronco_tokens.get_password(name, token)
+    if password == "default" and tronco_config.corpora[name]['permissions']['password'] == "default":
+        tronco_config.change_password(name, "default-" + token)
+        tronco_tokens.store_password(name, "default-" + token, token)
+        password = "default-" + token
     if (tronco_config.is_owner(name, password)):
         permissions = objects.all_permissions
     else:
         permissions = tronco_config.corpora[name]['permissions']['disconnected']
-    
     return {
         'permissions': "|".join(permissions),
         'token': str(uuid4()),
         "tronco_token": token,
-        "has_password": password != "default"
+        "has_password": not password.startswith("default-")
         }
 
 @app.route("/api/findOrCreateFile", methods=["POST"])
