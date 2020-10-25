@@ -1161,7 +1161,8 @@ $('#setPermissions').click(function(){
 
 $('#setPassword').click(function(){
     name = $('#name').html()
-    new_password = prompt("Você é dono(a) desta coleção, mas ela ainda não tem senha. Caso queira editá-la a partir de outro dispositivo, crie uma senha para " + name + ":")
+    message = ($('#conected').html() == 'Crie uma senha' ? "Você é dono(a) desta coleção, mas ela ainda não tem senha. Caso queira editá-la a partir de outro dispositivo, defina uma senha para " + name + ":" : "Crie uma nova senha para " + name + ":")
+    new_password = prompt(message)
     if (new_password && new_password.length) {
         new_password_twice = prompt("Insira novamente a senha, por favor:")
         if (new_password_twice && new_password_twice.length) {
