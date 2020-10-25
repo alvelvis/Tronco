@@ -68,7 +68,7 @@
         {% endif %}
         <img src="{{url_for('static', filename='favicon.png')}}" class="mt-3 mb-2" alt="" width="96">
         <h1 class="display-5">Tronco</h1>
-        <p id="leadToggle" class="lead">Crie uma coleção, organize seus arquivos pessoais ou de trabalho e acesse de onde quiser. Protegemos sua privacidade, tudo sem complicação: crie uma senha apenas se desejar.</p>
+        <p id="leadToggle" class="lead">Crie uma coleção, organize seus arquivos pessoais ou de trabalho e acesse de onde quiser, de forma segura. Tudo sem complicação: crie uma senha apenas se desejar.</p>
         <p class="lead">Vamos começar?</p>
       </div>
 
@@ -78,15 +78,16 @@
             <div class="card-body pt-0 mt-0 mb-0 pb-0">
               <!--h1 class="card-title pricing-card-title"><small class="text-muted">Hoje eu quero...</small></h1-->
               <div class="input-group mb-3">
-                <input type="text" class="mt-0 form-control" placeholder="Crie ou procure uma coleção" id="filterOpenCorpus">
+                <input type="text" class="mt-0 form-control" placeholder="Procure uma coleção" id="filterOpenCorpus">
                 <div class="input-group-append">
                   <button type="button" class="btn btn-primary" id="indexGo">OK</span>
+                  <button type="button" style="display:none;" id="recentCorpora" class="btn btn-outline-primary">Recentes</button>
                 </div>
               </div>
               <span class="text-muted" id="randomTip"></span><!--{{ random_tip }}-->
 
-              <hr style="display:none" id="recentCorporaHr">
-              <button type="button" style="display:none;" id="recentCorpora" class="btn btn-outline-primary">Coleções recentes</button>
+              <!--hr style="display:none" id="recentCorporaHr"-->
+              
               <ul id="openCorpus" style="display:none; overflow:auto; margin-bottom:40px" class="list-group list-group-flush py-3">
                 
               </ul>
