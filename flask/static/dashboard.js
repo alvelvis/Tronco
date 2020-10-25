@@ -1193,7 +1193,7 @@ $('#changePassword').click(function(){
             $('#setPassword').click()
             break
         case "Você é dono":
-            if (confirm("Deseja se desconectar de " + name + "?")) {
+            if (confirm("Deseja se desconectar de \"" + name + "\"?")) {
                 storePassword(name, "default")
             }
             break
