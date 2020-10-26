@@ -89,8 +89,10 @@ function loadCorpora(key = ""){
     .done(function(data){
         if (!key.length) {
             $('#randomTip').hide()
+            $('#indexGo').hide()
         } else {
             $('#randomTip').show()
+            $('#indexGo').show()
         }
         if (((!key.length && getRecent().recent)) && isMobile) {
             $('#recentCorpora, #recentCorporaHr').show()

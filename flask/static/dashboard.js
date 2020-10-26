@@ -1,3 +1,17 @@
+$('#history').click(function(){
+    $('.historyControls').hide()
+})
+
+$('#restoreHistory').click(function(){
+    filename = $('#filename').attr('file')
+    if (confirm("Tem certeza de que deseja restaurar o arquivo \"" + filename + "\" para a versão do dia " + $('.historyActive').html() + "?\nA versão atual será descartada.")) {
+        $('#main').val($('#historyMainText').val())
+        $('#history').click()
+        saveFile()
+        gotoFile(filename)
+    }
+})
+
 function escapeHtml(unsafe) {
     return unsafe
          .replace(/&/g, "&amp;")
@@ -160,7 +174,6 @@ function indexCorpus(force=false) {
         
     })
 }
-
 
 $('#reindexCorpus').click(function(){
     if (confirm("Deseja indexar a coleção novamente? Pode demorar um pouco, a depender do tamanho da coleção.")) {
@@ -954,7 +967,7 @@ function updateToolbar(){
 
     $('#shareText').toggle(!is_local && $('#filename').attr('file') != "ARCHIVE")
     $('#metadata').toggle($('#advancedEditingCheckbox').prop('checked') && permView && $('#filename').attr('file') != "ARCHIVE")
-    $('#dropdown, .insertChecklist').toggle(permEdit)
+    $('#dropdown, .insertChecklist, #history').toggle(permEdit)
     if (isMobile) {
         $('#toolbarRow').scrollLeft(0)
     }
@@ -1879,6 +1892,44 @@ function loadFile(filename){
             if (!isMobile) {
                 //$('#mainText').focus()
             }
+
+            $('#historyList').html("")
+            $('.historyControls').hide()
+            if (data.history.length > 0) {
+                for (item of data.history.sort( (a, b) => { return b[0] - a[0] })) {
+                    var date = new Date(item[0] * 1000)
+                    $('#historyList').append('<a href="#" title="Clique para visualizar o histórico" class="my-2 retrieveHistory" label="' + item[1] + '">' + date.getDate() + " de " + months[date.getMonth()] + " de " + date.getFullYear() + ' (' + item[3] + ' caracteres)</a>')
+                }
+            } else {
+                $('#historyList').append('<span>Nenhum histórico encontrado para o arquivo.</span>')
+            }
+
+            $('.retrieveHistory').click(function(){
+                $('.retrieveHistory').css('font-weight', 'normal').removeClass("historyActive")
+                $(this).css('font-weight', 'bold').addClass("historyActive")
+                label = $(this).attr('label')
+                name = $('#name').html()
+                filename = $('#filename').attr('file')
+                $('.historyControls').show()
+                $.ajax({
+                    url: '/api/retrieveHistory',
+                    method: 'POST',
+                    data: {
+                        name: name,
+                        filename: filename,
+                        label: label,
+                        tronco_token: getTroncoToken(),
+                    }
+                }).done(function(data){
+                    if (data.error != '0') {
+                        alert(data.error)
+                    } else {
+                        console.log(data)
+                        $('#historyMainText').html(data.data)
+                    }
+                })
+            })
+
         } else {
             if (data.error == 2) {
                 //alert("Você não tem permissão para visualizar esta coleção")
@@ -1977,7 +2028,8 @@ function loadConfigFromCheckboxes(){
 }
 
 var default_metadata = ["times_seen", "last_seen", "first_seen"]
-var special_files = ["README", "tronco.json", "ARCHIVE", "recent_queries.json"]
+var special_files = ["README", "tronco.json", "ARCHIVE", "recent_queries.json", "history.json"]
+var months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
 
 function loadConfig(){
     name = $('#name').html()
@@ -2007,7 +2059,7 @@ function loadConfig(){
         $('#advancedEditingCheckbox').prop('checked', advanced_editing)
         $('#viewPermission').prop('checked', visitant_view_perm)
         $('#editPermission').prop('checked', visitant_edit_perm)
-        $('#visitante-perms').html(visitant_view_perm ? "Todos podem " + (visitant_edit_perm ? "editar" : "visualizar") : "Só você pode visualizar")
+        $('#visitante-perms').html(visitant_view_perm ? "Todos podem " + (visitant_edit_perm ? "editar" : "ver") : "Só você pode ver")
         loadConfigFromCheckboxes()
         updateMainTextPlaceholder()
     })

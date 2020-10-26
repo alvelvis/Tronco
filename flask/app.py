@@ -10,7 +10,7 @@ from uuid import uuid4
 app = Flask(__name__)
 #ui = WebUI(app)
 #ui = FlaskUI(app, port=5240, maximized=True)
-sys.path.insert(0, os.path.join(app.root_path, "scripts"))
+sys.path.append(os.path.join(app.root_path, "scripts") if isinstance(app.root_path, str) else "scripts")
 import objects
 import functions
 
@@ -20,7 +20,25 @@ session_tokens = objects.SessionTokens()
 tronco_tokens = objects.TroncoTokens()
 temporary_objects = objects.TemporaryObjects()
 advanced_corpora = objects.AdvancedCorpora()
+corpora_history = objects.CorporaHistory()
 app.jinja_env.globals.update(tronco_config=tronco_config)
+
+@app.route("/api/retrieveHistory", methods=["POST"])
+def retrieveHistory():
+    name = request.values.get("name")
+    filename = request.values.get("filename")
+    date = request.values.get("label")
+    password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "editar"):
+        return {'error': 'Permissões inválidas.'}
+    if not name in corpora_history.corpora or \
+            not filename in corpora_history.corpora[name] or \
+            not date in corpora_history.corpora[name][filename]:
+        return {'error': 'Erro ao buscar histórico.'}
+    return {
+        'data': corpora_history.corpora[name][filename][date]['text'],
+        'error': '0',
+        }
 
 @app.route("/api/restoreFile", methods=["POST"])
 def restoreFile():
@@ -67,6 +85,7 @@ def archive_file():
         text = f.read()
     functions.save_file(name, "ARCHIVE", "tronco/" + new_filename + "\n" + text)
     functions.delete_file(name, filename)
+    corpora_history.deleteFile(name, filename)
     if 'shared_files' in tronco_config.corpora[name]['permissions'] and filename in tronco_config.corpora[name]['permissions']['shared_files']:
         tronco_config.corpora[name]['permissions']['shared_files'].remove(filename)
         tronco_config.save()
@@ -342,14 +361,14 @@ def rename_file():
     password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
     if not tronco_config.has_permission(name, password, "editar"): return None
     filename = request.values.get("filename")
-    new_filename = request.values.get("new_filename")
-    result = functions.rename_file(name, filename, new_filename)
+    new_filename = functions.rename_file(name, filename, request.values.get("new_filename"))
+    corpora_history.renameFile(name, filename, new_filename)
     if 'shared_files' in tronco_config.corpora[name]['permissions'] and filename in tronco_config.corpora[name]['permissions']['shared_files']:
         tronco_config.corpora[name]['permissions']['shared_files'].remove(filename)
-        tronco_config.corpora[name]['permissions']['shared_files'].append(result)
+        tronco_config.corpora[name]['permissions']['shared_files'].append(new_filename)
         tronco_config.save()
-    if result:
-        return {'data': result}
+    if new_filename:
+        return {'data': new_filename}
     else:
         return {'data': 'false'}
 
@@ -371,6 +390,7 @@ def delete_corpus():
     tronco_tokens.revoke_password(name, token)
     tronco_config.delete_corpus(name)
     advanced_corpora.remove_corpus(name)
+    corpora_history.deleteCorpus(name)
     return {'data': ''}
 
 @app.route("/api/renameCorpus", methods=["POST"])
@@ -379,8 +399,7 @@ def rename_corpus():
     token = request.values.get("tronco_token")
     password = tronco_tokens.get_password(name, token)
     if not tronco_config.has_permission(name, password, "configurar"): return None
-    new_name = request.values.get("new_name")
-    result = functions.rename_corpus(name, new_name)
+    new_name = functions.rename_corpus(name, request.values.get("new_name"))
     tronco_tokens.store_password(new_name, password, token)
     tronco_tokens.revoke_password(name, token)
     tronco_config.corpora.update({new_name: tronco_config.corpora[name]})
@@ -388,8 +407,9 @@ def rename_corpus():
     if name in advanced_corpora.corpora:
         advanced_corpora.corpora.update({new_name: advanced_corpora.corpora[name]})
     advanced_corpora.remove_corpus(name)
-    if result:
-        return {'data': result}
+    corpora_history.renameCorpus(name, new_name)
+    if new_name:
+        return {'data': new_name}
     else:
         return {'data': 'false'}
 
@@ -405,6 +425,7 @@ def new_file():
     else:
         return {'data': "false"}
 
+#NOT IN USE, FOR THE FILE IS NOW ARCHIVE
 @app.route("/api/deleteFile", methods=["POST"])
 def delete_files():
     name = request.values.get("name")
@@ -443,7 +464,7 @@ def save_file():
     if not tronco_config.has_permission(name, password, "editar"): return None
     filename = request.values.get('filename')
     text = request.values.get('text')
-    token = request.values.get("token")
+    corpora_history.record(name, filename, text)
     functions.save_file(name, filename, text)
     return {'error': 0}
 
@@ -454,10 +475,12 @@ def load_file():
     filename = request.values.get('filename')
     if not tronco_config.has_permission(name, password, "visualizar") and (not 'shared_files' in tronco_config.corpora[name]['permissions'] or not filename in tronco_config.corpora[name]['permissions']['shared_files']):#filename != "README" and 
         return {'error': 2}
+    history = [[y['date'], x, y['text'], y['characters']] for x, y in corpora_history.corpora[name][filename].items()] if tronco_config.has_permission(name, password, "editar") and name in corpora_history.corpora and filename in corpora_history.corpora[name] else []
     text = functions.load_file(name, filename)
     if text:
         return {
             'data': text, 
+            'history': history,
             'error': 0,
             'who_claimed_access': session_tokens.who_claimed_access(name, filename),
             'is_public': 'shared_files' in tronco_config.corpora[name]['permissions'] and filename in tronco_config.corpora[name]['permissions']['shared_files']

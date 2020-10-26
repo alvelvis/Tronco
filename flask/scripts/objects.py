@@ -1,4 +1,5 @@
 import time
+import datetime
 import json
 import os
 import re
@@ -13,7 +14,7 @@ from ufal.udpipe import Model, Pipeline
 tronco_version = 1.64
 tronco_online = "tronco.ga"
 tronco_metadata = ["last_seen", "first_seen", "times_seen"]
-tronco_special_files = ["README", "ARCHIVE", "tronco.json", "recent_queries.json"]
+tronco_special_files = ["README", "ARCHIVE", "tronco.json", "recent_queries.json", "history.json"]
 tronco_default_language = "pt"
 root_path = ""
 computer_memory = psutil.virtual_memory().total/1024/1024
@@ -76,6 +77,67 @@ _windows_device_files = (
     "PRN",
     "NUL",
 )
+
+class CorporaHistory:
+
+    def __init__(self):
+        self.corpora = {}
+        self.load()
+
+    def load(self):
+        for corpus in os.listdir(os.path.join(root_path, "corpora")):
+            history_dir = os.path.join(os.path.join(root_path, "corpora"), corpus, "history.json")
+            if os.path.isdir(os.path.join(root_path, "corpora", corpus)) and os.path.isfile(history_dir):
+                with open(history_dir) as f:
+                    self.corpora[corpus] = json.load(f)
+    
+    def save(self, name):
+        history_dir = os.path.join(root_path, "corpora", name, "history.json")
+        if os.path.isdir(os.path.join(root_path, "corpora", name)):
+            with open(history_dir, "w") as f:
+                json.dump(self.corpora[name] if name in self.corpora else {}, f)
+
+    def record(self, name, filename, text):
+        if not name in self.corpora:
+            self.corpora[name] = {}
+        if not filename in self.corpora[name]:
+            self.corpora[name][filename] = {}
+        date = datetime.date.fromtimestamp(time.time())
+        label = "{}-{}-{}".format(date.year, date.month, date.day)
+        self.corpora[name][filename][label] = {
+            'date': time.time(),
+            'text': text,
+            'characters': len(text)
+        }
+        self.save(name)
+
+    def deleteCorpus(self, name):
+        if name in self.corpora:
+            del self.corpora[name]
+            history_dir = os.path.join(root_path, "corpora", name, "history.json")
+            if os.path.isfile(history_dir):
+                os.remove(history_dir)
+
+    def deleteFile(self, name, filename):
+        sys.stderr.write("alo")
+        if name in self.corpora and filename in self.corpora[name]:
+            sys.stderr.write("alo2")
+            del self.corpora[name][filename]
+            self.save(name)
+
+    def renameCorpus(self, name, new_name):
+        if name in self.corpora:
+            self.corpora[new_name] = self.corpora.pop(name)
+            self.save(new_name)
+            history_dir = os.path.join(root_path, "corpora", name, "history.json")
+            if os.path.isfile(history_dir):
+                os.remove(history_dir)
+
+    def renameFile(self, name, filename, new_filename):
+        if name in self.corpora and filename in self.corpora[name]:
+            self.corpora[name][new_filename] = self.corpora[name].pop(filename)
+            self.save(name)
+
 
 class TemporaryObjects:
 
