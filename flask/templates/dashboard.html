@@ -486,6 +486,8 @@
             </div>
 
             <div toolbar="history" style="display:none" class="toolbar px-4 py-3 rounded">
+              Versão atual: <span id="historyCharacters"></span> caracteres.
+              <br>
               <div id="historyList" style="max-height: 50px; overflow: auto;">
               </div>
               <button type="button" id="restoreHistory" title="Restaurar esta versão do arquivo" class="mt-3 historyControls btn btn-sm btn-outline-primary">
@@ -493,7 +495,7 @@
                 Restaurar versão
               </button>
               <hr class="historyControls" style="display:none">
-              <span class="historyControls" id="historyMainText" style="display:none"></span>
+              <pre class="historyControls" id="historyMainText" style="display:none"></pre>
             </div>
 
             <div toolbar="shareText" style="display:none" class="toolbar px-4 py-3 rounded">
@@ -581,7 +583,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=15"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=188"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=189"></script>
   
   </body>
 </html>

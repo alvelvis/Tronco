@@ -1,5 +1,6 @@
 $('#history').click(function(){
     $('.historyControls').hide()
+    $('#historyCharacters').html($('#mainText').val().length)
 })
 
 $('#restoreHistory').click(function(){
