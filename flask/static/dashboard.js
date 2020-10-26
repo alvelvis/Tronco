@@ -877,12 +877,13 @@ function updateToolbar(){
         }
     }
 
-    list_links = $('#mainText').val().matchAll(/(https?:\/\/(www\.)?(.*?)(\/|$|\n)(.*\/)?(.*?))(\s|\n|$)/gi)
+    shared_n = $('#mainText').val().replace(/\n/, /\n\n/g).replace(/\s/, /\s\s/g)
+    list_links = shared_n.matchAll(/(^|\n|\s)([^\n]*?)(https?:\/\/(www\.)?([^\s\n\/]*?)\/?(([^\s\n]*)?(\.[^\s\n\/]*)?))(\s|\n|$)/gi)
     for (link of list_links) {
-        if (link[1].match(/\.(png|jpe?g|bmp|gif|ico)$/i)) {
-            images.push([link[6], link[1]])
+        if (link[3].match(/\.(png|jpe?g|bmp|gif|ico)$/i)) {
+            images.push([link[7], link[3], link[2].trim()])
         } else {
-            links.push([link[3], link[1]])
+            links.push([link[6], link[3], link[2].trim()])
         }
     }
 
@@ -928,8 +929,10 @@ function updateToolbar(){
         $('#linksLabel').html("Links (" + links.length + ")")
         $('[toolbar=links]').html("")
         for (link in links) {
-            $('[toolbar=links]').append('<div class="link-div"><a target="_blank" class="px-1" href="' + links[link][1] + '">' + escapeHtml(links[link][0]) + '</a></div>' + (link == links.length -1 ? "" : ""))
-            changeATitle(links[link][1])
+            $('[toolbar=links]').append('<div class="link-div"><a target="_blank" class="px-1" href="' + links[link][1] + '">' + (links[link][2].length > 0 ? links[link][2] : escapeHtml(links[link][0])) + '</a></div>' + (link == links.length -1 ? "" : ""))
+            if (links[link][2].length <= 0) {
+                changeATitle(links[link][1])
+            }
         }
         $('.link-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
     } else {
@@ -942,7 +945,7 @@ function updateToolbar(){
         $('#imagesLabel').html("Imagens (" + images.length + ")")
         $('[toolbar=images]').html("")
         for (link in images) {
-            $('[toolbar=images]').append('<div class="image-div"><a target="_blank" class="px-1" href="' + images[link][1] + '">' + escapeHtml(images[link][0]) + '</a></div>' + (link == images.length -1 ? "" : ""))
+            $('[toolbar=images]').append('<div class="image-div"><a target="_blank" class="px-1" href="' + images[link][1] + '">' + (images[link][2].length > 0 ? images[link][2] : escapeHtml(images[link][0])) + '</a></div>' + (link == images.length -1 ? "" : ""))
         }
         $('.image-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
     } else {

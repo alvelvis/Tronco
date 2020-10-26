@@ -449,6 +449,10 @@
                   <span data-feather="save"></span>
                   <!--Salvar modificações-->
                 </button>
+                <button id="metadata" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Metadados">
+                  <span data-feather="database"></span>
+                  Metadados
+                </button>
                 <button id="history" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Histórico">
                   <span data-feather="clock"></span>
                   Histórico
@@ -460,10 +464,6 @@
                 <button id="deleteFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Exclua este arquivo">
                   <span data-feather="trash"></span>
                   <span>Excluir</span>
-                </button>
-                <button id="metadata" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Metadados">
-                  <span data-feather="database"></span>
-                  Metadados
                 </button>
               </div>
             </div>
@@ -583,7 +583,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=15"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=190"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=191"></script>
   
   </body>
 </html>
