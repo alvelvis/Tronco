@@ -1,11 +1,12 @@
 $('#history').click(function(){
     $('.historyControls').hide()
+    $('.retrieveHistory').css('font-weight', 'normal').removeClass("historyActive")
     $('#historyCharacters').html($('#mainText').val().length)
 })
 
 $('#restoreHistory').click(function(){
     filename = $('#filename').attr('file')
-    if (confirm("Tem certeza de que deseja restaurar o arquivo \"" + filename + "\" para a versão do dia " + $('.historyActive').html() + "?\nA versão atual será descartada.")) {
+    if (confirm("Tem certeza de que deseja restaurar o arquivo \"" + filename + "\" para a versão do dia " + $('.historyActive').html() + "?\nA versão atual, com " + $('#historyCharacters').html() + " caracteres, será descartada.")) {
         $('#main').val($('#historyMainText').val())
         $('#history').click()
         saveFile()
