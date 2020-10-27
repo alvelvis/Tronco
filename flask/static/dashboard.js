@@ -1903,7 +1903,7 @@ function loadFile(filename){
             if (data.history.length > 0) {
                 for (item of data.history.sort( (a, b) => { return b[0] - a[0] })) {
                     var date = new Date(item[0] * 1000)
-                    $('#historyList').append('<a href="#" title="Clique para visualizar o histórico" class="my-2 retrieveHistory" label="' + item[1] + '">' + date.getDate() + " de " + months[date.getMonth()] + " de " + date.getFullYear() + ' (' + item[3] + ' caracteres)</a>')
+                    $('#historyList').append('<a href="#" title="Clique para visualizar o histórico" class="my-2 retrieveHistory" label="' + item[1] + '">' + date.getDate() + " de " + months[date.getMonth()] + " de " + date.getFullYear() + ' (' + item[3] + ' caracteres)</a><div></div>')
                 }
             } else {
                 $('#historyList').append('<span>Nenhum histórico encontrado para o arquivo.</span>')
