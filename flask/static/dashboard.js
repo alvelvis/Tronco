@@ -830,6 +830,7 @@ $('.uploadFile').change(function(){
 
 $('#settingsDiv').click(function(){
     $('#settings').toggle()
+    $(this).css('font-weight', ($('#settings').is(':visible') ? 'bold' : 'normal'))
 })
 
 function escapeRegExp(string) {
@@ -1175,6 +1176,7 @@ $('.togglePerm').on('change', function(){
 
 $('#setPermissions').click(function(){
     $('#permissionsDiv').toggle()
+    $(this).css('font-weight', ($('#permissionsDiv').is(':visible') ? "bold" : "normal"))
 })
 
 $('#setPassword').click(function(){
@@ -1514,6 +1516,7 @@ $('.toggleSettings').click(function(){
     }
     if (isMobile){
         $('#settings').toggle(false)
+        $('#settingsDiv').css('font-weight', 'normal')
         $('#mainHeadbar').toggle(true)
         $('#sidebar').toggleClass("d-none")
         if (theme == "light") {
@@ -1882,6 +1885,7 @@ function loadFile(filename){
             $('#mainText').val(data.data.text)
             loadMetadata(data.data.metadata, filename == "README")
             updateToolbar()
+            if ( $('#checklist').is(":visible") && !$('.toolbarButton.btn-primary').length) { $('#checklist').click() }
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             if (data.is_public && !visitant_view_perm) {
