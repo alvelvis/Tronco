@@ -1885,7 +1885,7 @@ function loadFile(filename){
             $('#mainText').val(data.data.text)
             loadMetadata(data.data.metadata, filename == "README")
             updateToolbar()
-            if ( $('#checklist').is(":visible") && !$('.toolbarButton.btn-primary').length) { $('#checklist').click() }
+            if ( isMobile && $('#checklist').is(":visible") && !$('.toolbarButton.btn-primary').length) { $('#checklist').click() }
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             if (data.is_public && !visitant_view_perm) {
