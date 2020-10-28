@@ -1929,7 +1929,6 @@ function loadFile(filename){
                     if (data.error != '0') {
                         alert(data.error)
                     } else {
-                        console.log(data)
                         $('#historyMainText').html(data.data)
                     }
                 })
