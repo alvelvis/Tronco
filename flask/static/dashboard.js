@@ -555,8 +555,8 @@ $('.moveUpCheckbox').click(function(){
         if (topString != checkboxString) {
             $('#mainText').val($('#mainText').val().replace(pattern, "").replace(topPattern, "[" + (is_checked ? "x" : "") + "] " + checkboxString + "\n" + "[" + (top_is_checked ? "x" : "") + "] " + topString))
             saveFile()
+            updateToolbar()
         }
-        updateToolbar()
     }
 })
 
@@ -573,8 +573,8 @@ $('.moveDownCheckbox').click(function(){
         if (bottomString != checkboxString) {
             $('#mainText').val($('#mainText').val().replace(pattern, "").replace(bottomPattern, "[" + (bottom_is_checked ? "x" : "") + "] " + bottomString + "\n" + "[" + (is_checked ? "x" : "") + "] " + checkboxString))
             saveFile()
+            updateToolbar()
         }
-        updateToolbar()
     }
 })
 
@@ -586,8 +586,8 @@ $('.newDownCheckbox').click(function(){
     if (newString && newString.length) {
         $('#mainText').val($('#mainText').val().replace(pattern, "[" + (is_checked ? "x" : "") + "] " + checkboxString + "\n[] " + newString))
         saveFile()
+        updateToolbar()
     }
-    updateToolbar()
 })
 
 $('.newUpCheckbox').click(function(){
@@ -598,8 +598,8 @@ $('.newUpCheckbox').click(function(){
     if (newString && newString.length) {
         $('#mainText').val($('#mainText').val().replace(pattern, "[] " + newString + "\n[" + (is_checked ? "x" : "") + "] " + checkboxString))
         saveFile()
+        updateToolbar()
     }
-    updateToolbar()
 })
 
 $('.editCheckbox').click(function(){
@@ -607,11 +607,11 @@ $('.editCheckbox').click(function(){
     pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString), "g")
     is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
     newString = prompt("Editar item:", checkboxString)
-    if (newString && newString.length) {
+    if (newString && newString.length && newString != checkboxString) {
         $('#mainText').val($('#mainText').val().replace(pattern, "[" + (is_checked ? "x" : "") + "] " + newString))
         saveFile()
+        updateToolbar()
     }
-    updateToolbar()
 })
 
 $('.deleteCheckbox').click(function(){
@@ -630,7 +630,6 @@ function toggleInsertSuccess(){
         $('.insertLabel').html("Inserir")
         $('.dropdown-toggle').toggleClass("btn-outline-secondary", true).toggleClass("btn-success", false)
     }, 2000)
-    
 }
 
 function gotoFile(filename=$('#search').val(), forceUpdate=false, skipFind=false){
@@ -731,10 +730,12 @@ $('#mobileSearch').click(function(){
 
 $('#mobileEdit').click(function(){
     mainTextEdit()
+    $('#mainText').trigger('input')
 })
 
 $('#mobileLeft').click(function(){
     mainTextBlur()
+    $('#mainText').trigger('input')
 })
 
 String.prototype.rsplit = function(sep, maxsplit) {
@@ -920,6 +921,7 @@ function updateToolbar(){
         $('#checklist').toggle(false)
         $('#mainText').toggle(true)
         $('[toolbar=checklist]').toggle(false)
+        $('#mainText').trigger('input')
     }
     
     if (links.length) {
@@ -1060,6 +1062,7 @@ $('.toolbarButton').click(function(){
         $('#mainText').css("margin-top", "")
         $('[toolbar=checklist]').toggleClass("mb-5", true)
         $('#mainText').toggle(!$('[toolbar=checklist]').is(":visible"))
+        $('#mainText').trigger('input')
     }
 })
 
