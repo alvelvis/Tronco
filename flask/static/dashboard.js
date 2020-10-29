@@ -913,8 +913,9 @@ function updateToolbar(){
             return false //blocks default Webbrowser right click menu
         })
         if (isMobile) {
-            $('#mainText').toggle(false)
-            if (!$('[toolbar=checklist]').is(':visible') && !($('.toolbarButton.btn-primary').length && $('.toolbarButton.btn-primary').is(':visible'))) {
+            $('#checklist').toggle(true)
+            if ($('#checklist').hasClass('btn-primary') || !$('.toolbarButton.btn-primary').length) {
+                $('#checklist').removeClass('btn-primary')
                 $('#checklist').click()
             }
         }
@@ -923,7 +924,6 @@ function updateToolbar(){
         $('#checklist').toggle(false)
         if ($('[toolbar=checklist]').is(':visible')) {
             $('#checklist').click()
-            $('#mainText').trigger('input')
         }        
     }
     
@@ -1026,6 +1026,8 @@ function updateToolbar(){
         } else {
             $('[toolbar=' + $('.toolbarButton.btn-primary').attr('id') + ']').hide()
         }
+    } else {
+        $('[toolbar=' + $('.toolbarButton.btn-primary').attr('id') + ']').hide()
     }
 
 }
@@ -1153,7 +1155,7 @@ function mainTextBlur(){
         $('#toolbarRow, #toolbar').toggle(true)
         toggleMobile(permView ? "mobileFile" : "mobileNoPerm")
         $('#mainText').prop('readonly', true)
-        if ($('[toolbar=checklist]').is(':visible')) { $('#checklist').click() }
+        if ($('[toolbar=checklist]').is(':visible')) { $('#mainText').hide() }
     }
 }
 
