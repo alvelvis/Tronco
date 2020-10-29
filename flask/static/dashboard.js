@@ -914,7 +914,7 @@ function updateToolbar(){
         })
         if (isMobile) {
             $('#mainText').toggle(false)
-            if (!$('[toolbar=checklist]').is(':visible')) {
+            if (!$('[toolbar=checklist]').is(':visible') && !($('.toolbarButton.btn-primary').length && $('.toolbarButton.btn-primary').is(':visible'))) {
                 $('#checklist').click()
             }
         }
@@ -1893,7 +1893,7 @@ function loadFile(filename){
             $('#mainText').val(data.data.text)
             loadMetadata(data.data.metadata, filename == "README")
             updateToolbar()
-            if ( isMobile && $('#checklist').is(":visible") && !$('.toolbarButton.btn-primary').length) { $('#checklist').click(); $('#mainText').hide() }
+            if ( isMobile && $('#checklist').is(":visible") && !$('.toolbarButton.btn-primary').length) { $('#checklist').click() }
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             if (data.is_public && !visitant_view_perm) {
