@@ -578,33 +578,25 @@ $('.moveDownCheckbox').click(function(){
     }
 })
 
-$('.moveBottomCheckbox').click(function(){
+$('.newDownCheckbox').click(function(){
     checkboxString = checkboxdiv.find(".custom-control-label").text()
-    pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
+    pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString), "g")
     is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
-
-    bottom_is_checked = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').length-1]).find("[type=checkbox]").prop("checked")
-    bottomString = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').length-1]).find(".custom-control-label").text()
-    bottomPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(bottomString), "g")
-    
-    if (bottomString != checkboxString) {
-        $('#mainText').val($('#mainText').val().replace(pattern, "").replace(bottomPattern, "[" + (bottom_is_checked ? "x" : "") + "] " + bottomString + "\n" + "[" + (is_checked ? "x" : "") + "] " + checkboxString))
+    newString = prompt("Novo item:", "")
+    if (newString && newString.length) {
+        $('#mainText').val($('#mainText').val().replace(pattern, "[" + (is_checked ? "x" : "") + "] " + checkboxString + "\n[] " + newString))
         saveFile()
     }
     updateToolbar()
 })
 
-$('.moveTopCheckbox').click(function(){
+$('.newUpCheckbox').click(function(){
     checkboxString = checkboxdiv.find(".custom-control-label").text()
-    pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
+    pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString), "g")
     is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
-
-    top_is_checked = $($('.checkbox-item-subdiv')[0]).find("[type=checkbox]").prop("checked")//$('.checkbox-item-subdiv').length-1
-    topString = $($('.checkbox-item-subdiv')[0]).find(".custom-control-label").text()
-    topPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(topString), "g")
-    
-    if (topString != checkboxString) {
-        $('#mainText').val($('#mainText').val().replace(pattern, "").replace(topPattern, "[" + (is_checked ? "x" : "") + "] " + checkboxString + "\n" + "[" + (top_is_checked ? "x" : "") + "] " + topString))
+    newString = prompt("Novo item:", "")
+    if (newString && newString.length) {
+        $('#mainText').val($('#mainText').val().replace(pattern, "[] " + newString + "\n[" + (is_checked ? "x" : "") + "] " + checkboxString))
         saveFile()
     }
     updateToolbar()
@@ -868,7 +860,7 @@ function updateToolbar(){
         checklist.push([check[1] ? true : false, check[2]])
     }
 
-    list_files = $('#mainText').val().matchAll(/\[([^\]]+:)?(.*?)\]/gi)
+    list_files = $('#mainText').val().matchAll(/\[([^\]]+:)?(.+?)\]/gi)
     for (file of list_files) {
         if (file[1]) {
             files.push(file[2] + ":" + file[1])
@@ -919,9 +911,14 @@ function updateToolbar(){
             }).addClass("show")
             return false //blocks default Webbrowser right click menu
         })
+        if (isMobile) {
+            $('#mainText').toggle(false)
+            $('[toolbar=checklist]').toggle(true)
+        }
 
     } else {
         $('#checklist').toggle(false)
+        $('#mainText').toggle(true)
         $('[toolbar=checklist]').toggle(false)
     }
     
@@ -1058,8 +1055,11 @@ $('.toolbarButton').click(function(){
     }
     if (!isMobile) {
         $('#mainText').css("margin-top", $("#editingPanel").height())  
+        $('[toolbar=checklist]').toggleClass("mb-5", false)
     } else {
         $('#mainText').css("margin-top", "")
+        $('[toolbar=checklist]').toggleClass("mb-5", true)
+        $('#mainText').toggle(!$('[toolbar=checklist]').is(":visible"))
     }
 })
 
@@ -1135,6 +1135,7 @@ function mainTextEdit(){
         $('#breadcrumb-nav').toggle(false)
         $('#mainText').prop('readonly', false)
         //$('#blurHeadbar').toggle(true)
+        $('#mainText').show()
     }
 }
 
@@ -1146,6 +1147,7 @@ function mainTextBlur(){
         $('#toolbarRow, #toolbar').toggle(true)
         toggleMobile(permView ? "mobileFile" : "mobileNoPerm")
         $('#mainText').prop('readonly', true)
+        if ($('[toolbar=checklist]').is(':visible')) { $('#mainText').hide() }
     }
 }
 
@@ -1181,7 +1183,7 @@ $('#setPermissions').click(function(){
 
 $('#setPassword').click(function(){
     name = $('#name').html()
-    message = ($('#conected').html() == 'Crie uma senha' ? "Você é dono(a) desta coleção, mas ela ainda não tem senha.\nCaso queira editá-la a partir de outro dispositivo ou para proteger suas informações, defina uma senha para \"" + name + "\":" : "Crie uma nova senha para \"" + name + "\":")
+    message = ($('#conected').html() == 'Crie uma senha' ? "Você é dono(a) desta coleção, mas ela ainda não tem senha.\nCaso queira editá-la a partir de outro dispositivo ou queira configurar as permissões de visitantes, defina uma senha para \"" + name + "\":" : "Crie uma nova senha para \"" + name + "\":")
     new_password = prompt(message)
     if (new_password && new_password.length) {
         new_password_twice = prompt("Insira novamente a senha, por favor:")
@@ -1850,7 +1852,7 @@ function textModified(state){
 var whoClaimedAccess = ""
 
 function updateMainTextPlaceholder(){
-    $('#mainText').attr('placeholder', $('#conected').html() == "Crie uma senha" ? "Todos podem editar os arquivos desta coleção." + ' Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens") + "." : ( !permEdit ? "" : (!visitant_view_perm ? "Só você pode visualizar os arquivos desta coleção." : (!visitant_edit_perm ? "Todos podem visualizar esta coleção, mas só você pode editar seus arquivos." : "Todos podem editar os arquivos desta coleção.")) + ' Insira aqui o conteúdo' + (isMobile ? "" : " ou solte arquivos e imagens") + "."))
+    $('#mainText').attr('placeholder', $('#conected').html() == "Crie uma senha" ? "Só você pode editar os arquivos desta coleção. Esta coleção ainda não tem uma senha definida, crie uma caso deseje editá-la a partir de outros dispositivos ou para torná-la invisível a outras pessoas." + (isMobile ? '\n\nToque no lápis para editar este arquivo' : '\nInsira aqui algum conteúdo') + (isMobile ? "" : " ou solte arquivos e imagens") + "." : ( !permEdit ? "" : (!visitant_view_perm ? "Só você pode visualizar os arquivos desta coleção." : (!visitant_edit_perm ? "Todos podem visualizar esta coleção, mas só você pode editar seus arquivos." : "Todos podem editar os arquivos desta coleção.")) + (isMobile ? '\n\nToque no lápis para editar este arquivo' : '\nInsira aqui algum conteúdo') + (isMobile ? "" : " ou solte arquivos e imagens") + "."))
 }
 
 function loadFile(filename){
@@ -1885,7 +1887,7 @@ function loadFile(filename){
             $('#mainText').val(data.data.text)
             loadMetadata(data.data.metadata, filename == "README")
             updateToolbar()
-            if ( isMobile && $('#checklist').is(":visible") && !$('.toolbarButton.btn-primary').length) { $('#checklist').click() }
+            if ( isMobile && $('#checklist').is(":visible") && !$('.toolbarButton.btn-primary').length) { $('#checklist').click(); $('#mainText').hide() }
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             if (data.is_public && !visitant_view_perm) {
