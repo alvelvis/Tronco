@@ -914,14 +914,17 @@ function updateToolbar(){
         })
         if (isMobile) {
             $('#mainText').toggle(false)
-            $('[toolbar=checklist]').toggle(true)
+            if (!$('[toolbar=checklist]').is(':visible')) {
+                $('#checklist').click()
+            }
         }
 
     } else {
         $('#checklist').toggle(false)
-        $('#mainText').toggle(true)
-        $('[toolbar=checklist]').toggle(false)
-        $('#mainText').trigger('input')
+        if ($('[toolbar=checklist]').is(':visible')) {
+            $('#checklist').click()
+            $('#mainText').trigger('input')
+        }        
     }
     
     if (links.length) {
@@ -1150,7 +1153,7 @@ function mainTextBlur(){
         $('#toolbarRow, #toolbar').toggle(true)
         toggleMobile(permView ? "mobileFile" : "mobileNoPerm")
         $('#mainText').prop('readonly', true)
-        if ($('[toolbar=checklist]').is(':visible')) { $('#mainText').hide() }
+        if ($('[toolbar=checklist]').is(':visible')) { $('#checklist').click() }
     }
 }
 
