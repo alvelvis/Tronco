@@ -450,17 +450,17 @@
                   <span data-feather="save"></span>
                   <!--Salvar modificações-->
                 </button>
-                <button id="metadata" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Metadados">
-                  <span data-feather="database"></span>
-                  Metadados
-                </button>
                 <button id="renameFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Renomeie este arquivo">
                   <span data-feather="delete"></span>
                   <span>Renomear</span>
                 </button>
                 <button id="deleteFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Exclua este arquivo">
-                  <span data-feather="trash"></span>
+                  <span data-feather="trash-2"></span>
                   <span>Excluir</span>
+                </button>
+                <button id="metadata" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Metadados">
+                  <span data-feather="database"></span>
+                  Metadados
                 </button>
                 <button id="history" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Histórico">
                   <span data-feather="clock"></span>
@@ -584,7 +584,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=15"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=201"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=203"></script>
   
   </body>
 </html>

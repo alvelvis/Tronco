@@ -871,7 +871,8 @@ function updateToolbar(){
         }
     }
 
-    shared_n = $('#mainText').val().replace(/\n/, /\n\n/g).replace(/\s/, /\s\s/g)
+    shared_n = $('#mainText').val().toString().replace(/\n/g, '<troncolb>').replace(/\s/g, "  ")
+    shared_n = shared_n.replace(/<troncolb>/g, "\n\n")
     list_links = shared_n.matchAll(/(^|\n)([^\n]*?)(https?:\/\/(www\.)?([^\s\n]*?))(\s|\n|$)/gi)
     for (link of list_links) {
         if (link[3].match(/\.(png|jpe?g|bmp|gif|ico)$/i)) {
@@ -2037,7 +2038,8 @@ $('#wrapTextCheckbox').on('change', function(){
 })
 
 function loadConfigFromCheckboxes(){
-    $('#corpusLanguageDiv, #advancedSearch').toggle($('#advancedEditingCheckbox').prop('checked') && permView)
+    $('#corpusLanguageDiv').toggle($('#advancedEditingCheckbox').prop('checked') && permView)
+    $('#advancedSearch').toggle(permView)
     $('.changeMetadata').toggle(permEdit)
     $('#saveModifications').toggle(!$('#autoSaveCheckbox').prop('checked'))
     $('#mainText').attr('wrap', $('#wrapTextCheckbox').prop('checked') ? 'on' : 'off')
