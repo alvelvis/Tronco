@@ -876,9 +876,9 @@ function updateToolbar(){
     list_links = shared_n.matchAll(/(^|\n)([^\n]*?)(https?:\/\/(www\.)?([^\s\n]*?))(\s|\n|$)/gi)
     for (link of list_links) {
         if (link[3].match(/\.(png|jpe?g|bmp|gif|ico)$/i)) {
-            images.push([link[5], link[3], link[2].trim()])
+            images.push([link[5], link[3], link[2].trim().replace(/\[x?\]/g, "")])
         } else {
-            links.push([link[5], link[3], link[2].trim()])
+            links.push([link[5], link[3], link[2].trim().replace(/\[x?\]/g, "")])
         }
     }
 
