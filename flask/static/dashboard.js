@@ -1536,7 +1536,7 @@ $('.toggleSettings').click(function(){
         if ($('#sidebar').hasClass("d-none")) {
             $('#main').toggle(true)
             if (permView) {
-                if ($('#mainText:visible').length) {
+                if ($('#toolbar-group:visible').length) {
                     toggleMobile("mobileFile")
                 } else {
                     toggleMobile("mobileAdvancedSearch")
