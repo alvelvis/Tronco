@@ -2162,6 +2162,15 @@ function triggerResize(first=false){
         if (mobileInterval) {
             clearInterval(mobileInterval)
         }
+        
+        var styles = `
+        ::-webkit-scrollbar { width: 15px; height: 3px;}
+        `
+        var styleSheet = document.createElement("style")
+        styleSheet.type = "text/css"
+        styleSheet.innerText = styles
+        document.head.appendChild(styleSheet)
+
         isMobile = false
         $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #toolbar, #advancedSearchToolbarRow .btn-group, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').show()
