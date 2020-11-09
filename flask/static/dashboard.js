@@ -2162,14 +2162,6 @@ function triggerResize(first=false){
         if (mobileInterval) {
             clearInterval(mobileInterval)
         }
-        
-        var styles = `
-        ::-webkit-scrollbar { width: 15px; height: 3px;}
-        `
-        var styleSheet = document.createElement("style")
-        styleSheet.type = "text/css"
-        styleSheet.innerText = styles
-        document.head.appendChild(styleSheet)
 
         isMobile = false
         $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #toolbar, #advancedSearchToolbarRow .btn-group, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
@@ -2234,6 +2226,17 @@ function checkTheme(){
         if (isMobile) {
             $('#search').toggleClass("form-control-dark", false).css("background-color", "#343a40").css("color", "white").css("border-style", "none")
         }
+
+        if (!isMobile) {
+            var styles = `
+            ::-webkit-scrollbar { width: 15px; height: 3px;}
+            `
+            var styleSheet = document.createElement("style")
+            styleSheet.type = "text/css"
+            styleSheet.innerText = styles
+            document.head.appendChild(styleSheet)
+        }
+
     } else {
         $(elements).css("background-color", "white").css("color", "black")
         $(elements2).css("background-color", "white").css("color", "white").toggleClass("bg-dark", true)
