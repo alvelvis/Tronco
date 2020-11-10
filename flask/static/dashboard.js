@@ -783,8 +783,8 @@ $('.uploadFile').change(function(){
     if($(this).prop('files').length > 0)
     {
         file = $(this).prop('files')[0]
-        extension = file.name.rsplit(".")[1]
-        filename = prompt("Dê um nome para o arquivo:", file.name.rsplit(".")[0])
+        extension = file.name.rsplit(".", 1)[1]
+        filename = prompt("Dê um nome para o arquivo:", file.name.rsplit(".", 1)[0])
         if (filename.length) {
             toggleProgress("Enviando...")
             formdata.append("uploading", file)
@@ -812,6 +812,7 @@ $('.uploadFile').change(function(){
             })
             .done(function(){
                 toggleProgress(false)
+                $('.uploadFile').val('')
             })
             .fail(function(){
                 alert("Não foi possível enviar")
