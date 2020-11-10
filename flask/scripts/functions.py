@@ -64,7 +64,7 @@ def save_metadata(name, filename, metadata):
     return {'error': '0'}
 
 def upload_file(uploading, filename, corpus=False):
-    filename = secure_filename(filename.replace(" ", "_"))
+    filename = secure_filename(filename).replace(" ", "_")
     upload_dir = os.path.join(objects.root_path, "uploads") if not corpus else os.path.join(objects.root_path, "corpora", corpus)
     if not os.path.isdir(upload_dir):
         os.mkdir(upload_dir)
