@@ -441,10 +441,6 @@
                   <span data-feather="link-2"></span>
                   <span id="linksLabel"></span>
                 </button>
-                <button id="replace" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Substituir texto">
-                  <span data-feather="rotate-cw"></span>
-                  Substituir
-                </button>
                 <button id="shareText" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste arquivo">
                   <span data-feather="share-2"></span>
                   <input style="border:none; display:none; padding-right:10px" id="shareLink" readonly>
@@ -461,6 +457,10 @@
                 <button id="deleteFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Exclua este arquivo">
                   <span data-feather="trash-2"></span>
                   <span>Excluir</span>
+                </button>
+                <button id="replace" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Substituir texto">
+                  <span data-feather="rotate-cw"></span>
+                  Substituir
                 </button>
                 <button id="metadata" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Metadados">
                   <span data-feather="database"></span>
@@ -481,16 +481,16 @@
 
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text">Procurar</span>
+                  <span class="replaceControl input-group-text">Procurar</span>
                 </div>
-                <input id="replaceFrom" type="text" class="form-control" placeholder="">
+                <input id="replaceFrom" type="text" class="replaceControl form-control" placeholder="">
               </div>
 
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text">Substituir por</span>
+                  <span class="replaceControl input-group-text">Substituir por</span>
                 </div>
-                <input id="replaceTo" type="text" class="form-control" placeholder="">
+                <input id="replaceTo" type="text" class="replaceControl form-control" placeholder="">
               </div>
 
               <div class="col-auto my-1">
@@ -507,7 +507,7 @@
                 </div>
               </div>             
 
-              <div class="my-3">
+              <div class="py-3">
                 <button type="button" id="replaceGo" title="Substituir todas as ocorrências" class="btn btn-sm btn-primary">
                   <span data-feather="search"></span>
                   Substituir
@@ -640,7 +640,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=15"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=211"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=212"></script>
   
   </body>
 </html>
