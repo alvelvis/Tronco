@@ -441,6 +441,10 @@
                   <span data-feather="link-2"></span>
                   <span id="linksLabel"></span>
                 </button>
+                <button id="replace" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Substituir texto">
+                  <span data-feather="rotate-cw"></span>
+                  Substituir
+                </button>
                 <button id="shareText" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste arquivo">
                   <span data-feather="share-2"></span>
                   <input style="border:none; display:none; padding-right:10px" id="shareLink" readonly>
@@ -472,6 +476,58 @@
           </div>
 
           <div id="toolbar" class="my-3" style="display:none">
+
+            <div toolbar="replace" style="display:none" class="toolbar px-4 pt-3 pb-0 rounded">
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Procurar</span>
+                </div>
+                <input id="replaceFrom" type="text" class="form-control" placeholder="">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Substituir por</span>
+                </div>
+                <input id="replaceTo" type="text" class="form-control" placeholder="">
+              </div>
+
+              <div class="col-auto my-1">
+                <div class="custom-control custom-checkbox mr-sm-2">
+                  <input type="checkbox" class="custom-control-input" id="replaceRegex">
+                  <label class="custom-control-label" for="replaceRegex">Expressão regular</label>
+                </div>
+              </div>
+
+              <div class="col-auto my-1">
+                <div class="custom-control custom-checkbox mr-sm-2">
+                  <input type="checkbox" class="custom-control-input" id="replaceCase">
+                  <label class="custom-control-label" for="replaceCase">Diferenciar maiúsculas</label>
+                </div>
+              </div>             
+
+              <div class="my-3">
+                <button type="button" id="replaceGo" title="Substituir todas as ocorrências" class="btn btn-sm btn-primary">
+                  <span data-feather="search"></span>
+                  Substituir
+                </button>
+
+                <button type="button" id="replaceUndo" title="Desfazer última ação" class="btn btn-sm btn-outline-primary">
+                  <span data-feather="corner-up-left"></span>
+                  Desfazer
+                </button>
+
+                <button type="button" id="replaceRedo" title="Refazer última ação" class="btn btn-sm btn-outline-primary">
+                  <span data-feather="corner-up-right"></span>
+                  Refazer
+                </button>
+
+                <span class="px-2 replaceControl" style="display:none" id="replaceLabel"></span>
+
+              </div>
+            
+            </div>
 
             <div toolbar="metadata" style="display:none" class="toolbar px-4 pt-3 pb-0 rounded">
               <button type="button" id="newMetadata" title="Novo metadado" class="changeMetadata btn btn-sm btn-outline-primary">

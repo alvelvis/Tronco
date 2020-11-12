@@ -1,3 +1,66 @@
+function updateReplaceControls(){
+    $('#replaceUndo').prop('disabled', replaceUndo.length == 0)
+    $('#replaceRedo').prop('disabled', replaceRedo.length == 0)
+}
+
+$('#replaceGo').click(function(){
+    oldText = $('#mainText').val()
+    replaceFrom = $('#replaceFrom').val()
+    replaceTo = $('#replaceTo').val()
+    replaceRegex = $('#replaceRegex').prop('checked')
+    replaceCase = $('#replaceCase').prop('checked')
+
+    if (replaceFrom.length > 0) {
+
+        $.ajax({
+            url: "/api/replace",
+            method: 'POST',
+            data: {
+                replace_regex: replaceRegex,
+                replace_case: replaceCase,
+                replace_from: replaceFrom,
+                replace_to: replaceTo,
+                old_text: oldText,
+            },
+            success: function(data){
+                if (data.error == "0") {
+                    $('#replaceLabel').html(data.occurrences + " ocorrências substituidas.")
+                    $('#replaceLabel').show(true)
+                    if (data.new_text != oldText) {
+                        replaceUndo.push(oldText)
+                        $('#mainText').val(data.new_text)
+                        saveFile()
+                        updateReplaceControls()
+                    }
+                } else {
+                    alert(data.error)
+                }
+            }
+        })
+        .fail(function(){
+            alert("Falha na expressão de busca")
+        })
+    }
+})
+
+$('#replaceUndo').click(function(){
+    $('#replaceLabel').hide()
+    replaceRedo.push($('#mainText').val())
+    $('#mainText').val(replaceUndo[replaceUndo.length-1])
+    saveFile()
+    replaceUndo.pop()
+    updateReplaceControls()
+})
+
+$('#replaceRedo').click(function(){
+    $('#replaceLabel').hide()
+    replaceUndo.push($('#mainText').val())
+    $('#mainText').val(replaceRedo[replaceRedo.length-1])
+    saveFile()
+    replaceRedo.pop()
+    updateReplaceControls()
+})
+
 $('#history').click(function(){
     $('.historyControls').hide()
     $('.retrieveHistory').css('font-weight', 'normal').removeClass("historyActive")
@@ -167,7 +230,7 @@ function indexCorpus(force=false) {
                 alert("Você não tem permissão")
                 break
             case '2':
-                alert("Falha na indexação")
+                alert("Não foram encontrados arquivos nesta coleção")
                 gotoFile("README")
                 break
         }
@@ -977,6 +1040,7 @@ function updateToolbar(){
 
     $('#shareText').toggle(!is_local && $('#filename').attr('file') != "ARCHIVE")
     $('#metadata').toggle($('#advancedEditingCheckbox').prop('checked') && permView && $('#filename').attr('file') != "ARCHIVE")
+    $('#replace').toggle($('#advancedEditingCheckbox').prop('checked') && permEdit && $('#filename').attr('file') != "ARCHIVE")
     $('#dropdown, .insertChecklist, #history').toggle(permEdit)
     if (isMobile) {
         $('#toolbarRow').scrollLeft(0)
@@ -1916,6 +1980,10 @@ function loadFile(filename){
 
             $('#historyList').html("")
             $('.historyControls').hide()
+            $('#replaceUndo, #replaceRedo').prop('disabled', true)
+            $('#replaceLabel').hide()
+            replaceUndo = []
+            replaceRedo = []
             if (data.history.length > 0) {
                 for (item of data.history.sort( (a, b) => { return b[0] - a[0] })) {
                     var date = new Date(item[0] * 1000)

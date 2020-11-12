@@ -1,4 +1,5 @@
 import os, sys, shutil
+import re
 import requests
 import random
 import json
@@ -22,6 +23,26 @@ temporary_objects = objects.TemporaryObjects()
 advanced_corpora = objects.AdvancedCorpora()
 corpora_history = objects.CorporaHistory()
 app.jinja_env.globals.update(tronco_config=tronco_config)
+
+@app.route("/api/replace", methods=["POST"])
+def replace():
+    regex = True if request.values.get("replace_regex") == "true" else False
+    case = True if request.values.get("replace_case") == "true" else False
+    replace_from = request.values.get("replace_from")
+    replace_to = request.values.get("replace_to")
+    old_text = request.values.get("old_text")
+
+    expression = replace_from if regex else re.escape(replace_from)
+    new_string = replace_to if regex else re.escape(replace_to)
+    flags = re.DOTALL|re.IGNORECASE if not case else re.DOTALL
+    occurrences = len(re.split(expression, old_text, flags=flags)) - 1
+    new_text = re.sub(expression, new_string, old_text, flags=flags)
+
+    return {
+        'new_text': new_text,
+        'occurrences': occurrences,
+        'error': '0',
+    }
 
 @app.route("/api/retrieveHistory", methods=["POST"])
 def retrieveHistory():
