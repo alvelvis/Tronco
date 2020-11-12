@@ -980,8 +980,10 @@ function updateToolbar(){
         if (isMobile) {
             $('#checklist').toggle(true)
             if ($('#checklist').hasClass('btn-primary') || !$('.toolbarButton.btn-primary').length) {
-                $('#checklist').removeClass('btn-primary')
-                $('#checklist').click()
+                if (($('.checkbox-item-div').length / $('#mainText').val().split("\n").filter(function(e){return e.trim().length > 0}).length) > 0.6) {
+                    $('#checklist').removeClass('btn-primary')
+                    $('#checklist').click()
+                }
             }
         }
 
@@ -1961,7 +1963,11 @@ function loadFile(filename){
             $('#mainText').val(data.data.text)
             loadMetadata(data.data.metadata, filename == "README")
             updateToolbar()
-            if ( isMobile && $('#checklist').is(":visible") && !$('.toolbarButton.btn-primary').length) { $('#checklist').click() }
+            //if ( isMobile && $('#checklist').is(":visible") && !$('.toolbarButton.btn-primary').length) {
+                //if (($('.checkbox-item-div').length / $('#mainText').val().split("\n").filter(function(e){return e.trim().length > 0}).length) > 0.6) {
+                    //$('#checklist').click()
+                //}
+            //}
             whoClaimedAccess = data['who_claimed_access']
             $('#mainText').trigger('input')//pra dar resize ao carregar
             if (data.is_public && !visitant_view_perm) {
