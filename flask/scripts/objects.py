@@ -5,9 +5,9 @@ import os
 import re
 import collections
 import sys
-import estrutura_ud
-import interrogar_UD
-import functions
+from scripts import estrutura_ud
+from scripts import interrogar_UD
+from scripts import functions
 import psutil
 from ufal.udpipe import Model, Pipeline
 

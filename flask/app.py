@@ -7,13 +7,16 @@ from flask import Flask, redirect, render_template, request, url_for, send_from_
 #from webui import WebUI
 from flaskwebgui import FlaskUI
 from uuid import uuid4
+sys.path.append("scripts")
 
 app = Flask(__name__)
 #ui = WebUI(app)
 ui = FlaskUI(app, port=5240, maximized=True)
-sys.path.append(os.path.join(app.root_path, "scripts") if isinstance(app.root_path, str) else "scripts")
-import objects
-import functions
+#sys.path.append(os.path.join(app.root_path, "scripts") if isinstance(app.root_path, str) else "scripts")
+#import objects
+#import functions
+from scripts import objects
+from scripts import functions
 
 objects.root_path = app.root_path
 tronco_config = objects.TroncoConfig()

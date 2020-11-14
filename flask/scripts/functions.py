@@ -4,10 +4,11 @@ import sys
 import time
 import shutil
 import datetime
-import estrutura_ud
-import interrogar_UD
+from scripts import estrutura_ud
+from scripts import interrogar_UD
 import textract
-import objects
+from scripts import objects
+sys.path.append("scripts")
 
 def chunkIt(seq, num):
     avg = len(seq) / float(num)
