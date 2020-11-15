@@ -1074,7 +1074,7 @@ function updateToolbar(){
     $('#metadata').toggle($('#advancedEditingCheckbox').prop('checked') && permView && $('#filename').attr('file') != "ARCHIVE")
     $('#replace').toggle($('#advancedEditingCheckbox').prop('checked') && permEdit && $('#filename').attr('file') != "ARCHIVE")
     $('#sort').toggle($('#advancedEditingCheckbox').prop('checked') && permEdit && $('#filename').attr('file') != "ARCHIVE")
-    $('#dropdown, .insertChecklist, #history').toggle(permEdit)
+    $('#dropdown, .insertChecklist').toggle(permEdit)
     if (isMobile) {
         $('#toolbarRow').scrollLeft(0)
     }
@@ -2034,6 +2034,7 @@ function loadFile(filename){
             } else {
                 $('#historyList').append('<span>Nenhum histórico encontrado para o arquivo.</span>')
             }
+            $('#history').toggle(data.history.length > 0 && permEdit)
 
             $('.retrieveHistory').click(function(){
                 $('.retrieveHistory').css('font-weight', 'normal').removeClass("historyActive")
