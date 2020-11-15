@@ -149,6 +149,7 @@ function loadCorpora(key = ""){
 $('#filterOpenCorpus').on('focus', function(){
     selectCorpus(-1)
     if (isMobile) {
+        $('#footer').hide()
         setTimeout(function(){
             window.scrollTo(0, $('#filterOpenCorpus').offset().top-80)
         }, 300)
@@ -218,7 +219,7 @@ $(window).ready(function(){
         $('#recentCorpora, #recentCorporaHr').hide()
         $('#openCorpus').show()
     } else {
-        
+                
     }
     scrollTo(0,0)
     if (window.location.href.match(/app=true/)) {

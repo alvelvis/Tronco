@@ -720,7 +720,8 @@ function toggleInsertSuccess(){
     updateToolbar()
     $('.dropdown-toggle').toggleClass("btn-outline-secondary", false).toggleClass("btn-success", true)
     setTimeout(() => { 
-        $('.insertLabel').html("Inserir")
+        $('.insertLabel').html('<span data-feather="plus"></span>')
+        feather.replace()
         $('.dropdown-toggle').toggleClass("btn-outline-secondary", true).toggleClass("btn-success", false)
     }, 2000)
 }
@@ -2262,7 +2263,7 @@ function triggerResize(first=false){
         }
         isMobile = true
         filename = $('#filename').attr('file')
-        $('#troncoHomeLabel').html("<span class='mt-3 mb-2 ml-3' style='overflow-x: scroll; max-width:90%; width:100%; display:inline-block; white-space: nowrap; font-weight:bold;'>" + name + " > <span id='filenameMobile'>" + (special_files.indexOf(filename) == -1 ? filename : "") + "</span>" + "</span>")
+        $('#troncoHomeLabel').html("<span class='mt-3 py-2 mb-2 ml-3' style='overflow-x: scroll; max-width:90%; width:100%; display:inline-block; white-space: nowrap; font-weight:bold;'>" + name + " > <span id='filenameMobile'>" + (special_files.indexOf(filename) == -1 ? filename : "") + "</span>" + "</span>")
         $('#troncoLogo').hide()
         $('.navbar-brand').hide()
         $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #toolbar, #advancedSearchToolbarRow .btn-group, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)
@@ -2300,7 +2301,8 @@ function triggerResize(first=false){
     }
     $('#troncoHomeBar').css("width", (isMobile ? "100%" : ""))
     $('#troncoHomeBar').toggleClass("mt-0", isMobile)//.toggleClass("ml-3", isMobile)
-    $('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "50px" : '54px') : '10px')
+    //$('#sidebar').css('margin-top', $('#sidebar').css('top') == "0px" ? (isMobile ? "50px" : '54px') : '10px')
+    $('#sidebar').css('margin-top', $('#mainHeadbar').height())
     $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")
     //$('#main').css('margin-left', !isMobile ? '260px' : '0px')
     $('#main').toggleClass("col-md-9 ml-sm-auto col-lg-10", !isMobile)

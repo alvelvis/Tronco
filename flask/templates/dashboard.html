@@ -402,7 +402,7 @@
                 <input id="upload-document" class="uploadFile" style="display:none" type="file" accept=".zip, .rar, .pdf, .rtf, .txt, .htm, .html, .doc, .docx, .tsv, .csv, .xls, .xlsx">
                 <div id="dropdown" class="pr-1 dropdown" style="display:none">
                   <a class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="insertLabel">Inserir</span>
+                    <span class="insertLabel"><span data-feather="plus"></span></span>
                   </a>
                 
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -434,7 +434,7 @@
                   <span id="imagesLabel" class="toolbar-label"></span>
                 </button>
                 <button id="filesLink" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Referências a arquivos">
-                  <span data-feather="file"></span>
+                  <span data-feather="file-text"></span>
                   <span id="filesLinkLabel" class="toolbar-label"></span>
                 </button>
                 <button id="links" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Links no arquivos">
@@ -449,14 +449,6 @@
                 <button id="saveModifications" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Salvar modificações (Ctrl+S)">
                   <span data-feather="save"></span>
                   <!--Salvar modificações-->
-                </button>
-                <button id="renameFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Renomeie este arquivo">
-                  <span data-feather="delete"></span>
-                  <span class="toolbar-label">Renomear</span>
-                </button>
-                <button id="deleteFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Exclua este arquivo">
-                  <span data-feather="trash-2"></span>
-                  <span class="toolbar-label">Excluir</span>
                 </button>
                 <button id="replace" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Substituir texto">
                   <span data-feather="rotate-cw"></span>
@@ -473,6 +465,14 @@
                 <button id="history" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Histórico">
                   <span data-feather="clock"></span>
                   <span class="toolbar-label">Histórico</span>
+                </button>
+                <button id="renameFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Renomeie este arquivo">
+                  <span data-feather="delete"></span>
+                  <span class="toolbar-label">Renomear</span>
+                </button>
+                <button id="deleteFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Exclua este arquivo">
+                  <span data-feather="trash-2"></span>
+                  <span class="toolbar-label">Excluir</span>
                 </button>
               </div>
             </div>
@@ -670,7 +670,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=15"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=217"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=218"></script>
   
   </body>
 </html>
