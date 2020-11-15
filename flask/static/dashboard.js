@@ -2328,7 +2328,7 @@ function checkTheme(){
     theme = document.cookie.split("theme=")[1].split("; ")[0]
     elements = "#main, .prepend, .dropdown-toggle, .page-link, .page-item.active, .advancedSearchMetadataItem select, .advancedSearchMetadataItem input, #advancedSearchInput, .metadataItem, .metadataKey, .row, #recentFiles, #mainText, #historyMainText, #sidebar, html, .replaceControl"
     elements2 = "#corpusSettings, #settings .custom-control-label, #corpusLanguageDiv, #mainHeadbar, #troncoHomeBar"
-    elements3 = "#mobile-nav, .toolbar"
+    elements3 = ".sortAction, #mobile-nav, .toolbar"
     elements4 = "#sidebar-scroll"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
