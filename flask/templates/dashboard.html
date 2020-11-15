@@ -2,7 +2,7 @@
 <html lang="pt">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Tronco te ajuda a organizar coleções de texto.">
 
     <meta property="og:title" content="{% if filename != 'README' %}{{filename}}{% else %}{{name}}{% endif %} - Tronco">
@@ -427,24 +427,24 @@
 
                 <button id="checklist" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Checklist do arquivo">
                   <span data-feather="check-square"></span>
-                  <span id="checklistLabel"></span>
+                  <span id="checklistLabel" class="toolbar-label"></span>
                 </button>
                 <button id="images" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Imagens no arquivo">
                   <span data-feather="image"></span>
-                  <span id="imagesLabel"></span>
+                  <span id="imagesLabel" class="toolbar-label"></span>
                 </button>
                 <button id="filesLink" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Referências a arquivos">
                   <span data-feather="file"></span>
-                  <span id="filesLinkLabel"></span>
+                  <span id="filesLinkLabel" class="toolbar-label"></span>
                 </button>
                 <button id="links" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Links no arquivos">
                   <span data-feather="link-2"></span>
-                  <span id="linksLabel"></span>
+                  <span id="linksLabel" class="toolbar-label"></span>
                 </button>
                 <button id="shareText" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste arquivo">
                   <span data-feather="share-2"></span>
                   <input style="border:none; display:none; padding-right:10px" id="shareLink" readonly>
-                  <span id="shareLinkLabel">Compartilhar</span>
+                  <span id="shareLinkLabel" class="toolbar-label">Compartilhar</span>
                 </button>                
                 <button id="saveModifications" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Salvar modificações (Ctrl+S)">
                   <span data-feather="save"></span>
@@ -452,23 +452,27 @@
                 </button>
                 <button id="renameFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Renomeie este arquivo">
                   <span data-feather="delete"></span>
-                  <span>Renomear</span>
+                  <span class="toolbar-label">Renomear</span>
                 </button>
                 <button id="deleteFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Exclua este arquivo">
                   <span data-feather="trash-2"></span>
-                  <span>Excluir</span>
+                  <span class="toolbar-label">Excluir</span>
                 </button>
                 <button id="replace" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Substituir texto">
                   <span data-feather="rotate-cw"></span>
-                  Substituir
+                  <span class="toolbar-label">Substituir</span>
+                </button>
+                <button id="sort" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Organizar texto">
+                  <span data-feather="align-left"></span>
+                  <span class="toolbar-label">Organizar</span>
                 </button>
                 <button id="metadata" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Metadados">
                   <span data-feather="database"></span>
-                  Metadados
+                  <span class="toolbar-label">Metadados</span>
                 </button>
                 <button id="history" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Histórico">
                   <span data-feather="clock"></span>
-                  Histórico
+                  <span class="toolbar-label">Histórico</span>
                 </button>
               </div>
             </div>
@@ -476,6 +480,32 @@
           </div>
 
           <div id="toolbar" class="my-3" style="display:none">
+
+            <div toolbar="sort" style="display:none" class="toolbar px-4 pt-3 pb-0 rounded">
+
+              <button type="button" title="Desfazer última ação" class="undo btn btn-sm btn-outline-primary">
+                <span data-feather="corner-up-left"></span>
+                Desfazer
+              </button>
+  
+              <button type="button" title="Refazer última ação" class="redo btn btn-sm btn-outline-primary">
+                <span data-feather="corner-up-right"></span>
+                Refazer
+              </button>
+
+              <ul class="py-3 list-group list-group-flush">
+                <a href="#"><li class="sortAction list-group-item" action="abcCrescent">Ordem alfabética (crescente)</li></a>
+                <a href="#"><li class="sortAction list-group-item" action="abcDecrescent">Ordem alfabética (decrescente)</li></a>
+                <a href="#"><li class="sortAction list-group-item" action="abcCase">Ordem alfabética (ignorar maiúsculas)</li></a>
+                <a href="#"><li class="sortAction list-group-item" action="lower">Apenas letras minúsculas</li></a>
+                <a href="#"><li class="sortAction list-group-item" action="upper">Apenas letras maiúsculas</li></a>
+                <a href="#"><li class="sortAction list-group-item" action="title">Apenas primeiras letras maiúsculas</li></a>
+                <a href="#"><li class="sortAction list-group-item" action="blankNewLine">Remover linhas em branco</li></a>
+                <a href="#"><li class="sortAction list-group-item" action="trimSpaces">Aparar espaços finais e iniciais</li></a>
+                <a href="#"><li class="sortAction list-group-item" action="doubleSpaces">Remover espaços duplos</li></a>
+              </ul>
+
+            </div>
 
             <div toolbar="replace" style="display:none" class="toolbar px-4 pt-3 pb-0 rounded">
 
@@ -513,12 +543,12 @@
                   Substituir
                 </button>
 
-                <button type="button" id="replaceUndo" title="Desfazer última ação" class="btn btn-sm btn-outline-primary">
+                <button type="button" id="replaceUndo" title="Desfazer última ação" class="undo btn btn-sm btn-outline-primary">
                   <span data-feather="corner-up-left"></span>
                   Desfazer
                 </button>
 
-                <button type="button" id="replaceRedo" title="Refazer última ação" class="btn btn-sm btn-outline-primary">
+                <button type="button" id="replaceRedo" title="Refazer última ação" class="redo btn btn-sm btn-outline-primary">
                   <span data-feather="corner-up-right"></span>
                   Refazer
                 </button>
@@ -640,7 +670,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=15"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=212"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=213"></script>
   
   </body>
 </html>

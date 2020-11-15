@@ -1,7 +1,33 @@
 function updateReplaceControls(){
-    $('#replaceUndo').prop('disabled', replaceUndo.length == 0)
-    $('#replaceRedo').prop('disabled', replaceRedo.length == 0)
+    $('.undo').prop('disabled', replaceUndo.length == 0)
+    $('.redo').prop('disabled', replaceRedo.length == 0)
 }
+
+$('.sortAction').click(function(){
+    oldText = $('#mainText').val()
+    action = $(this).attr('action')
+
+    $.ajax({
+        url: "/api/sort",
+        method: "POST",
+        data: {
+            old_text: oldText,
+            action: action,
+        },
+        success: function(data){
+            if (data.error == "0") {
+                if (data.new_text != oldText) {
+                    replaceUndo.push(oldText)
+                    $('#mainText').val(data.new_text)
+                    saveFile()
+                    updateReplaceControls()
+                } else {
+                    alert(data.error)
+                }
+            }
+        }
+    })
+})
 
 $('#replaceGo').click(function(){
     oldText = $('#mainText').val()
@@ -43,8 +69,10 @@ $('#replaceGo').click(function(){
     }
 })
 
-$('#replaceUndo').click(function(){
-    $('#replaceLabel').hide()
+$('.undo').click(function(){
+    if ($(this).attr('id') == "replaceUndo") {
+        $('#replaceLabel').hide()
+    }
     replaceRedo.push($('#mainText').val())
     $('#mainText').val(replaceUndo[replaceUndo.length-1])
     saveFile()
@@ -52,8 +80,10 @@ $('#replaceUndo').click(function(){
     updateReplaceControls()
 })
 
-$('#replaceRedo').click(function(){
-    $('#replaceLabel').hide()
+$('.redo').click(function(){
+    if ($(this).attr('id') == "replaceRedo") {
+        $('#replaceLabel').hide()
+    }
     replaceUndo.push($('#mainText').val())
     $('#mainText').val(replaceRedo[replaceRedo.length-1])
     saveFile()
@@ -925,7 +955,7 @@ function updateToolbar(){
         checklist.push([check[1] ? true : false, check[2]])
     }
 
-    list_files = $('#mainText').val().matchAll(/\[([^\]]+:)?(.+?)\]/gi)
+    list_files = $('#mainText').val().matchAll(/\[([^\]]+:)?([^\]]+?)\]/gi)
     for (file of list_files) {
         if (file[1]) {
             files.push(file[2] + ":" + file[1])
@@ -1043,6 +1073,7 @@ function updateToolbar(){
     $('#shareText').toggle(!is_local && $('#filename').attr('file') != "ARCHIVE")
     $('#metadata').toggle($('#advancedEditingCheckbox').prop('checked') && permView && $('#filename').attr('file') != "ARCHIVE")
     $('#replace').toggle($('#advancedEditingCheckbox').prop('checked') && permEdit && $('#filename').attr('file') != "ARCHIVE")
+    $('#sort').toggle($('#advancedEditingCheckbox').prop('checked') && permEdit && $('#filename').attr('file') != "ARCHIVE")
     $('#dropdown, .insertChecklist, #history').toggle(permEdit)
     if (isMobile) {
         $('#toolbarRow').scrollLeft(0)
@@ -1098,6 +1129,13 @@ function updateToolbar(){
         $('[toolbar=' + $('.toolbarButton.btn-primary').attr('id') + ']').hide()
     }
 
+    if (!isMobile) {
+        if ($('#toolbar-group')[0].scrollWidth > $('#toolbarRow')[0].clientWidth || $('#history').find('.toolbar-label').html().length == 0) {
+            $('.toolbar-label').each(function(){
+                $(this).html($(this).html().replace(/[^\(]*/, ""))
+            })
+        }
+    }
 }
 
 $('#troncoHome').click(function(){
@@ -1962,7 +2000,6 @@ function loadFile(filename){
             $('#filename').scrollLeft(0)
             $('#mainText').val(data.data.text)
             loadMetadata(data.data.metadata, filename == "README")
-            updateToolbar()
             //if ( isMobile && $('#checklist').is(":visible") && !$('.toolbarButton.btn-primary').length) {
                 //if (($('.checkbox-item-div').length / $('#mainText').val().split("\n").filter(function(e){return e.trim().length > 0}).length) > 0.6) {
                     //$('#checklist').click()
@@ -1986,8 +2023,9 @@ function loadFile(filename){
 
             $('#historyList').html("")
             $('.historyControls').hide()
-            $('#replaceUndo, #replaceRedo').prop('disabled', true)
+            $('.undo, .redo').prop('disabled', true)
             $('#replaceLabel').hide()
+            updateToolbar()
             replaceUndo = []
             replaceRedo = []
             if (data.history.length > 0) {

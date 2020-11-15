@@ -27,6 +27,39 @@ advanced_corpora = objects.AdvancedCorpora()
 corpora_history = objects.CorporaHistory()
 app.jinja_env.globals.update(tronco_config=tronco_config)
 
+@app.route("/api/sort", methods=["POST"])
+def sort():
+    old_text = request.values.get("old_text")
+    action = request.values.get("action")
+
+    if action == "abcCrescent":
+        new_text = "\n".join(sorted(old_text.splitlines(), key=lambda x: x))
+    elif action == "abcDecrescent":
+        new_text = "\n".join(sorted(old_text.splitlines(), key=lambda x: x, reverse=True))
+    elif action == "abcCase":
+        new_text = "\n".join(sorted(old_text.splitlines(), key=lambda x: x.lower()))
+    elif action == "lower":
+        new_text = old_text.lower()
+    elif action == "upper":
+        new_text = old_text.upper()
+    elif action == "title":
+        new_text = old_text.title()
+    elif action == "blankNewLine":
+        new_text = old_text
+        while "\n\n" in new_text:
+            new_text = new_text.replace("\n\n", "\n")
+    elif action == "trimSpaces":
+        new_text = "\n".join([x.strip() for x in old_text.splitlines()])
+    elif action == "doubleSpaces":
+        new_text = old_text
+        while "  " in new_text:
+            new_text = new_text.replace("  ", " ")
+
+    return {
+        'new_text': new_text,
+        'error': '0',
+    }
+
 @app.route("/api/replace", methods=["POST"])
 def replace():
     regex = True if request.values.get("replace_regex") == "true" else False
