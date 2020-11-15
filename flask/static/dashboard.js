@@ -1,3 +1,12 @@
+$('#search').on('blur', function(){
+    setTimeout(function(){
+        if (isMobile) {
+            $('#search').hide()
+        }
+        $('#breadcrumb-nav').hide()
+    }, 500)
+})
+
 function updateReplaceControls(){
     $('.undo').prop('disabled', replaceUndo.length == 0)
     $('.redo').prop('disabled', replaceRedo.length == 0)
@@ -2250,6 +2259,7 @@ function triggerResize(first=false){
     name = $('#name').html()
     if ($('#sidebar:hidden').length || $(window).width() < 600) {
         if (first) {
+            $('#search').addClass("border-bottom")
             isMobileFromBeginning = true
             $('.toolbarButton, #dropdownMenuLink').removeClass("btn-sm")
             $('#sidebar').css("max-width", "")
@@ -2258,12 +2268,12 @@ function triggerResize(first=false){
                 $('#mobileLeft').css({top: window.innerHeight-75, left: window.innerWidth-75})
                 $('#mobileEdit').css({top: window.innerHeight-75, left: (window.innerWidth/2)-28})
             })
-            $('#filename, #filename-div').hide()
+            $('#filename, #filename-div').hide().removeClass("pb-2").removeClass("mt-4").addClass("mt-3")
             //$('#troncoHomeLabel').css('overflow-x', 'scroll').css('white-space', 'nowrap')
         }
         isMobile = true
         filename = $('#filename').attr('file')
-        $('#troncoHomeLabel').html("<span class='mt-3 py-2 mb-2 ml-3' style='overflow-x: scroll; max-width:90%; width:100%; display:inline-block; white-space: nowrap; font-weight:bold;'>" + name + " > <span id='filenameMobile'>" + (special_files.indexOf(filename) == -1 ? filename : "") + "</span>" + "</span>")
+        $('#troncoHomeLabel').html("<span class='mt-3 py-1 mb-2 ml-3' style='overflow-x: scroll; max-width:90%; width:100%; display:inline-block; white-space: nowrap; font-weight:bold;'>" + name + " > <span id='filenameMobile'>" + (special_files.indexOf(filename) == -1 ? filename : "") + "</span>" + "</span>")
         $('#troncoLogo').hide()
         $('.navbar-brand').hide()
         $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #toolbar, #advancedSearchToolbarRow .btn-group, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", false).toggleClass("px-4", true)

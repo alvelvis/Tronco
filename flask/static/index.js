@@ -150,14 +150,14 @@ $('#filterOpenCorpus').on('focus', function(){
     selectCorpus(-1)
     if (isMobile) {
         $('#footer').hide()
-        setTimeout(function(){
-            window.scrollTo(0, $('#filterOpenCorpus').offset().top-80)
-        }, 300)
     }
 })
 
 $('#filterOpenCorpus').on('keyup', function(e){
     key = $(this).val()
+    setTimeout(function(){
+        window.scrollTo(0, $('#filterOpenCorpus').offset().top-80)
+    }, 300)
     if (e.key != "ArrowUp" && e.key != "ArrowDown") {
         loadCorpora(key)
         if ($('#recentCorpora:visible').length) {
