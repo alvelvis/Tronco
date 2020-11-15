@@ -2250,6 +2250,7 @@ function triggerResize(first=false){
     if ($('#sidebar:hidden').length || $(window).width() < 600) {
         if (first) {
             isMobileFromBeginning = true
+            $('.toolbarButton, #dropdownMenuLink').removeClass("btn-sm")
             $('#sidebar').css("max-width", "")
             $('#settings').append($('#renameCorpus, #deleteCorpus, #permissionsSettings').detach())
             mobileInterval = window.setInterval(function(){
@@ -2274,7 +2275,6 @@ function triggerResize(first=false){
         if (mobileInterval) {
             clearInterval(mobileInterval)
         }
-
         isMobile = false
         $('#toolbar-group, #searchHeader, .dynamic, [advanced-toolbar-panel!="builder"].advanced-toolbar-panel, [advanced-toolbar-panel!="builder"] .h5, [advanced-toolbar-panel="builder"] .btn-group, #toolbar, #advancedSearchToolbarRow .btn-group, #filename, #saved, #breadcrumb-nav, #mainText, #hr').toggleClass("px-5", true).toggleClass("px-4", false)
         $('#troncoLogo').show()
