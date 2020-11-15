@@ -1129,12 +1129,10 @@ function updateToolbar(){
         $('[toolbar=' + $('.toolbarButton.btn-primary').attr('id') + ']').hide()
     }
 
-    if (!isMobile) {
-        if ($('#toolbar-group')[0].scrollWidth > $('#toolbarRow')[0].clientWidth || $('#history').find('.toolbar-label').html().length == 0) {
-            $('.toolbar-label').each(function(){
-                $(this).html($(this).html().replace(/[^\(]*/, ""))
-            })
-        }
+    if ($('#history').find('.toolbar-label').html().length == 0 || (!isMobile && $('#toolbar-group')[0].scrollWidth > $('#toolbarRow')[0].clientWidth) || (isMobile && $('#toolbarRow')[0].clientWidth / $('#toolbar-group')[0].scrollWidth < 0.4)) {
+        $('.toolbar-label').each(function(){
+            $(this).html($(this).html().replace(/[^\(]*/, ""))
+        })
     }
 }
 
