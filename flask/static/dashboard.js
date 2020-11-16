@@ -19,6 +19,7 @@ function updateReplaceControls(){
 $('.sortAction').click(function(){
     oldText = $('#mainText').val()
     action = $(this).attr('action')
+    toggleProgress("Organizando...")
 
     $.ajax({
         url: "/api/sort",
@@ -34,15 +35,18 @@ $('.sortAction').click(function(){
                     $('#mainText').val(data.new_text)
                     saveFile()
                     updateReplaceControls()
+                    toggleProgress(false)
                 }
             } else {
                     alert(data.error)
+                    toggleProgress(false)
             }
         }
     })
 })
 
 $('#replaceGo').click(function(){
+    toggleProgress("Substituindo...")
     oldText = $('#mainText').val()
     replaceFrom = $('#replaceFrom').val()
     replaceTo = $('#replaceTo').val()
@@ -70,14 +74,17 @@ $('#replaceGo').click(function(){
                         $('#mainText').val(data.new_text)
                         saveFile()
                         updateReplaceControls()
+                        toggleProgress(false)
                     }
                 } else {
                     alert(data.error)
+                    toggleProgress(false)
                 }
             }
         })
         .fail(function(){
             alert("Falha na expressão de busca")
+            toggleProgress(false)
         })
     }
 })
