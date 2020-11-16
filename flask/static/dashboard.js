@@ -1,3 +1,7 @@
+function countWords(str) {
+    return str.trim().split(/\s+/).length
+}
+
 $('#search').on('blur', function(){
     setTimeout(function(){
         if (isMobile) {
@@ -30,9 +34,9 @@ $('.sortAction').click(function(){
                     $('#mainText').val(data.new_text)
                     saveFile()
                     updateReplaceControls()
-                } else {
-                    alert(data.error)
                 }
+            } else {
+                    alert(data.error)
             }
         }
     })
@@ -1961,6 +1965,12 @@ $('#mainText').on('change', function(){
         textModified(true)
     }
     updateToolbar()
+})
+
+$('#mainText').on('input', function(){
+    $('#sortLines').html($('#mainText').val().split("\n").length)
+    $('#sortWords').html(countWords($('#mainText').val()))
+    $('#sortCharacters').html($('#mainText').val().length)
 })
 
 function textModified(state){

@@ -493,16 +493,20 @@
                 Refazer
               </button>
 
-              <ul class="py-3 list-group list-group-flush">
-                <a href="#"><li class="sortAction list-group-item" action="abcCrescent">Ordem alfabética (crescente)</li></a>
-                <a href="#"><li class="sortAction list-group-item" action="abcDecrescent">Ordem alfabética (decrescente)</li></a>
-                <a href="#"><li class="sortAction list-group-item" action="abcCase">Ordem alfabética (ignorar maiúsculas)</li></a>
-                <a href="#"><li class="sortAction list-group-item" action="lower">Apenas letras minúsculas</li></a>
-                <a href="#"><li class="sortAction list-group-item" action="upper">Apenas letras maiúsculas</li></a>
-                <a href="#"><li class="sortAction list-group-item" action="title">Apenas primeiras letras maiúsculas</li></a>
-                <a href="#"><li class="sortAction list-group-item" action="blankNewLine">Remover linhas em branco</li></a>
-                <a href="#"><li class="sortAction list-group-item" action="trimSpaces">Aparar espaços finais e iniciais</li></a>
-                <a href="#"><li class="sortAction list-group-item" action="doubleSpaces">Remover espaços duplos</li></a>
+              <div class="mt-3 py-2">
+                Linhas: <span id="sortLines"></span> / Palavras: <span id="sortWords"></span> / Caracteres: <span id="sortCharacters"></span>
+              </div>
+
+              <ul class="py-3 list-group list-group-flush" style="max-height: 300px; overflow:auto;">
+                <li class="sortAction list-group-item" action="abcCrescent"><a href="#">Ordem alfabética (crescente)</a></li>
+                <li class="sortAction list-group-item" action="abcDecrescent"><a href="#">Ordem alfabética (decrescente)</a></li>
+                <li class="sortAction list-group-item" action="abcCase"><a href="#">Ordem alfabética (ignorar maiúsculas)</a></li>
+                <li class="sortAction list-group-item" action="lower"><a href="#">Apenas letras minúsculas</a></li>
+                <li class="sortAction list-group-item" action="upper"><a href="#">Apenas letras maiúsculas</a></li>
+                <li class="sortAction list-group-item" action="title"><a href="#">Apenas primeiras letras maiúsculas</a></li>
+                <li class="sortAction list-group-item" action="blankNewLine"><a href="#">Remover linhas em branco</a></li>
+                <li class="sortAction list-group-item" action="trimSpaces"><a href="#">Aparar espaços finais e iniciais</a></li>
+                <li class="sortAction list-group-item" action="doubleSpaces"><a href="#">Remover espaços duplos</a></li>
               </ul>
 
             </div>
@@ -670,7 +674,7 @@
     <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
 
     <script src="{{url_for('static', filename='tronco.js')}}?version=15"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=222"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=223"></script>
   
   </body>
 </html>
