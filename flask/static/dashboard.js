@@ -14,6 +14,7 @@ $('#search').on('blur', function(){
 function updateReplaceControls(){
     $('.undo').prop('disabled', replaceUndo.length == 0)
     $('.redo').prop('disabled', replaceRedo.length == 0)
+    $('#mainText').trigger('input')
 }
 
 $('.sortAction').click(function(){
