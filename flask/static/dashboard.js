@@ -729,7 +729,7 @@ function toggleInsertSuccess(){
     updateToolbar()
     $('.dropdown-toggle').toggleClass("btn-outline-secondary", false).toggleClass("btn-success", true)
     setTimeout(() => { 
-        $('.insertLabel').html('<span data-feather="plus"></span>')
+        $('.insertLabel').html('Inserir')
         feather.replace()
         $('.dropdown-toggle').toggleClass("btn-outline-secondary", true).toggleClass("btn-success", false)
     }, 2000)
