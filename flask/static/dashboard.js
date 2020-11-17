@@ -121,10 +121,10 @@ $('#history').click(function(){
 $('#restoreHistory').click(function(){
     filename = $('#filename').attr('file')
     if (confirm("Tem certeza de que deseja restaurar o arquivo \"" + filename + "\" para a versão do dia " + $('.historyActive').html() + "?\nA versão atual, com " + $('#historyCharacters').html() + " caracteres, será descartada.")) {
-        $('#main').val($('#historyMainText').val())
-        $('#history').click()
+        $('#mainText').val($('#historyMainText').text())
         saveFile()
-        gotoFile(filename)
+        $('#history').click()
+        $('#mainText').trigger('input')
     }
 })
 
@@ -656,42 +656,6 @@ $('.deleteFileContext').click(function(){
     deleteFile(filedivcontext.attr('file'))
 })
 
-$('.moveUpCheckbox').click(function(){
-    if ($('.checkbox-item-subdiv').index(checkboxdiv) != 0) {
-        checkboxString = checkboxdiv.find(".custom-control-label").text()
-        pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
-        is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
-
-        top_is_checked = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').index(checkboxdiv)-1]).find("[type=checkbox]").prop("checked")//$('.checkbox-item-subdiv').length-1
-        topString = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').index(checkboxdiv)-1]).find(".custom-control-label").text()
-        topPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(topString), "g")
-        
-        if (topString != checkboxString) {
-            $('#mainText').val($('#mainText').val().replace(pattern, "").replace(topPattern, "[" + (is_checked ? "x" : "") + "] " + checkboxString + "\n" + "[" + (top_is_checked ? "x" : "") + "] " + topString))
-            saveFile()
-            updateToolbar()
-        }
-    }
-})
-
-$('.moveDownCheckbox').click(function(){
-    if ($('.checkbox-item-subdiv').index(checkboxdiv) != $('.checkbox-item-subdiv').length-1) {
-        checkboxString = checkboxdiv.find(".custom-control-label").text()
-        pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString) + "\n?", "g")
-        is_checked = checkboxdiv.find("[type=checkbox]").prop("checked")
-
-        bottom_is_checked = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').index(checkboxdiv)+1]).find("[type=checkbox]").prop("checked")
-        bottomString = $($('.checkbox-item-subdiv')[$('.checkbox-item-subdiv').index(checkboxdiv)+1]).find(".custom-control-label").text()
-        bottomPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(bottomString), "g")
-        
-        if (bottomString != checkboxString) {
-            $('#mainText').val($('#mainText').val().replace(pattern, "").replace(bottomPattern, "[" + (bottom_is_checked ? "x" : "") + "] " + bottomString + "\n" + "[" + (is_checked ? "x" : "") + "] " + checkboxString))
-            saveFile()
-            updateToolbar()
-        }
-    }
-})
-
 $('.newDownCheckbox').click(function(){
     checkboxString = checkboxdiv.find(".custom-control-label").text()
     pattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(checkboxString), "g")
@@ -1003,8 +967,53 @@ function updateToolbar(){
         $('#checklistLabel').html("Checklist (" + checklist.filter(x => x[0]).length + "/" + checklist.length + ")")
         $('[toolbar=checklist] .checklist-items').html('')
         for (check in checklist) {
-            $('[toolbar=checklist] .checklist-items').append('<div class="form-row checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label" style="cursor:pointer; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + escapeHtml(checklist[check][1]) + '</label></div></div></div>')
+            $('[toolbar=checklist] .checklist-items').append('<div class="form-row checklist-draggable checkbox-item-div align-items-left"><div class="col-auto my-1 checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label checklist-label" style="cursor:pointer; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + escapeHtml(checklist[check][1]) + '</label></div></div></div>')
         }
+        $(".checklist-items").sortable({
+            revert: true,
+            stop: function(event, ui) {
+                
+                previousIndex = parseInt(ui.item.find('input').attr('id').split("-")[1])
+                previousDiv = $('.checkbox-item-subdiv').eq(previousIndex)
+                previousTop = previousDiv.parents('.checklist-draggable').position().top
+                newTop = ui.item.position().top
+                previousIndex = ui.item.index()
+                
+                if (previousTop < newTop) {
+                    newIndex = previousIndex + 1
+                } else {
+                    newIndex = previousIndex - 1
+                }
+                previousDiv = $('.checkbox-item-subdiv').eq(previousIndex)
+    
+                previousString = previousDiv.find(".custom-control-label").text()
+                console.log(previousString)
+                previousPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(previousString) + "\n?", "g")
+                previous_is_checked = previousDiv.find("[type=checkbox]").prop("checked")
+        
+                new_is_checked = $($('.checkbox-item-subdiv')[newIndex]).find("[type=checkbox]").prop("checked")//$('.checkbox-item-subdiv').length-1
+                newString = $($('.checkbox-item-subdiv')[newIndex]).find(".custom-control-label").text()
+                console.log(newString)
+                newPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(newString), "g")
+                
+                if (previousIndex == 0) {
+                    $('#mainText').val("[" + (previous_is_checked ? "x" : "") + "] " + previousString + "\n" + $('#mainText').val().replace(previousPattern, ""))
+                } else {
+                    if (previousIndex == $('.checkbox-item-subdiv').length -1) {
+                        $('#mainText').val($('#mainText').val().replace(previousPattern, "") + "\n" + "[" + (previous_is_checked ? "x" : "") + "] " + previousString)
+                    } else {
+                        if (previousTop < newTop) {
+                            $('#mainText').val($('#mainText').val().replace(previousPattern, "").replace(newPattern, "[" + (previous_is_checked ? "x" : "") + "] " + previousString + "\n" + "[" + (new_is_checked ? "x" : "") + "] " + newString))
+                        } else {
+                            $('#mainText').val($('#mainText').val().replace(previousPattern, "").replace(newPattern, "[" + (new_is_checked ? "x" : "") + "] " + newString + "\n" + "[" + (previous_is_checked ? "x" : "") + "] " + previousString))
+                        }
+                    }
+                }
+                saveFile()
+                updateToolbar()
+            }
+        })
+        $('.checklist-items').disableSelection()
         $('.checkbox-item-div').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
         $('.file-checkbox').change(function(){
             checkString = $('[for="' + $(this).attr('id') + '"]').text()
@@ -1017,8 +1026,8 @@ function updateToolbar(){
 
         $('.checkbox-item-subdiv').on('contextmenu', function(e) {
             toggleMobile(false)
-            $('.checkbox-item-subdiv').css('background-color', '')
-            $(this).css("background-color", "orange")
+            $('.checkbox-item-subdiv').removeClass('highlight')
+            $(this).addClass("highlight")
             checkboxdiv = $(this)
             var top = e.pageY
             var left = e.pageX
@@ -1100,6 +1109,11 @@ function updateToolbar(){
     if (isMobile) {
         $('#toolbarRow').scrollLeft(0)
     }
+    $( ".checklist-draggable" ).draggable({
+        connectToSortable: ".checklist-items",
+        //helper: "clone",
+        revert: "invalid",
+    })
     /*
     if (!isMobile) {
         $('#mainText').css("margin-top", $("#editingPanel").height())  
@@ -1397,6 +1411,7 @@ function validatePassword (name){
         $('#mainText').prop('readonly', (isMobile) || (!isMobile && !permEdit)).toggleClass("p-3", !permEdit)
         $('#saveModifications').attr('disabled', !permEdit)
         $('#menu-svg').toggle(permSetup)
+        $('#permSaved').toggle(permEdit)
         storeSessionToken(data.token)
         if (!token.length) {
             setTroncoToken(data.tronco_token)
@@ -1794,8 +1809,8 @@ function updateFiles(key = "", load = "", forceUpdate = false){
 
             $('[file!=README][file!=ARCHIVE].files').on('contextmenu', function(e) {
                 toggleMobile(false)
-                $('.files').css('background-color', '')
-                $(this).css('background-color', 'orange')
+                $('.files').removeClass('highlight')
+                $(this).addClass('highlight')
                 filedivcontext = $(this)
                 var top = e.pageY
                 var left = e.pageX
@@ -1979,6 +1994,7 @@ $('#mainText').on('input', function(){
     $('#sortLines').html($('#mainText').val().split("\n").length)
     $('#sortWords').html(countWords($('#mainText').val()))
     $('#sortCharacters').html($('#mainText').val().length)
+    updateToolbar()
 })
 
 function textModified(state){
@@ -2456,8 +2472,9 @@ $(document).ready(function(){
             toggleMobile($('#sidebar').hasClass('d-none') && permView ? "mobileFile" : "mobileSidebar")
         }
         $("#context-menu-checklist, #context-menu-file, #context-menu-metadata").removeClass("show").hide()
-        $('.checkbox-item-subdiv, .files').css('background-color', '')
+        $('.checkbox-item-subdiv, .files').removeClass('highlight')
     })
     triggerResize(true)
     checkTheme()
+    
 })
