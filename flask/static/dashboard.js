@@ -968,15 +968,16 @@ function updateToolbar(){
         $('#checklistLabel').html("Checklist (" + checklist.filter(x => x[0]).length + "/" + checklist.length + ")")
         $('[toolbar=checklist] .checklist-items').html('')
         for (check in checklist) {
-            $('[toolbar=checklist] .checklist-items').append('<div class="form-row checkbox-item-div checklist-draggable align-items-left">' + (isMobile ? '<div class="mt-1 mr-2" style="width:auto"><span style="cursor:pointer" data-feather="more-vertical"></span></div>': "" ) + '<div ' + (isMobile ? ' style="width:90%" ' : " ") + ' class="my-1' + (isMobile ? " cancelDrag " : " ") + 'checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label checklist-label" style="cursor:pointer; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + escapeHtml(checklist[check][1]) + '</label></div></div></div>')
+            $('[toolbar=checklist] .checklist-items').append('<div class="form-row checkbox-item-div align-items-left">' + (isMobile ? '<div class="mt-1 mr-2 checklist-draggable" style="width:auto"><span style="cursor:pointer" data-feather="more-vertical"></span></div>': "" ) + '<div ' + (isMobile ? ' style="width:90%" ' : " ") + ' class="my-1' + (isMobile ? " cancelDrag " : " ") + 'checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '"><label class="custom-control-label checklist-label" style="cursor:pointer; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + escapeHtml(checklist[check][1]) + '</label></div></div></div>')
         }
         $(".checklist-items").sortable({
             revert: false,
+            handle: '.checklist-draggable',
             stop: function(event, ui) {
                 
                 previousIndex = parseInt(ui.item.find('input').attr('id').split("-")[1])
                 previousDiv = $('.checkbox-item-subdiv').eq(previousIndex)
-                previousTop = previousDiv.parents('.checklist-draggable').position().top
+                previousTop = previousDiv.parents('.checkbox-item-div').position().top
                 newTop = ui.item.position().top
                 previousIndex = ui.item.index()
                 
@@ -1012,6 +1013,7 @@ function updateToolbar(){
                 updateToolbar()
             }
         })
+        
         $('.checklist-items').disableSelection()
         $('.checkbox-item-subdiv').css('overflow-x', isMobile ? "scroll" : "auto").css("white-space", "nowrap")
         $('.file-checkbox').change(function(){
