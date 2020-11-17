@@ -125,6 +125,7 @@ $('#restoreHistory').click(function(){
         saveFile()
         $('#history').click()
         $('#mainText').trigger('input')
+        updateToolbar()
     }
 })
 
@@ -987,13 +988,11 @@ function updateToolbar(){
                 previousDiv = $('.checkbox-item-subdiv').eq(previousIndex)
     
                 previousString = previousDiv.find(".custom-control-label").text()
-                console.log(previousString)
                 previousPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(previousString) + "\n?", "g")
                 previous_is_checked = previousDiv.find("[type=checkbox]").prop("checked")
         
                 new_is_checked = $($('.checkbox-item-subdiv')[newIndex]).find("[type=checkbox]").prop("checked")//$('.checkbox-item-subdiv').length-1
                 newString = $($('.checkbox-item-subdiv')[newIndex]).find(".custom-control-label").text()
-                console.log(newString)
                 newPattern = RegExp("\\[[xX]?\\]\\s?" + escapeRegExp(newString), "g")
                 
                 if (previousIndex == 0) {
@@ -1994,7 +1993,6 @@ $('#mainText').on('input', function(){
     $('#sortLines').html($('#mainText').val().split("\n").length)
     $('#sortWords').html(countWords($('#mainText').val()))
     $('#sortCharacters').html($('#mainText').val().length)
-    updateToolbar()
 })
 
 function textModified(state){
