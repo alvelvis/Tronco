@@ -5,7 +5,9 @@
 .highlight {
   background-color: orange;
 }
-
+.ui-sortable-helper {
+  size: 20px;
+}
 
 .mobile-btn {
   /*padding: 10px;*/
