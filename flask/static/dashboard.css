@@ -16,6 +16,11 @@
   border-bottom: 4px solid #bf6724;
 }
 
+html,
+body {
+    overscroll-behavior-y: contain;
+}
+
 #mainText:focus {
   box-shadow: none;
 }

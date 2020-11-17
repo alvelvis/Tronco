@@ -972,7 +972,6 @@ function updateToolbar(){
         }
         $(".checklist-items").sortable({
             revert: false,
-            cancel: '.cancelDrag',
             stop: function(event, ui) {
                 
                 previousIndex = parseInt(ui.item.find('input').attr('id').split("-")[1])
