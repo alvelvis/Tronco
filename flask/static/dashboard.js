@@ -968,12 +968,11 @@ function updateToolbar(){
         $('#checklistLabel').html("Checklist (" + checklist.filter(x => x[0]).length + "/" + checklist.length + ")")
         $('[toolbar=checklist] .checklist-items').html('')
         for (check in checklist) {
-            $('[toolbar=checklist] .checklist-items').append('<div class="form-row checkbox-item-div align-items-left"><div ' + (isMobile ? ' ' : " ") + ' class="pl-1 ml-1 my-1' + (isMobile ? " cancelDrag " : " ") + 'checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '">' + (isMobile ? '<span style="cursor:pointer" class="pr-1 mr-1 checklist-draggable" data-feather="more-vertical"></span>': "" ) + '<label class="custom-control-label' + (isMobile ? " " : " checklist-draggable ") + 'checklist-label" style="cursor:pointer; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + escapeHtml(checklist[check][1]) + '</label></div></div></div>')
+            $('[toolbar=checklist] .checklist-items').append('<div class="form-row checkbox-item-div align-items-left"><div ' + (isMobile ? ' ' : " ") + ' class="pl-1 ml-1 my-1' + (isMobile ? " cancelDrag " : " ") + 'checkbox-item-subdiv"><div class="custom-control custom-checkbox mr-sm-2"><input type="checkbox" ' + (checklist[check][0] ? 'checked="true"' : '') + ' class="custom-control-input file-checkbox" id="checkbox-' + check + '">' + (isMobile ? '<span style="cursor:pointer" class="mr-2 checklist-draggable" data-feather="more-vertical"></span>': "" ) + '<label class="custom-control-label' + (isMobile ? " " : " checklist-draggable ") + 'checklist-label" style="cursor:pointer; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;" for="checkbox-' + check + '">' + escapeHtml(checklist[check][1]) + '</label></div></div></div>')
         }
         $(".checklist-items").sortable({
             revert: false,
             axis: "y",
-            delay: 150,
             handle: '.checklist-draggable',
             start: function(event, ui) {
                 ui.item.css('font-weight', 'bold')
