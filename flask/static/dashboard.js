@@ -1445,6 +1445,11 @@ function validatePassword (name){
         } else {
             gotoFile($('#filename').attr('file'), true)
         }
+
+        if (!permView) {
+            $('#changePassword').click()
+        }
+
     })
     return true
 }
