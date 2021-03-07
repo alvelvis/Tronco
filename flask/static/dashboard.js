@@ -1407,7 +1407,10 @@ function validatePassword (name){
         $('#uploadTextDiv').toggle(permEdit)
         if (isMobile) {
             $('#corpusSettings').toggle(permSetup)
-            toggleMobile(permView ? "mobileFile" : "mobileNoPerm")
+            if (!permView) {
+                toggleMobile("mobileNoPerm")
+            }
+            //toggleMobile(permView ? "mobileFile" : "mobileNoPerm")
         }
         $('#newFile').toggle(permEdit)
         $('#mainText').prop('readonly', (isMobile) || (!isMobile && !permEdit)).toggleClass("p-3", !permEdit)
