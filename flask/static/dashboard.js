@@ -306,10 +306,7 @@ $('.toggleSearch').click(function(){
 })
 
 function toggleMain(panel) {
-    if (!panel) {
-        $('#toolbarRow, #toolbar').toggle(false)
-    }
-    $('#filename-div, #filename, #mainText, #saved, #hr, #breadcrumb-nav').toggle(false)
+    $('#filename-div, #filename, #mainText, #saved, #toolbarRow, #toolbar, #hr, #breadcrumb-nav').toggle(false)
     $('#search').toggle(!isMobile)
     $('#searchMain').toggle(false)
     if (panel) {
@@ -327,7 +324,7 @@ function toggleMain(panel) {
                 break
         }
     }
-    if (isMobile && $('#sidebar:visible').length) {
+    if (panel && isMobile && $('#sidebar:visible').length) {
         $('.toggleSettings')[0].click()
     }
 }
