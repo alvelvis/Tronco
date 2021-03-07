@@ -712,8 +712,10 @@ function toggleInsertSuccess(){
     }, 2000)
 }
 
-function gotoFile(filename=$('#search').val(), forceUpdate=false, skipFind=false){
-    toggleMain(false)
+function gotoFile(filename=$('#search').val(), forceUpdate=false, skipFind=false, skipToolbar=false){
+    if (!skipToolbar) {
+        toggleMain(false)
+    }
     $('.files').toggleClass("active", false)
     if ($('[file="' + filename + '"].files')) {
         $('[file="' + filename + '"].files').toggleClass('active', true)
@@ -1446,7 +1448,7 @@ function validatePassword (name){
             $('#advancedSearch').click()
             updateFiles("", "", true)
         } else {
-            gotoFile($('#filename').attr('file'), true)
+            gotoFile($('#filename').attr('file'), true, false, true)
         }
 
         if (!permView) {
