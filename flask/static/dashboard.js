@@ -2336,7 +2336,7 @@ function triggerResize(first=false){
         $('#toolbarRow, #advancedSearchToolbarRow, #builder-buttons, #builder-recent').css('overflow-x', "auto")
         //$('#editingPanel').css("z-index", "1200").toggleClass("sticky-top", true)
         toggleMobile(false)
-        $('#sidebar-scroll').on('mouseenter', function(){
+        $('#sidebar-scroll').on('mouseenter touchstart', function(){
             $(this).css({'overflow-y': 'auto'})
         }).on('mouseleave', function(){
             $(this).css({'overflow-y': 'hidden'})
