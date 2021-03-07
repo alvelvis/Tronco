@@ -306,7 +306,10 @@ $('.toggleSearch').click(function(){
 })
 
 function toggleMain(panel) {
-    $('#filename-div, #filename, #mainText, #saved, #toolbarRow, #toolbar, #hr, #breadcrumb-nav').toggle(false)
+    if (!panel) {
+        $('#toolbarRow, #toolbar').toggle(false)
+    }
+    $('#filename-div, #filename, #mainText, #saved, #hr, #breadcrumb-nav').toggle(false)
     $('#search').toggle(!isMobile)
     $('#searchMain').toggle(false)
     if (panel) {
