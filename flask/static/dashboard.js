@@ -2355,7 +2355,7 @@ function triggerResize(first=false){
     $('#sidebar').css('margin-top', $('#mainHeadbar').height())
     $('#troncoLogo').css('margin-bottom', isMobile ? "" : "4px")
     //$('#main').css('margin-left', !isMobile ? '260px' : '0px')
-    $('#main').toggleClass("col-md-9 ml-sm-auto col-lg-10", !isMobile)
+    $('#main').toggleClass("col-md-10 ml-sm-auto col-lg-10", !isMobile)
 
     $('#uploadTextLabel').html(isMobile ? "Enviar arquivos" : "Enviar arquivos")
 
