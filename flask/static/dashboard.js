@@ -324,7 +324,7 @@ function toggleMain(panel) {
                 break
         }
     }
-    if (panel && isMobile && $('#sidebar:visible').length) {
+    if (isMobile && $('#sidebar:visible').length) {
         $('.toggleSettings')[0].click()
     }
 }
