@@ -13,7 +13,7 @@ idna==2.10
 IMAPClient==2.1.0
 itsdangerous==1.1.0
 Jinja2==2.11.2
-lxml==4.6.2
+lxml==4.6.3
 MarkupSafe==1.1.1
 olefile==0.46
 pdfminer.six==20181108
