@@ -30,7 +30,7 @@ SpeechRecognition==3.8.1
 textract==1.6.3
 tzlocal==1.5.1
 ufal.udpipe==1.2.0.3
-urllib3==1.25.11
+urllib3==1.26.5
 Werkzeug==1.0.1
 whichcraft==0.6.1
 xlrd==1.2.0
