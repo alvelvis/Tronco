@@ -1875,19 +1875,23 @@ $(window).bind('keydown', function(event) {
     }
     if (event.ctrlKey || event.metaKey) {
         switch (String.fromCharCode(event.which).toLowerCase()) {
-        case 's':
-            event.preventDefault()
-            saveFile($('#filename').attr('file'), $('#mainText').val()) 
-            break
-        case 'p':
-            event.preventDefault()
-            $('#search').focus().select()
-            break
-        case 'e':
-            event.preventDefault()
-            $('#troncoHome').click()
-            break
-        }
+            case 's':
+                event.preventDefault()
+                saveFile($('#filename').attr('file'), $('#mainText').val()) 
+                break
+            case 'p':
+                event.preventDefault()
+                $('#search').focus().select()
+                break
+            case 'e':
+                event.preventDefault()
+                $('#troncoHome').click()
+                break
+            case 'd':
+                event.preventDefault()
+                $(".insertDate").click()
+                break
+            }
     }
 })
 
