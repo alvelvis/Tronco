@@ -27,6 +27,10 @@ body {
   box-shadow: none;
 }
 
+#mainText {
+  line-height:1.6;
+}
+
 .breadcrumb {
   display: block !important;
 }
