@@ -205,7 +205,7 @@ $('#toggleTheme').click(function(){
 $(window).ready(function(){
     feather.replace()
     domain = window.location.href.match(/https?:\/\/(.*?)\//)[1].replace(/\//g, "")
-    $('#tronco').html(domain == "tronco.ga" ? "tronco.ga" : "Tronco")
+    $('#tronco').html(domain == "tronco.gq" ? "tronco.gq" : "Tronco")
     if ($('#tronco:hidden').length) {
         isMobile = true
     } else {
