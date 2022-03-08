@@ -1205,7 +1205,7 @@ $('.toolbarButton').click(function(){
     if ($("[toolbar='" + $(this).attr('id') + "']:visible").length) {
         $(this).toggleClass("btn-primary", true).toggleClass("btn-outline-secondary", false)
     }
-    if (!isMobile) {
+    /*if (!isMobile) {
         $('#mainText').css("margin-top", $("#editingPanel").height())  
         $('[toolbar=checklist]').toggleClass("mb-5", false)
     } else {
@@ -1213,7 +1213,7 @@ $('.toolbarButton').click(function(){
         $('[toolbar=checklist]').toggleClass("mb-5", true)
         $('#mainText').toggle(!$('[toolbar=checklist]').is(":visible"))
         $('#mainText').trigger('input')
-    }
+    }*/
 })
 
 $('#reloadPage').click(function(){
@@ -1837,8 +1837,8 @@ function updateFiles(key = "", load = "", forceUpdate = false){
             feather.replace()
 
             if (load) {
-                loadFile(load)
                 recentFiles()
+                loadFile(load)
                 $('[file="' + load + '"].files').toggleClass('active', true)
             } else {
                 
@@ -2085,7 +2085,9 @@ function loadFile(filename){
             }
 
             $('[toolbar=shareText]').toggle(false)
-            if (filename == "README") { $('#breadcrumb-nav').toggle(true) }
+            if (filename == "README" && $('#recentFiles').text() != 'Nenhum arquivo encontrado.') { 
+                $('#breadcrumb-nav').toggle(true) 
+            }
             if (!isMobile) {
                 //$('#mainText').focus()
             }
