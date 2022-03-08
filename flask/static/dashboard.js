@@ -1260,7 +1260,9 @@ $('#shareText').click(function(){
         shareFile($('#filename').attr('file'), "false")
     })
     if ($('[toolbar=shareText]:visible').length) {
-        shareFile($('#filename').attr('file'), "true")
+        if (!visitant_view_perm) {
+            shareFile($('#filename').attr('file'), "true")
+        }
         $('#shareLink').show()
         $('#shareLink').val(link)
         $('#shareLink').select()
@@ -1272,7 +1274,7 @@ $('#shareText').click(function(){
         setTimeout(function(){
             //$('#shareText').toggleClass("btn-success", false)
             //$('#shareText').toggleClass("btn-outline-secondary", true)
-            $('#shareLinkLabel').html("Público")
+            $('#shareLinkLabel').html(visitant_view_perm ? "Compartilhar" : "Público")
         }, 2000)
     }
 })
