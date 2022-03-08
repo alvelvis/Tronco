@@ -781,7 +781,7 @@ function toggleMobile(el) {
             case "mobileSidebar":
                 $('#mobileMenu').show()
                 $('#mobileTronco').show()
-                $('#mobileHome').show(permView)
+                $('#mobileHome').toggle(permView)
                 $('#mobileSearch').toggle(permView)
                 $('#mobileMenu').toggleClass("mobile-btn-active", true)
                 break
