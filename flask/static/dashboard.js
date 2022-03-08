@@ -7,7 +7,7 @@ $('#search').on('blur', function(){
         if (isMobile) {
             $('#search').hide()
         }
-        $('#breadcrumb-nav').hide()
+        if ($('#filename').attr('file') != "README") { $('#breadcrumb-nav').hide() }
     }, 500)
 })
 
@@ -1159,7 +1159,9 @@ function updateToolbar(){
 
     if ($('.toolbarButton.btn-primary').length) {
         if ($('.toolbarButton.btn-primary').is(":visible")) {
-            $('[toolbar=' + $('.toolbarButton.btn-primary').attr('id') + ']').show()
+            if ($('.toolbarButton.btn-primary').attr('id') != "shareText") {
+                $('[toolbar=' + $('.toolbarButton.btn-primary').attr('id') + ']').show()
+            }
         } else {
             $('[toolbar=' + $('.toolbarButton.btn-primary').attr('id') + ']').hide()
         }
@@ -1447,10 +1449,6 @@ function validatePassword (name){
             updateFiles("", "", true)
         } else {
             gotoFile($('#filename').attr('file'), true)
-        }
-
-        if (!permView) {
-            $('#changePassword').click()
         }
 
     })
@@ -2084,7 +2082,9 @@ function loadFile(filename){
                 $('#shareText').toggleClass("btn-success", false)
                 $('#shareText').toggleClass("btn-outline-secondary", true)
             }
+
             $('[toolbar=shareText]').toggle(false)
+            if (filename == "README") { $('#breadcrumb-nav').toggle(true) }
             if (!isMobile) {
                 //$('#mainText').focus()
             }
@@ -2130,9 +2130,11 @@ function loadFile(filename){
                     }
                 })
             })
+        
 
         } else {
             if (data.error == 2) {
+                $('#changePassword').click()
                 //alert("Você não tem permissão para visualizar esta coleção")
                 //$('[file="README"].files').click()
                 //return false
@@ -2428,6 +2430,7 @@ function checkTheme(){
             $('#mainHeadbar, #troncoHomeBar').css('background-color', "#bf6724").toggleClass('bg-dark', false)
         }
         $(elements3).css("color", "black").toggleClass("form-control", true)
+        $('#mobile-nav').toggleClass("bg-dark", true)
         $(elements4).css("background-color", "rgb(243, 243, 243)")
         if (isMobile) {
             $('#search').toggleClass("form-control-dark", true).css("background-color", "white").css("color", "black").css("border-style", "")
