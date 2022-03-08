@@ -1270,9 +1270,9 @@ $('#shareText').click(function(){
         $('#shareText').toggleClass("btn-success", true)
         $('#shareText').toggleClass("btn-outline-secondary", false)
         setTimeout(function(){
-            $('#shareText').toggleClass("btn-success", false)
-            $('#shareText').toggleClass("btn-outline-secondary", true)
-            $('#shareLinkLabel').html("Compartilhar")
+            //$('#shareText').toggleClass("btn-success", false)
+            //$('#shareText').toggleClass("btn-outline-secondary", true)
+            $('#shareLinkLabel').html("Público")
         }, 2000)
     }
 })
@@ -2078,9 +2078,11 @@ function loadFile(filename){
                 $('#shareLinkLabel').html("Público")
                 $('#shareText').toggleClass("btn-success", true)
                 $('#shareText').toggleClass("btn-outline-secondary", false)
+                $('#shareText').toggleClass("btn-primary", false)
             } else {
                 $('#shareLinkLabel').html("Compartilhar")
                 $('#shareText').toggleClass("btn-success", false)
+                $('#shareText').toggleClass("btn-primary", false)
                 $('#shareText').toggleClass("btn-outline-secondary", true)
             }
 
