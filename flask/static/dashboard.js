@@ -1300,7 +1300,7 @@ function mainTextBlur(){
         $('#toolbarRow, #toolbar').toggle(true)
         toggleMobile(permView ? "mobileFile" : "mobileNoPerm")
         $('#mainText').prop('readonly', true)
-        if ($('[toolbar=checklist]').is(':visible')) { $('#mainText').hide() }
+        //if ($('[toolbar=checklist]').is(':visible')) { $('#mainText').hide() }
     }
 }
 
