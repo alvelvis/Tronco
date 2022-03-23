@@ -1,0 +1,27 @@
+.dz-preview, .dz-file-preview {
+    display: none;
+}  
+
+.dropdown-toggle:hover .insertLabel {
+    color:inherit;
+}
+
+ #sidebar, #filename, #mainHeadbar, #troncoHomeLabel, #saved, #savedSpan { /*#filename, #sidebar a*/
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.toolbarButton:focus, .btn-primary:focus, .btn-outline-primary:focus, .btn-outline-secondary:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.btn-toolbar-hover{color:#fff;background-color:#6c757d;border-color:#6c757d;}
+
+a:hover {
+text-decoration:none;
+}

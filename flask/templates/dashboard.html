@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Tronco te ajuda a organizar coleções de texto.">
+
+    <meta property="og:title" content="{% if filename != 'README' %}{{filename}}{% else %}{{name}}{% endif %} - Tronco">
+    <meta property="og:description" content="Tronco te ajuda a organizar coleções de texto.">
+    <meta property="og:image" content="{{url_for('static', filename='favicon2.png')}}">
+    <meta property="og:url" content="https://tronco.gq">
+
+    <link rel="manifest" href="{{url_for('static', filename='manifest.json')}}?version=18">
+
+    <link rel="icon" href="{{url_for('static', filename='favicon.png')}}">
+
+    <title>Tronco</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{url_for('static', filename='bootstrap.css')}}?version=20" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{url_for('static', filename='dashboard.css')}}?version=40" rel="stylesheet">
+    <link href="{{url_for('static', filename='dropzone.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='tronco.css')}}?version=25" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px; z-index:1031" id="context-menu-metadata">
+      <a class="dropdown-item removeMetadata">Remover</a>
+    </div>
+
+    <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px; z-index:1031" id="context-menu-file">
+      <a class="dropdown-item renameFileContext">Renomear</a>
+      <a class="dropdown-item deleteFileContext">Excluir</a>
+    </div>
+
+    <div class="dropdown-menu dropdown-menu-sm" style="min-width:0px; z-index:1031" id="context-menu-checklist">
+      <a class="dropdown-item newUpCheckbox"><span data-feather="chevrons-up"></span> Novo item</a>
+      <a class="dropdown-item newDownCheckbox"><span data-feather="chevrons-down"></span> Novo item</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item editCheckbox">Editar</a>
+      <a class="dropdown-item deleteCheckbox">Apagar</a>
+    </div>
+    
+    <div id="blurHeadbar" style="display:none" class="navbar navbar-dark bg-dark flex-md-nowrap p-4 sticky-top form-control-dark">
+      <span data-feather="arrow-left"></span>
+    </div>
+    <nav id="mainHeadbar" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 sticky-top">
+      <span id="troncoHomeBar" style="width:100%" class="mt-0 bg-dark form-control-dark">
+        <a title="Voltar para coleções (Ctrl+E)" id="troncoHome">
+          <img class="ml-3 mr-3" style="display:none" id="troncoLogo" src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
+        </a>
+        <span id="troncoHomeLabel" settings="corpusSettings" style="width:100%"></span>
+      </span>
+      <span class="navbar-brand col-sm-3 col-md-2 mr-0" style="color:white; display:none;">
+        <a class="toggleSettings" style="width:100%; display:block" settings="corpusSettings" title="Configurações da coleção">
+            <span id="menu-svg" style="margin-bottom:6px" data-feather="menu"></span>
+            <span id="name" class="name" style="margin-left:5px; max-width:90%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis">{{name}}</span>
+        </a>   
+      </span>
+      <a id="afterSearch" class="d-none d-md-block col-md-2"></a>
+    </nav>    
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebar" style="min-width:0px;" class="col-md-2 d-none d-md-block sidebar">
+          <div id="sidebar-scroll" class="sidebar-sticky p-0 " style="overflow-y:hidden">
+            <ul class="nav flex-column">
+                <li class="nav-item settings form-control-dark bg-dark pb-2" id="corpusSettings" style="display:none;">
+                    <a class="nav-link" id="settingsDiv">
+                      <span data-feather="settings"></span>
+                      Configurações
+                    </a>
+                    <a style="margin-left:10px; display:none" class="m-0 p-0" id="settings">
+                      <!--div class="form-row align-items-left">
+                          <div class="col-auto my-1">
+                              <div class="custom-control custom-checkbox mr-sm-2">
+                              <input type="checkbox" checked="true" class="custom-control-input" id="autoSaveCheckbox">
+                              <label class="custom-control-label" style="cursor:pointer" title="Modificações no arquivo e nos seus metadados serão salvas automaticamente" for="autoSaveCheckbox">Salvamento automático</label>
+                              </div>
+                          </div>                        
+                      </div-->
+                      <div class="nav-link">
+                        <input type="checkbox" style="display:none" checked="true" class="custom-control-input" id="autoSaveCheckbox">
+                        <div class="form-row align-items-left">
+                            <div class="col-auto my-1">
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                <input type="checkbox" checked="true" class="custom-control-input" id="wrapTextCheckbox">
+                                <label class="custom-control-label" style="cursor:pointer" title="O texto terá quebra de linha" for="wrapTextCheckbox">Quebra de linha</label>
+                                </div>
+                            </div>                        
+                        </div>
+                        <div class="form-row align-items-left">
+                          <div class="col-auto my-1">
+                              <div class="custom-control custom-checkbox mr-sm-2">
+                              <input type="checkbox" class="custom-control-input" id="advancedEditingCheckbox">
+                              <label class="custom-control-label" style="cursor:pointer" title="Habilitar opções avançadas de edição" for="advancedEditingCheckbox">Editor avançado</label>
+                              </div>
+                          </div>                        
+                        </div>
+                        <div id="corpusLanguageDiv" style="display:none" class="my-1">
+                          Língua da coleção:
+                          <select id="corpusLanguage" class="custom-select mt-1">
+                            
+                          </select>
+                        </div>
+                      </div>
+                    </a>
+                    <a id="renameCorpus" class="nav-link">
+                        <span data-feather="delete"></span>
+                        Renomear coleção
+                    </a>
+                    <a id="deleteCorpus" class="nav-link">
+                        <span data-feather="trash-2"></span>
+                        Excluir coleção
+                    </a>
+
+                    <div id="permissionsSettings">  
+                        <a id="setPassword" title="Mude a senha desta coleção" class="nav-link">
+                            <span data-feather="key"></span>
+                            Mudar senha
+                        </a>
+                    
+                        <a id="setPermissions" title="Configure as permissões de um visitante" class="nav-link">
+                            <span data-feather="user-check"></span>
+                            <span id="visitante-perms">Permissões de visitante</span>
+                        </a>
+                        <a class="nav-link" id="permissionsDiv" style="margin-left:10px; display:none">
+                            <div class="form-row align-items-left">
+                                <div class="col-auto my-1">
+                                  <div class="mb-2">Visitantes podem:</div>
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input type="checkbox" checked="true" class="custom-control-input togglePerm" perm="visualizar" id="viewPermission">
+                                    <label class="custom-control-label" style="cursor:pointer" title="Qualquer um poderá visualizar a coleção" for="viewPermission">Visualizar</label>
+                                    </div>
+                                </div>                        
+                            </div>
+                            <div class="form-row align-items-left">
+                                <div class="col-auto my-1">
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input type="checkbox" checked="true" class="custom-control-input togglePerm" perm="editar" id="editPermission">
+                                    <label class="custom-control-label" style="cursor:pointer" title="Qualquer um poderá editar o conteúdo desta coleção" for="editPermission">Editar</label>
+                                    </div>
+                                </div>                        
+                            </div>
+                            <!--div class="form-row align-items-left">
+                                <div class="col-auto my-1">
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input type="checkbox" checked="true" class="custom-control-input togglePerm" perm="configurar" id="setupPermission">
+                                    <label class="custom-control-label" style="cursor:pointer" title="Qualquer um poderá configurar as permissões desta coleção" for="setupPermission">Configurar</label>
+                                    </div>
+                                </div>                        
+                            </div-->
+                        </a>
+                    </div>
+                </li>
+
+                <div id="corpusSidebar" class="mt-2">
+
+                  <li class="nav-item" id="advancedSearch" style="display:none">
+                    <a class="nav-link" title="Realizar buscas avançadas">
+                      <span data-feather="search"></span>
+                      Busca avançada
+                    </a>
+                  </li>
+
+                  <li class="nav-item" style="display:none" id="login">
+                      <a class="nav-link" id="changePassword" title="Insira a senha da coleção">
+                        <span data-feather="lock"></span>
+                        <span id="conected">Não conectado</span>
+                      </a>
+                  </li>
+
+                  <li class="nav-item" style="display:none" id="uploadTextDiv">
+                    <a class="nav-link uploadText" id="uploadText" title="Enviar arquivos para a coleção">
+                      <span class="uploadText" data-feather="upload"></span>
+                      <span class="uploadText" id="uploadTextLabel"></span>
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <button id="newFile" class="btn btn-sm btn-success ml-2 pr-3 mt-2" title="Criar novo arquivo (Ctrl+P)">
+                      <span data-feather="plus" class="mr-1"></span>
+                      Novo arquivo
+                    </button>
+                  </li>
+
+                    <!--li class="nav-item" style="margin-left:10px">
+                        <span class="nav-link" id="permissions">
+                        </span>
+                    </li-->
+                    <hr>
+                </div>
+              <!--li class="nav-item">
+                <a class="nav-link">
+                  <span data-feather="users"></span>
+                  Customers
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link">
+                  <span data-feather="layers"></span>
+                  Integrations
+                </a>
+              </li-->     
+
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mb-2 text-muted">
+              <span>Arquivos (<span id="nFiles"></span>)</span>
+            </h6>
+
+            <ul class="nav flex-column">
+              <li class="nav-item py-1">
+                <a class="nav-link files" file="README">
+                  <span data-feather="home"></span>
+                  <span data-feather="share-2" style="display:none" id="home-share"></span>
+                  {{name}}
+                </a>
+              </li>
+            </ul>
+
+            <ul class="nav flex-column" style="display:none" id="archive">
+              <li class="nav-item py-1">
+                <a class="nav-link files" file="ARCHIVE">
+                  <span data-feather="trash-2"></span>
+                  Lixeira
+                </a>
+              </li>
+            </ul>
+            
+            <ul id="files" class="nav flex-column">
+
+            </ul>
+            <ul style="display:none" id="divFullUpdateFiles" class="nav flex-column">
+              <li class="nav-item py-1">
+                <a class="nav-link" id="fullUpdateFiles">
+                  ...
+                </a>
+              </li>
+            </ul>
+            <ul class="mb-4 pb-5"></ul>
+          </div>
+        </nav>
+
+        <input class="form-control mt-3 my-1 mx-4 form-control-dark w-100" id="search" style="display:none" autocomplete="off" type="search" title="Procurar ou criar arquivos (Ctrl+P)" placeholder="Procure ou crie novos arquivos..." aria-label="Search">
+
+        <main id="main" role="main" class="" style="width:100%;">
+          
+          <nav id="breadcrumb-nav" aria-label="breadcrumb">
+            <ol class="breadcrumb m-0 px-0 alert-light" id="recentFiles">
+                
+            </ol>
+          </nav>
+          
+          <div class="progress mx-5 my-3" style="display:none" id="progress-div">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-label" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+          </div>
+
+          <div id="searchMain" class="pb-5" style="display:none">
+
+            <div id="searchHeader">
+
+              <div class="h2 mt-3">Busca avançada <span id="advancedSearchSentences"></span></div>
+              <div id="indexedTime" style="display:none" class="mb-2"></div>
+              
+              <div class="input-group">
+                <input type="text" id="advancedSearchInput" class="form-control" placeholder="Expressão de busca">
+              </div>
+
+            </div>
+
+            <div class="my-3 mx-0 px-0" id="advancedSearchToolbarRow">
+              <div class="btn-toolbar">
+                <div class="btn-group">
+                  <button class="btn btn-sm btn-primary" id="advancedSearchGo" type="button">
+                    <span data-feather="search"></span>
+                    Buscar
+                  </button>
+                  <button class="toggleAdvancedSearchToolbar btn btn-sm btn-outline-secondary" advanced-toolbar="builder" id="advancedSearchGo" type="button">
+                    <span data-feather="help-circle"></span>
+                    Expressões
+                  </button>
+                  <button type="button" advanced-toolbar="metadata" class="toggleAdvancedSearchToolbar btn btn-sm btn-outline-secondary">
+                    <span data-feather="filter"></span>
+                    Filtrar (<span id="advancedSearchMetadataCount">0</span>)
+                  </button>
+                  <button type="button" advanced-toolbar="customize" class="toggleAdvancedSearchToolbar btn btn-sm btn-outline-secondary">
+                    <span data-feather="sliders"></span>
+                    Customizar
+                  </button>
+                  <button type="button" id="reindexCorpus" class="btn btn-sm btn-outline-secondary">
+                    <span data-feather="refresh-ccw"></span>
+                    Reindexar
+                  </button>                  
+                </div>
+              </div>
+            </div>
+
+            <div id="searchBody">
+
+              <div style="display:none" class="advanced-toolbar-panel" advanced-toolbar-panel="builder">
+                <div class="h5">Buscas rápidas</div>
+                <div class="btn-toolbar">
+                  <div id="builder-buttons" class="btn-group">
+                    <button type="button" title="Buscar todas as palavras da coleção" params='word = ".*"' class="quickSearch btn btn-sm btn-outline-secondary">
+                      Todas as palavras
+                    </button>
+                    <button type="button" title="Buscar todos os verbos da coleção" params='upos = "VERB"' class="quickSearch btn btn-sm btn-outline-secondary">
+                      Todos os verbos
+                    </button>
+                    <button type="button" title="Buscar todos os substantivos da coleção" params='upos = "NOUN"' class="quickSearch btn btn-sm btn-outline-secondary">
+                      Todos os substantivos
+                    </button>
+                    <button type="button" title="Buscar todos os adjetivos da coleção" params='upos = "ADJ"' class="quickSearch btn btn-sm btn-outline-secondary">
+                      Todos os adjetivos
+                    </button>
+                    <button type="button" title="Buscar todas as frases da coleção" params='# text = .*' class="quickSearch btn btn-sm btn-outline-secondary">
+                      Todas as frases
+                    </button>
+                  </div>
+                </div>
+                <div id="recentSearches" style="display:none" class="mt-3">
+                  <div class="h5">Buscas recentes</div>
+                  <div class="btn-toolbar">
+                    <div id="builder-recent" class="btn-group">
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:none" class="advanced-toolbar-panel" advanced-toolbar-panel="customize">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="advancedSearchShowId">
+                  <label style="cursor:pointer" class="custom-control-label" for="advancedSearchShowId">Esconder identificador</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="advancedSearchShowFilename">
+                  <label style="cursor:pointer" class="custom-control-label" for="advancedSearchShowFilename">Esconder arquivo</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="advancedSearchShowGaps">
+                  <label style="cursor:pointer" class="custom-control-label" for="advancedSearchShowGaps">Transformar em lacunas</label>
+                </div>
+              </div>
+
+              <div style="display:none" class="advanced-toolbar-panel" advanced-toolbar-panel="metadata">
+                <button type="button" id="addAdvancedSearchMetadata" title="Adicionar filtro" class="btn btn-sm btn-primary">
+                  <span data-feather="plus"></span>
+                </button>
+                <button type="button" id="clearAdvancedSearchMetadata" title="Limpar filtros" class="btn btn-sm btn-outline-danger">
+                  <span data-feather="x"></span>
+                </button>
+                <div id="advancedSearchMetadata" class="mt-3">
+
+                </div>
+              </div>
+
+              <nav id="navSearchPanels" style="display:none" class="nav nav-pills justify-content-center mt-5 mb-3">
+                <a panel="query_results" class="nav-item toggleSearch nav-link active">Resultados</a>
+                <a panel="word_distribution" class="nav-item toggleSearch nav-link">Palavras</a>
+                <a panel="lemma_distribution" class="nav-item toggleSearch nav-link">Lemas</a>
+              </nav>
+
+              <div class="searchPanel" id="query_results" style="display:none">
+                <div class="h5"><span class="sentences">X</span> frases, <span class="occurrences">Y</span> ocorrências</div>
+                <div class="dynamic"></div>
+              </div>
+              
+              <div class="searchPanel" id="word_distribution" style="display:none">
+                <div class="h5"><span class="words">X</span> palavras, <span class="occurrences">Y</span> ocorrências</div>
+                <div class="dynamic"></div>
+              </div>
+
+              <div class="searchPanel" id="lemma_distribution" style="display:none">
+                <div class="h5"><span class="lemmas">X</span> lemas, <span class="occurrences">Y</span> ocorrências</div>
+                <div class="dynamic"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <div id="filename-div" style="display:none" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mx-0 px-0 pb-2 mt-4">
+            <h1 class="h2 filename" style="max-width:100%; display:inline-block; white-space: nowrap;" file="{{filename}}" id="filename"></h1>
+          </div>
+
+          <div id="permSaved"><div class="text-muted mb-2" style="display:none" id="saved"><span data-feather="upload-cloud"></span><span class="ml-1" id="savedSpan"></span></div></div>
+
+          <div id="toolbarRow" style="display:none">
+            <div class="btn-toolbar">
+              <div class="btn-group" id="toolbar-group">
+                <button id="reloadPage" style="display:none" class="btn btn-sm btn-danger" title="Recarregar">
+                  <span data-feather="refresh-cw"></span>
+                  <span>Recarregar</span>
+                </button>
+
+                <input id="upload-image" class="uploadFile" style="display:none" type="file" accept="image/*">
+                <input id="upload-document" class="uploadFile" style="display:none" type="file" accept=".zip, .rar, .pdf, .rtf, .txt, .htm, .html, .doc, .docx, .tsv, .csv, .xls, .xlsx">
+                <div id="dropdown" class="pr-1 dropdown" style="display:none">
+                  <a class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="insertLabel">Inserir</span>
+                  </a>
+                
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item insertDate">
+                      <span data-feather="calendar"></span>
+                      Data <small>Ctrl+D</small>
+                    </a>
+                    <a class="dropdown-item insertChecklist" where="top">
+                      <span data-feather="check-square"></span>
+                      Checklist
+                    </a>
+                    <a class="dropdown-item insertImage">
+                      <span data-feather="image"></span>
+                      Imagem
+                    </a>
+                    <a class="dropdown-item insertDocument">
+                      <span data-feather="file-text"></span>
+                      Documento
+                    </a>
+                  </div>
+                </div>
+
+                <button id="checklist" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Checklist do arquivo">
+                  <span data-feather="check-square"></span>
+                  <span id="checklistLabel" class="toolbar-label"></span>
+                </button>
+                <button id="images" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Imagens no arquivo">
+                  <span data-feather="image"></span>
+                  <span id="imagesLabel" class="toolbar-label"></span>
+                </button>
+                <button id="filesLink" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Referências a arquivos">
+                  <span data-feather="file-text"></span>
+                  <span id="filesLinkLabel" class="toolbar-label"></span>
+                </button>
+                <button id="links" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Links no arquivos">
+                  <span data-feather="link-2"></span>
+                  <span id="linksLabel" class="toolbar-label"></span>
+                </button>
+                <button id="shareText" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Compartilhe o link deste arquivo">
+                  <span data-feather="share-2"></span>
+                  <input style="border:none; display:none; padding-right:10px" id="shareLink" readonly>
+                  <span id="shareLinkLabel" class="toolbar-label">Compartilhar</span>
+                </button>                
+                <button id="saveModifications" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Salvar modificações (Ctrl+S)">
+                  <span data-feather="save"></span>
+                  <!--Salvar modificações-->
+                </button>
+                <button id="replace" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Substituir texto">
+                  <span data-feather="rotate-cw"></span>
+                  <span class="toolbar-label">Substituir</span>
+                </button>
+                <button id="sort" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Organizar texto">
+                  <span data-feather="align-left"></span>
+                  <span class="toolbar-label">Organizar</span>
+                </button>
+                <button id="metadata" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Metadados">
+                  <span data-feather="database"></span>
+                  <span class="toolbar-label">Metadados</span>
+                </button>
+                <button id="history" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Histórico">
+                  <span data-feather="clock"></span>
+                  <span class="toolbar-label">Histórico</span>
+                </button>
+                <button id="renameFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Renomeie este arquivo">
+                  <span data-feather="delete"></span>
+                  <span class="toolbar-label">Renomear</span>
+                </button>
+                <button id="deleteFile" style="display:none" class="toolbarButton btn btn-sm btn-outline-secondary" title="Exclua este arquivo">
+                  <span data-feather="trash-2"></span>
+                  <span class="toolbar-label">Excluir</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <div id="toolbar" class="my-3" style="display:none">
+
+            <div toolbar="sort" style="display:none" class="toolbar px-4 pt-3 pb-0 rounded">
+
+              <div class="mb-2 py-2">
+                Linhas: <span id="sortLines"></span> / Palavras: <span id="sortWords"></span> / Caracteres: <span id="sortCharacters"></span>
+              </div>
+
+              <button type="button" title="Desfazer última ação" class="undo btn btn-sm btn-outline-primary">
+                <span data-feather="corner-up-left"></span>
+                Desfazer
+              </button>
+  
+              <button type="button" title="Refazer última ação" class="redo btn btn-sm btn-outline-primary">
+                <span data-feather="corner-up-right"></span>
+                Refazer
+              </button>
+
+              <ul class="py-3 list-group list-group-flush" style="max-height: 300px; overflow:auto;">
+                <li class="sortAction list-group-item" action="abcCrescent"><a href="#">Ordem alfabética (crescente)</a></li>
+                <li class="sortAction list-group-item" action="abcDecrescent"><a href="#">Ordem alfabética (decrescente)</a></li>
+                <li class="sortAction list-group-item" action="abcCase"><a href="#">Ordem alfabética (ignorar maiúsculas)</a></li>
+                <li class="sortAction list-group-item" action="lower"><a href="#">Apenas letras minúsculas</a></li>
+                <li class="sortAction list-group-item" action="upper"><a href="#">Apenas letras maiúsculas</a></li>
+                <li class="sortAction list-group-item" action="title"><a href="#">Apenas primeiras letras maiúsculas</a></li>
+                <li class="sortAction list-group-item" action="blankNewLine"><a href="#">Remover linhas em branco</a></li>
+                <li class="sortAction list-group-item" action="trimSpaces"><a href="#">Aparar espaços finais e iniciais</a></li>
+                <li class="sortAction list-group-item" action="doubleSpaces"><a href="#">Remover espaços duplos</a></li>
+              </ul>
+
+            </div>
+
+            <div toolbar="replace" style="display:none" class="toolbar px-4 pt-3 pb-0 rounded">
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="replaceControl input-group-text">Procurar</span>
+                </div>
+                <input id="replaceFrom" type="text" class="replaceControl form-control" placeholder="">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="replaceControl input-group-text">Substituir por</span>
+                </div>
+                <input id="replaceTo" type="text" class="replaceControl form-control" placeholder="">
+              </div>
+
+              <div class="col-auto my-1">
+                <div class="custom-control custom-checkbox mr-sm-2">
+                  <input type="checkbox" class="custom-control-input" id="replaceRegex">
+                  <label class="custom-control-label" for="replaceRegex">Expressão regular</label>
+                </div>
+              </div>
+
+              <div class="col-auto my-1">
+                <div class="custom-control custom-checkbox mr-sm-2">
+                  <input type="checkbox" class="custom-control-input" id="replaceCase">
+                  <label class="custom-control-label" for="replaceCase">Diferenciar maiúsculas</label>
+                </div>
+              </div>             
+
+              <div class="py-3">
+                <button type="button" id="replaceGo" title="Substituir todas as ocorrências" class="btn btn-sm btn-primary">
+                  <span data-feather="search"></span>
+                  Substituir
+                </button>
+
+                <button type="button" id="replaceUndo" title="Desfazer última ação" class="undo btn btn-sm btn-outline-primary">
+                  <span data-feather="corner-up-left"></span>
+                  Desfazer
+                </button>
+
+                <button type="button" id="replaceRedo" title="Refazer última ação" class="redo btn btn-sm btn-outline-primary">
+                  <span data-feather="corner-up-right"></span>
+                  Refazer
+                </button>
+
+                <span class="px-2" style="display:none" id="replaceLabel"></span>
+
+              </div>
+            
+            </div>
+
+            <div toolbar="metadata" style="display:none" class="toolbar px-4 pt-3 pb-0 rounded">
+              <button type="button" id="newMetadata" title="Novo metadado" class="changeMetadata btn btn-sm btn-outline-primary">
+                <span data-feather="plus"></span>
+              </button>
+              <button type="button" id="saveMetadata" title="Salvar metadados" class="changeMetadata btn btn-sm btn-primary">
+                <span data-feather="save"></span>
+                <span id="saveMetadataLabel"></span>
+              </button>
+              <div id="metadataItems" class="mt-2">
+
+              </div>
+            </div>
+
+            <div toolbar="history" style="display:none" class="toolbar px-4 py-3 rounded">
+              Versão atual: <span id="historyCharacters"></span> caracteres.
+              <br>
+              <div id="historyList" style="max-height: 130px; overflow: auto;">
+              </div>
+              <button type="button" id="restoreHistory" title="Restaurar esta versão do arquivo" class="mt-3 historyControls btn btn-sm btn-outline-primary">
+                <span data-feather="refresh-ccw"></span>
+                Restaurar versão
+              </button>
+              <hr class="historyControls" style="display:none">
+              <pre class="historyControls" id="historyMainText" style="display:none"></pre>
+            </div>
+
+            <div toolbar="shareText" style="display:none" class="toolbar px-4 py-3 rounded">
+              <span></span>
+            </div>
+
+            <div toolbar="links" style="display:none" class="toolbar px-4 py-3 rounded">
+            </div>
+            
+            <div toolbar="images" style="display:none" class="toolbar px-4 py-3 rounded">
+            </div>
+
+            <div toolbar="filesLink" style="display:none" class="toolbar px-4 py-3 rounded">
+            </div>
+
+            <div toolbar="checklist" style="display:none" class="toolbar px-4 py-3 rounded">
+              <div class="checklist-add btn-group pb-2">
+                <button type="button" where="top" class="insertChecklist btn btn-sm btn-outline-secondary">
+                  <span data-feather="plus"></span>
+                  Novo item
+                </button>
+              </div>
+              <div class="checklist-items"></div>
+            </div>
+
+          </div>
+
+          <!--div id="hr" style="display:none"><hr></div-->
+
+          <textarea class="form-control p-0 pb-5" style="resize:none; border-style:none; overflow:auto; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; height:100%; width:100%;" id="mainText"></textarea>
+
+        </main>
+      </div>
+    </div>
+
+    <a id="mobileLeft" style="position:fixed; color:white; background-color:#bf6724; display:none; width:60px; height:60px; padding: 18px 23px; " class="mobile-btn rounded-circle">
+      <span data-feather="arrow-left"></span>
+    </a>
+
+    <a id="mobileEdit" style="position:fixed; color: white; background-color:#bf6724; z-index:1031; display:none; width:48px; height:48px; padding: 13px 15px;" class="mobileEdit mobile-btn rounded-circle">
+      <span data-feather="edit-3"></span>
+    </a>    
+
+    <nav id="mobile-nav" style="height:54px; border-radius: 0px; width:100%; border: none;" class="px-4 nav navbar fixed-bottom">  
+
+      <a id="mobileMenu" settings="corpusSettings" style="display:none; " class="toggleSettings mobile-btn">
+        <span data-feather="menu"></span>
+      </a>
+
+      <a id="mobileHome" style="display:none;" class="mobile-btn">
+        <span data-feather="home"></span>
+      </a>
+
+      <a style="color:white; width:48px" class="mobile-btn mobileEdit">
+        
+      </a>
+
+      <a id="mobileSearch" style="display:none;" class="mobile-btn">
+        <span data-feather="search"></span>
+      </a>
+
+      <a id="mobileTronco" style="display:none; " class="mobile-btn">
+        <img src="{{url_for('static', filename='favicon.png')}}" alt="" width="24" height="24">
+      </a>
+
+    </nav>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="module">
+      import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
+
+      const el = document.createElement('pwa-update');
+      document.body.appendChild(el);  
+    </script>
+
+    <script src="{{url_for('static', filename='jquery-3.5.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='dropzone.js')}}"></script>
+
+    <script src="{{url_for('static', filename='popper.js')}}"></script>
+    <script src="{{url_for('static', filename='bootstrap.js')}}"></script>    
+    <!-- Icons -->
+    <script src="{{url_for('static', filename='feather.js')}}"></script>
+    <script src="{{url_for('static', filename='jquery.autosize.js')}}"></script>
+    <script src="{{url_for('static', filename='jquery-ui.min.js')}}"></script>
+    <script src="{{url_for('static', filename='jquery.ui.touch-punch.min.js')}}"></script>
+
+    <script src="{{url_for('static', filename='tronco.js')}}?version=31"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=265"></script>
+  
+  </body>
+</html>

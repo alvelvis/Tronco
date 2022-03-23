@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.tronco.twa",
+    "sha256_cert_fingerprints": [
+      "DB:B6:FC:A9:1A:E0:AE:89:78:52:3C:F3:1F:D2:42:EF:19:0C:09:62:6A:20:DD:C8:54:EC:30:7D:1D:26:AF:DD"
+    ]
+  }
+}]
