@@ -720,6 +720,7 @@ function toggleInsertSuccess(){
 }
 
 function gotoFile(filename=$('#search').val(), forceUpdate=false, skipFind=false){
+    recentFiles('')
     toggleMain(false)
     $('.files').toggleClass("active", false)
     if ($('[file="' + filename + '"].files')) {
