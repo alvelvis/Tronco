@@ -100,14 +100,14 @@ body {
   color:white;
 }
 
-.sidebar .files:hover:not(.active):not(.highlight) {
-  background-color:lightyellow;
+.highlight {
+  background-color: lightyellow;
   border-radius: 5px;
   color:black;
 }
 
-.highlight {
-  background-color: lightyellow;
+.sidebar .files:hover:not(.active):not(.highlight) {
+  background-color:lightyellow;
   border-radius: 5px;
   color:black;
 }
