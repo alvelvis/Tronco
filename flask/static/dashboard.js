@@ -3,14 +3,14 @@ function countWords(str) {
 }
 
 $('#search').on('blur', function(){
-    /*setTimeout(function(){
+    setTimeout(function(){
         if (isMobile) {
             $('#search').hide()
         }
         if ($('.filename').attr('file') != "README" || $('#recentFiles').text() == 'Nenhum arquivo encontrado.') { $('#breadcrumb-nav').hide() }
-    }, 500)*/
-    $('#search').fadeOut()
-    if ($('.filename').attr('file') != "README" || $('#recentFiles').text() == 'Nenhum arquivo encontrado.') { $('#breadcrumb-nav').fadeOut() }
+    }, 500)
+    //$('#search').fadeOut()
+    //if ($('.filename').attr('file') != "README" || $('#recentFiles').text() == 'Nenhum arquivo encontrado.') { $('#breadcrumb-nav').fadeOut() }
     $(fade_on_search_focus).fadeIn()
 })
 
