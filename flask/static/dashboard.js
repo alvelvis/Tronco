@@ -751,7 +751,7 @@ function gotoFile(filename=$('#search').val(), forceUpdate=false, skipFind=false
                 $('title').html($('title').html().replace(/(\(.*?\))?.*/, "$1" + " " + $('#name').html() + " - Tronco"))
             }
             $('#search').val('')
-            $('#search').blur()
+            //$('#search').blur()
         })
     }
 }
