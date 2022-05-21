@@ -46,10 +46,6 @@ body {
   font-size: .875rem;
 }
 
-/*.files-hover {
-  background-color: lightgray;
-}*/
-
 .feather {
   width: 16px;
   height: 16px;
@@ -100,20 +96,16 @@ body {
   color:white;
 }
 
-.highlight {
+.one-of-the-files.highlight, .one-of-the-files.files-hover:not(.active), .checkbox-item-subdiv.highlight {
   background-color: lightyellow;
   border-radius: 5px;
   color:black;
 }
 
-.highlight span, .highlight .feather {
-  color:black;
-}
-
-.sidebar .files:hover:not(.active):not(.highlight) {
-  background-color:lightyellow;
+.one-of-the-files.dark.highlight, .one-of-the-files.dark.files-hover:not(.active) {
+  background-color: darkgoldenrod;
   border-radius: 5px;
-  color:black;
+  color:white;
 }
 
 .files {

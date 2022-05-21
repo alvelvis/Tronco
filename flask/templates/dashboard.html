@@ -10,19 +10,19 @@
     <meta property="og:image" content="{{url_for('static', filename='favicon2.png')}}">
     <meta property="og:url" content="https://tronco.gq">
 
-    <link rel="manifest" href="{{url_for('static', filename='manifest.json')}}?version=24">
+    <link rel="manifest" href="{{url_for('static', filename='manifest.json')}}?version=25">
 
     <link rel="icon" href="{{url_for('static', filename='favicon.png')}}">
 
     <title>Tronco</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="{{url_for('static', filename='bootstrap.css')}}?version=26" rel="stylesheet">
+    <link href="{{url_for('static', filename='bootstrap.css')}}?version=27" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="{{url_for('static', filename='dashboard.css')}}?version=46" rel="stylesheet">
+    <link href="{{url_for('static', filename='dashboard.css')}}?version=47" rel="stylesheet">
     <link href="{{url_for('static', filename='dropzone.css')}}" rel="stylesheet">
-    <link href="{{url_for('static', filename='tronco.css')}}?version=31" rel="stylesheet">
+    <link href="{{url_for('static', filename='tronco.css')}}?version=32" rel="stylesheet">
 
   </head>
 
@@ -214,7 +214,7 @@
 
             <ul class="nav flex-column">
               <li class="nav-item py-1">
-                <a class="nav-link files" file="README">
+                <a class="nav-link files one-of-the-files" file="README">
                   <span data-feather="home"></span>
                   <span data-feather="share-2" style="display:none" id="home-share"></span>
                   {{name}}
@@ -224,7 +224,7 @@
 
             <ul class="nav flex-column archive-template" style="display:none" id="archive">
               <li class="nav-item py-1">
-                <a class="nav-link files" file="ARCHIVE">
+                <a class="nav-link files one-of-the-files" file="ARCHIVE">
                   <span data-feather="trash-2"></span>
                   Lixeira
                 </a>
@@ -674,8 +674,8 @@
     <script src="{{url_for('static', filename='jquery-ui.min.js')}}"></script>
     <script src="{{url_for('static', filename='jquery.ui.touch-punch.min.js')}}"></script>
 
-    <script src="{{url_for('static', filename='tronco.js')}}?version=37"></script>
-    <script src="{{url_for('static', filename='dashboard.js')}}?version=271"></script>
+    <script src="{{url_for('static', filename='tronco.js')}}?version=38"></script>
+    <script src="{{url_for('static', filename='dashboard.js')}}?version=272"></script>
   
   </body>
 </html>

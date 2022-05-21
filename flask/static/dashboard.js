@@ -1253,6 +1253,7 @@ function shareFile(filename, share) {
                 }
                 break
         }
+        updateFiles("", "", true)
     })
 }
 
@@ -1760,8 +1761,6 @@ function pinFile(filename) {
     .done(function(data){
         if (data.data == "true") {
             updateFiles("", "", true)
-            $('.files').removeClass('active')
-            $('[file=' + $('#filename').attr('file') + '].files').addClass('active')
         } else {
             alert("Você não tem permissão para editar.")
         }
@@ -1832,8 +1831,8 @@ function updateFiles(key = "", load = "", forceUpdate = false){
                     
                     if (x.length && x.indexOf("README") != 0 && ((i == "pinned" && is_pinned) || (i == "not_pinned" && !is_pinned))) {
                         $('#files').append(`
-                        <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
-                            <a class="nav-link files d-flex align-items-center ` + (load.length && load == x ? 'active' : '') + `" style="width:100%;" pinned="` + is_pinned + `" file="` + x + `">
+                        <li class="nav-item d-flex py-1 justify-content-between align-items-center">
+                            <a class="nav-link one-of-the-files` + (theme == "dark" ? ' dark' : "") + ` files d-flex align-items-center ` + (load.length && load == x ? 'active' : '') + `" style="width:100%;" pinned="` + is_pinned + `" file="` + x + `">
                                 ` + (is_pinned ? "<span data-feather='bookmark'></span>" : "") + `
                                 <!--span data-feather="file-text"></span-->
                                 ` + (!visitant_view_perm && is_public ? "<span data-feather='share-2'></span>" : "") + `
@@ -1890,7 +1889,8 @@ function updateFiles(key = "", load = "", forceUpdate = false){
                 loadFile(load)
                 $('[file="' + load + '"].files').toggleClass('active', true)
             } else {
-                
+                $('.files').removeClass('active')
+                $('[file=' + $('#filename').attr('file') + '].files').addClass('active')
             }
 
         })
@@ -2460,6 +2460,7 @@ function checkTheme(){
     elements2 = "#corpusSettings, #settings .custom-control-label, #corpusLanguageDiv, #mainHeadbar, #troncoHomeBar"
     elements3 = ".sortAction, #mobile-nav, .toolbar"
     elements4 = "#sidebar-scroll"
+    elements5 = "[file=README],[file=ARCHIVE]"
     if (theme == "dark") {
         $(elements).css("background-color", "#343a40").css("color", "white")
         $(elements2 + ", " + elements3).css("background-color", "#272b30").css("color", "white").toggleClass("bg-dark", false)
@@ -2467,7 +2468,7 @@ function checkTheme(){
         if (isMobile) {
             $('#search').toggleClass("form-control-dark", false).css("background-color", "#343a40").css("color", "white").css("border-style", "none")
         }
-
+        $(elements5).addClass("dark")
         if (!isMobile) {
             var styles = `
             ::-webkit-scrollbar { width: 15px; height: 3px;}
