@@ -103,7 +103,7 @@ body {
 }
 
 .one-of-the-files.dark.highlight, .one-of-the-files.dark.files-hover:not(.active) {
-  background-color: darkgoldenrod;
+  background-color: gray;
   border-radius: 5px;
   color:white;
 }
