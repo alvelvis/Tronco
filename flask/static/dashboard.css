@@ -106,6 +106,10 @@ body {
   color:black;
 }
 
+.highlight span {
+  color:black;
+}
+
 .sidebar .files:hover:not(.active):not(.highlight) {
   background-color:lightyellow;
   border-radius: 5px;
