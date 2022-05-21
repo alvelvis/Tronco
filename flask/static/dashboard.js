@@ -9,6 +9,7 @@ $('#search').on('blur', function(){
         }
         if ($('.filename').attr('file') != "README" || $('#recentFiles').text() == 'Nenhum arquivo encontrado.') { $('#breadcrumb-nav').hide() }
     }, 500)
+    $(fade_on_search_focus).fadeIn()
 })
 
 function updateReplaceControls(){
@@ -1314,10 +1315,13 @@ function mainTextBlur(){
     }
 }
 
+fade_on_search_focus = '#filename, #saved, #toolbar-group, #mainText'
+
 $('#search').on('focus', function(){
     window.scrollTo(0, 0)    
     $('#breadcrumb-nav').toggle(true)
     $('.breadcrumb').scrollLeft(0)
+    $(fade_on_search_focus).fadeOut()
 })
 
 $('.togglePerm').on('change', function(){
@@ -2375,7 +2379,7 @@ function triggerResize(first=false){
     name = $('#name').html()
     if ($('#sidebar:hidden').length || $(window).width() < 600) {
         if (first) {
-            $('#search').addClass("border-bottom")
+            //$('#search').addClass("border-bottom")
             isMobileFromBeginning = true
             $('.toolbarButton, #dropdownMenuLink').removeClass("btn-sm")
             $('#sidebar').css("max-width", "")
