@@ -1317,7 +1317,7 @@ function mainTextBlur(){
     }
 }
 
-fade_on_search_focus = '#filename, #saved, #toolbar-group, #mainText'
+fade_on_search_focus = '#filename, #saved, #toolbar-group, #toolbar, #mainText'
 
 $('#search').on('focus', function(){
     window.scrollTo(0, 0)    
