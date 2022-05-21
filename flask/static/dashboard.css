@@ -106,7 +106,7 @@ body {
   color:black;
 }
 
-.highlight span {
+.highlight span, .highlight .feather {
   color:black;
 }
 
