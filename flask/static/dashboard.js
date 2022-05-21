@@ -1890,7 +1890,7 @@ function updateFiles(key = "", load = "", forceUpdate = false){
                 $('[file="' + load + '"].files').toggleClass('active', true)
             } else {
                 $('.files').removeClass('active')
-                $('[file=' + $('#filename').attr('file') + '].files').addClass('active')
+                $('[file="' + $('#filename').attr('file') + '"].files').addClass('active')
             }
 
         })
