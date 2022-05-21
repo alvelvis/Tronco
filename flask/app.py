@@ -146,6 +146,9 @@ def archive_file():
     if 'shared_files' in tronco_config.corpora[name]['permissions'] and filename in tronco_config.corpora[name]['permissions']['shared_files']:
         tronco_config.corpora[name]['permissions']['shared_files'].remove(filename)
         tronco_config.save()
+    if 'pinned' in tronco_config.corpora[name]['settings'] and filename in tronco_config.corpora[name]['settings']['pinned']:
+        tronco_config.corpora[name]['settings']['pinned'].remove(filename)
+        tronco_config.save()
     return {'error': '0'}
 
 @app.route("/api/getProgress", methods=["POST"])
@@ -439,6 +442,10 @@ def rename_file():
         tronco_config.corpora[name]['permissions']['shared_files'].remove(filename)
         tronco_config.corpora[name]['permissions']['shared_files'].append(new_filename)
         tronco_config.save()
+    if 'pinned' in tronco_config.corpora[name]['settings'] and filename in tronco_config.corpora[name]['settings']['pinned']:
+        tronco_config.corpora[name]['settings']['pinned'].remove(filename)
+        tronco_config.corpora[name]['settings']['pinned'].append(new_filename)
+        tronco_config.save()
     if new_filename:
         return {'data': new_filename}
     else:
@@ -507,6 +514,9 @@ def delete_files():
     functions.delete_file(name, filename)
     if 'shared_files' in tronco_config.corpora[name]['permissions'] and filename in tronco_config.corpora[name]['permissions']['shared_files']:
         tronco_config.corpora[name]['permissions']['shared_files'].remove(filename)
+        tronco_config.save()
+    if 'pinned' in tronco_config.corpora[name]['settings'] and filename in tronco_config.corpora[name]['settings']['pinned']:
+        tronco_config.corpora[name]['settings']['pinned'].remove(filename)
         tronco_config.save()
     return {'data': ''}
 
