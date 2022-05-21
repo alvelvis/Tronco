@@ -412,6 +412,21 @@ def recent_files():
     key = request.values.get("key", "")
     return {'data': "|".join(functions.recent_files(name, key))}
 
+@app.route("/api/pinFile", methods=["POST"])
+def pin_file():
+    name = request.values.get("name")
+    password = tronco_tokens.get_password(name, request.values.get("tronco_token"))
+    if not tronco_config.has_permission(name, password, "editar"): return None
+    filename = request.values.get("filename")
+    if not 'pinned' in tronco_config.corpora[name]['settings']:
+        tronco_config.corpora[name]['settings']['pinned'] = []
+    if filename in tronco_config.corpora[name]['settings']['pinned']:
+        tronco_config.corpora[name]['settings']['pinned'].remove(filename)
+    else:
+        tronco_config.corpora[name]['settings']['pinned'].append(filename)
+    tronco_config.save()
+    return {'data': 'true'}
+
 @app.route("/api/renameFile", methods=["POST"])
 def rename_file():
     name = request.values.get("name")
@@ -502,7 +517,7 @@ def update_files():
     if not tronco_config.has_permission(name, password, "visualizar"):
         return {'data': "", 'has_archive': False}
     return {
-        'data': "|".join([x + ("-is_public" if 'shared_files' in tronco_config.corpora[name]['permissions'] and x in tronco_config.corpora[name]['permissions']['shared_files'] else "") for x in functions.update_files(name)]), 
+        'data': "|".join([x + ("-is_public" if 'shared_files' in tronco_config.corpora[name]['permissions'] and x in tronco_config.corpora[name]['permissions']['shared_files'] else "") + ("-is_pinned" if 'pinned' in tronco_config.corpora[name]['settings'] and x in tronco_config.corpora[name]['settings']['pinned'] else "") for x in functions.update_files(name)]), 
         'has_archive': os.path.isfile(os.path.join(objects.root_path, "corpora", name, "ARCHIVE"))
         }
 

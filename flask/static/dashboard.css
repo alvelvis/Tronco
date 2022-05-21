@@ -7,7 +7,7 @@
 }
 
 .highlight {
-  background-color: orange;
+  background-color: lightyellow;
 }
 .ui-sortable-helper {
   size: 20px;
@@ -103,8 +103,8 @@ body {
   color:white;
 }
 
-.sidebar .files:hover {
-  font-weight:bold;
+.sidebar .files:hover:not(.active):not(.highlight) {
+  background-color:lightyellow;
 }
 
 .files {

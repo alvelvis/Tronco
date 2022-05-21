@@ -649,6 +649,10 @@ function loadMetadata(metadata, readme=false) {
     feather.replace()
 }
 
+$('.pinFileContext').click(function(){
+    pinFile(filedivcontext.attr('file'))
+})
+
 $('.renameFileContext').click(function(){
     renameFile(filedivcontext.attr('file'))
 })
@@ -1744,6 +1748,27 @@ $('#deleteFile').click(function(){
     deleteFile($('#filename').attr('file'))
 })
 
+function pinFile(filename) {
+    $.post({
+        url: '/api/pinFile',
+        data: {
+            'name': name,
+            'filename': filename,
+            'tronco_token': getTroncoToken()
+        }
+    })
+    .done(function(data){
+        if (data.data == "true") {
+            updateFiles("", "", true)
+            $('.files').removeClass('active')
+            $('[file=' + $('#filename').attr('file') + '].files').addClass('active')
+        } else {
+            alert("Você não tem permissão para editar.")
+        }
+    })
+    return
+}
+
 function renameFile(filename) {
     new_filename = prompt("Como " + filename + " deve passar a se chamar?", filename)
     if (new_filename && new_filename.length) {
@@ -1788,35 +1813,46 @@ function updateFiles(key = "", load = "", forceUpdate = false){
             }            
         })
         .done(function(data){
-            $('#archive').toggle(data.has_archive && permEdit)
         
             $('#files').html("")
             $('#nFiles').html(data.data.split("|").length)
             
             n = 0
             $('#divFullUpdateFiles').toggle(data.data.split("|").length >= max_update_files)
-            for (x of data.data.split("|")){
-                is_public = x.indexOf("-is_public") > 1
-                x = x.split("-is_public")[0]
-                n ++
-                if (n == max_update_files) {
-                    break
-                }
-                if (x.length && x.indexOf("README") != 0) {
-                    $('#files').append(`
-                    <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
-                        <a class="nav-link files d-flex align-items-center ` + (load.length && load == x ? 'active' : '') + `" style="width:100%;" file="` + x + `">
-                            <!--span data-feather="file-text"></span-->
-                            ` + (!visitant_view_perm && is_public ? "<span data-feather='share-2'></span>" : "") + `
-                            <span style="max-width: 98%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;">` + x + `</span>
-                        </a>
-                    </li>`)
-                } else {
-                    if (x.indexOf("README") == 0) {
-                        $('#home-share').toggle(!visitant_view_perm && is_public)
+            for (i of ["pinned", "not_pinned"]) {
+                for (x of data.data.split("|")){
+                    is_public = x.indexOf("-is_public") > 1
+                    is_pinned = x.indexOf("-is_pinned") > 1
+                    x = x.split("-is_public")[0]
+                    x = x.split("-is_pinned")[0]
+                    n ++
+                    if (n == max_update_files) {
+                        break
+                    }
+                    
+                    if (x.length && x.indexOf("README") != 0 && ((i == "pinned" && is_pinned) || (i == "not_pinned" && !is_pinned))) {
+                        $('#files').append(`
+                        <li class="nav-item one-of-the-files d-flex py-1 justify-content-between align-items-center">
+                            <a class="nav-link files d-flex align-items-center ` + (load.length && load == x ? 'active' : '') + `" style="width:100%;" pinned="` + is_pinned + `" file="` + x + `">
+                                ` + (is_pinned ? "<span data-feather='bookmark'></span>" : "") + `
+                                <!--span data-feather="file-text"></span-->
+                                ` + (!visitant_view_perm && is_public ? "<span data-feather='share-2'></span>" : "") + `
+                                <span class="files-name" style="max-width: 98%; display:inline-block; white-space: nowrap; overflow:hidden; text-overflow:ellipsis; user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;">` + x + `</span>
+                            </a>
+                        </li>`)
+                    } else {
+                        if (x.indexOf("README") == 0) {
+                            $('#home-share').toggle(!visitant_view_perm && is_public)
+                        }
                     }
                 }
             }
+
+            new_archive = archive.cloneNode(true)
+            $(new_archive).removeClass('archive-template')
+            $(new_archive).addClass('archive')
+            $(new_archive).toggle(data.has_archive && permEdit)
+            $('#files').append(new_archive)
 
             if (!isMobile) {
                 $('.one-of-the-files').on('mouseenter mouseleave', function(){
@@ -1840,6 +1876,7 @@ function updateFiles(key = "", load = "", forceUpdate = false){
                     top: top,
                     left: left
                 }).addClass("show")
+                $('.pinFileContext').text($(this).attr('pinned') == "true" ? "Desafixar" : "Fixar")
                 return false //blocks default Webbrowser right click menu
             })
             $('[file=README], [file=ARCHIVE]').on('contextmenu', function(e) {
