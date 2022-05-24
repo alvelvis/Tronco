@@ -11,7 +11,7 @@ $('#search').on('blur', function(){
     }, 500)
     //$('#search').fadeOut()
     //if ($('.filename').attr('file') != "README" || $('#recentFiles').text() == 'Nenhum arquivo encontrado.') { $('#breadcrumb-nav').fadeOut() }
-    if ($('#filename:visible').length) {
+    if ($('.files.active').length) {
         $(fade_on_search_focus).fadeIn()
     }
 })
@@ -1326,7 +1326,9 @@ $('#search').on('focus', function(){
     window.scrollTo(0, 0)    
     $('#breadcrumb-nav').toggle(true)
     $('.breadcrumb').scrollLeft(0)
-    $(fade_on_search_focus).fadeOut()
+    if ($('.files.active').length) {
+        $(fade_on_search_focus).fadeOut()
+    }
 })
 
 $('.togglePerm').on('change', function(){
