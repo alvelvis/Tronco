@@ -11,7 +11,9 @@ $('#search').on('blur', function(){
     }, 500)
     //$('#search').fadeOut()
     //if ($('.filename').attr('file') != "README" || $('#recentFiles').text() == 'Nenhum arquivo encontrado.') { $('#breadcrumb-nav').fadeOut() }
-    $(fade_on_search_focus).fadeIn()
+    if ($('#filename:visible').length) {
+        $(fade_on_search_focus).fadeIn()
+    }
 })
 
 function updateReplaceControls(){
@@ -1536,10 +1538,14 @@ $('#advancedSearchInput').on('keyup', function(e){
 })
 
 $('#search').on('keyup', function(e){
-    filename = $(this).val()
+    if ($('#filename:visible').length) {
+        $("#search").focus()
+    }
     clearTimeout(searchTimer)
     searchTimer = setTimeout(doneSearch, doneSearchInterval)
     if (e.which == 13){
+        filename = ($('.recentFiles').length > 0 ? $($('.recentFiles')[0]).attr('file') : $(this).val())
+        $('#search').blur()
         if (!$('[file="' + filename + '"].files').length) {
             gotoFile(filename, true)
         } else {
@@ -1623,18 +1629,21 @@ function recentFiles(key = "", typing = ""){
     })
     .done(function(data){
         if (typing.length) {
-            new_data = '<li class="breadcrumb-item">' + (data.data.toLowerCase().split("|").indexOf(typing.toLowerCase()) >= 0 ? 'Abrir ' + typing + '?' : 'Criar ' + typing + '?') + "</li>"
+            new_data = '<li class="breadcrumb-item">' + (data.data.toLowerCase().split("|").indexOf(typing.toLowerCase()) >= 0 ? 'Abrir ' + typing + '?' : '<a href="#" class="createFile" file="' + typing + '">Criar <b>' + typing + '</b></a>') + "</li>"
         } else {
             new_data = ""
         }
         for (x of data.data.split("|")){
-            if (special_files.indexOf(x) == -1){
+            if (special_files.indexOf(x) == -1 && x.length){
                 new_data = new_data + '<li class="breadcrumb-item"><a class="recentFiles" href="#" file="' + x + '">' + x + '</a></li>'
             }
         }
-        $('#recentFiles').html(data.data.length ? new_data : new_data + 'Nenhum arquivo encontrado.')
+        $('#recentFiles').html(data.data.length ? new_data : new_data + '<li class="breadcrumb-item">Nenhum arquivo encontrado.</li>')
         $('.recentFiles').unbind('click').click(function(){
             gotoFile($(this).attr('file'))
+        })
+        $('.createFile').unbind('click').click(function(){    
+            gotoFile($(this).attr('file'), true)
         })
     })
 }

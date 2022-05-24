@@ -129,24 +129,29 @@ def find_or_create_file(name, filename, create):
 def recent_files(name, key="", max_results=30):
     name_dir = os.path.join(objects.root_path, "corpora", name)
     files = {}
-    for item in os.listdir(name_dir):
-        if item not in objects.tronco_special_files:
-            files[item] = {
-                'stats': [0, 0],
-                'text': ""
-            }
-            item_dir = os.path.join(objects.root_path, "corpora", name, item)
-            with open(item_dir) as f:
-                try:
-                    text = f.read()
-                except:
-                    text = ""
-            files[item]['text'] = text
-            if all(x in text for x in ["# times_seen = ", "# last_seen = "]):
-                files[item]['stats'][0] = float(text.split("# last_seen = ")[1].split("\n")[0])
-                files[item]['stats'][1] = int(text.split("# times_seen = ")[1].split("\n")[0])
+    all_files = [x for x in os.listdir(name_dir) if x not in objects.tronco_special_files]
+    if not key:
+        for item in all_files:
+            
+                files[item] = {
+                    'stats': [0, 0],
+                    'text': ""
+                }
+                item_dir = os.path.join(objects.root_path, "corpora", name, item)
+                with open(item_dir) as f:
+                    try:
+                        text = f.read()
+                    except:
+                        text = ""
+                files[item]['text'] = text
+                if all(x in text for x in ["# times_seen = ", "# last_seen = "]):
+                    files[item]['stats'][0] = float(text.split("# last_seen = ")[1].split("\n")[0])
+                    files[item]['stats'][1] = int(text.split("# times_seen = ")[1].split("\n")[0])
 
-    return [x for x in sorted(files, key=lambda y: -files[y]['stats'][0]) if not key or (key and all((k.lower() in x.lower() or k.lower() in files[x]['text'].lower()) for k in key.split()))][:max_results]
+        return [x for x in sorted(files, key=lambda y: -files[y]['stats'][0])][:max_results]
+    else:
+        return [x for x in sorted(all_files, key=lambda y: (len(y), y)) if all(k.lower() in x.lower() for k in key.split())][:max_results]
+
 
 def rename_file(name, filename, new_filename):
     name_dir = os.path.join(objects.root_path, "corpora", name)
