@@ -1054,15 +1054,6 @@ function updateToolbar(){
             }).addClass("show")
             return false //blocks default Webbrowser right click menu
         })
-        if (isMobile) {
-            $('#checklist').toggle(true)
-            if ($('#checklist').hasClass('btn-primary') || !$('.toolbarButton.btn-primary').length) {
-                if (($('.checkbox-item-div').length / $('#mainText').val().split("\n").filter(function(e){return e.trim().length > 0}).length) > 0.6) {
-                    $('#checklist').removeClass('btn-primary')
-                    $('#checklist').click()
-                }
-            }
-        }
 
     } else {
         $('#checklist').toggle(false)
@@ -1180,7 +1171,8 @@ function updateToolbar(){
         $('[toolbar=' + $('.toolbarButton.btn-primary').attr('id') + ']').hide()
     }
 
-    if ($('#history').find('.toolbar-label').html().length == 0 || (!isMobile && $('#toolbar-group')[0].scrollWidth > $('#toolbarRow')[0].clientWidth) || (isMobile && $('#toolbarRow')[0].clientWidth / $('#toolbar-group')[0].scrollWidth < 0.4)) {
+    // resize toolbar buttons in mobile
+    if ($('#history').find('.toolbar-label').html().length == 0 || (!isMobile && $('#toolbar-group')[0].scrollWidth > $('#toolbarRow')[0].clientWidth) || (isMobile && $('#toolbarRow')[0].clientWidth / $('#toolbar-group')[0].scrollWidth < 0.7)) {
         $('.toolbar-label').each(function(){
             $(this).html($(this).html().replace(/[^\(]*/, ""))
         })
@@ -1314,6 +1306,8 @@ function mainTextBlur(){
         if ($('.filename').attr('file') == "README" && $('#recentFiles').text() != 'Nenhum arquivo encontrado.') {
             $('#breadcrumb-nav').toggle(true)
         }
+        $('.toolbarButton.btn-primary').click()
+        $('.toolbar').hide()
         toggleMobile(permView ? "mobileFile" : "mobileNoPerm")
         $('#mainText').prop('readonly', true)
         //if ($('[toolbar=checklist]').is(':visible')) { $('#mainText').hide() }
@@ -2202,7 +2196,16 @@ function loadFile(filename){
                     }
                 })
             })
-        
+
+            if (isMobile) {
+                //$('#checklist').toggle(true)
+                if ($('#checklist').hasClass('btn-primary') || !$('.toolbarButton.btn-primary').length) {
+                    if (($('.checkbox-item-div').length / $('#mainText').val().split("\n").filter(function(e){return e.trim().length > 0}).length) > 0.9) {
+                        $('#checklist').removeClass('btn-primary')
+                        $('#checklist').click()
+                    }
+                }
+            }        
 
         } else {
             if (data.error == 2) {
