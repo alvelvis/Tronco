@@ -5,12 +5,12 @@ function countWords(str) {
 $('#search').on('blur', function(){
     setTimeout(function(){
         if (isMobile) {
-            $('#search').fadeOut()
+            $('#search').slideUp()
         }
         if ($('.filename').attr('file') != "README" || $('#recentFiles').text() == 'Nenhum arquivo encontrado.') { 
-            $('#breadcrumb-nav').fadeOut() 
+            isMobile ? $('#breadcrumb-nav').slideUp() : $('#breadcrumb-nav').slideUp()
         }
-    }, 500)
+    }, 150)
     //$('#search').fadeOut()
     //if ($('.filename').attr('file') != "README" || $('#recentFiles').text() == 'Nenhum arquivo encontrado.') { $('#breadcrumb-nav').fadeOut() }
     if ($('.files.active').length) {
@@ -1316,8 +1316,6 @@ function mainTextBlur(){
     }
 }
 
-fade_on_search_focus = '#filename, #saved, #toolbar-group, #toolbar, #mainText'
-
 $('#search').on('focus', function(){
     window.scrollTo(0, 0)    
     $('#breadcrumb-nav').toggle(true)
@@ -2201,7 +2199,7 @@ function loadFile(filename){
 
             if (isMobile) {
                 //$('#checklist').toggle(true)
-                if ($('#checklist').hasClass('btn-primary') || !$('.toolbarButton.btn-primary').length) {
+                if ($('#checklist:visible').length && ($('#checklist').hasClass('btn-primary') || !$('.toolbarButton.btn-primary').length)) {
                     if (($('.checkbox-item-div').length / $('#mainText').val().split("\n").filter(function(e){return e.trim().length > 0}).length) > 0.9) {
                         $('#checklist').removeClass('btn-primary')
                         $('#checklist').click()
@@ -2460,6 +2458,7 @@ function triggerResize(first=false){
     $('#uploadTextLabel').html(isMobile ? "Enviar arquivos" : "Enviar arquivos")
 
     feather.replace()
+    fade_on_search_focus = '#saved, #toolbar-group, #toolbar, #mainText' + (isMobile ? "" : ", #filename")
 }
 
 $('.dropdown').on('show.bs.dropdown', function(){
