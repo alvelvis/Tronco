@@ -2197,7 +2197,8 @@ function loadFile(filename){
                 })
             })
 
-            if (isMobile) {
+            // open checklist if more than 90% of lines are checklist item
+            if (true) {//(isMobile) {
                 //$('#checklist').toggle(true)
                 if ($('#checklist:visible').length && ($('#checklist').hasClass('btn-primary') || !$('.toolbarButton.btn-primary').length)) {
                     if (($('.checkbox-item-div').length / $('#mainText').val().split("\n").filter(function(e){return e.trim().length > 0}).length) > 0.9) {
