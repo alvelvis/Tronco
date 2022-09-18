@@ -9,7 +9,7 @@ from scripts import estrutura_ud
 from scripts import interrogar_UD
 from scripts import functions
 import psutil
-from ufal.udpipe import Model, Pipeline
+import requests
 
 tronco_version = 1.64
 tronco_online = "tronco.gq"
@@ -21,11 +21,11 @@ computer_memory = psutil.virtual_memory().total/1024/1024
 
 udpipe_models = {
     'pt': {
-        'path': "portuguese-bosque-ud-2.5-191206.udpipe",
+        'path': "portuguese-bosque-ud-2.10-220711",
         'label': "Português"
     },
     'en': {
-        'path': "english-ewt-ud-2.5-191206.udpipe",
+        'path': "english-ewt-ud-2.10-220711",
         'label': 'Inglês',
     }
 }
@@ -299,9 +299,6 @@ class AdvancedCorpora:
         
         if filename not in tronco_special_files:
             filename_dir = os.path.join(root_path, "corpora", name, filename)
-            if not lang in self.models:
-                self.models[lang] = Model.load(os.path.join(root_path, "udpipe", udpipe_models[lang]['path']))
-            pipeline = Pipeline(self.models[lang], "tokenize", Pipeline.DEFAULT, Pipeline.DEFAULT, "conllu")
             with open(filename_dir) as f:
                 try:
                     text = f.read().splitlines()
@@ -314,7 +311,7 @@ class AdvancedCorpora:
 
             if not name in self.files:
                 self.files[name] = {}
-            self.files[name][filename] = pipeline.process("\n".join(raw_text)).replace("# newdoc\n", "").replace("# newpar\n", "")
+            self.files[name][filename] = json.loads(requests.get("http://lindat.mff.cuni.cz/services/udpipe/api/process?tokenizer&tagger&parser", {"data": "\n".join(raw_text), "model": udpipe_models[lang]['path']}).text)['result'].replace("# generator = UDPipe 2, https://lindat.mff.cuni.cz/services/udpipe\n# udpipe_model = portuguese-bosque-ud-2.10-220711\n# udpipe_model_licence = CC BY-NC-SA\n# newdoc\n# newpar\n", "")
             if not name in self.metadata:
                 self.metadata[name] = {}
             self.metadata[name][filename] = metadata
@@ -346,7 +343,6 @@ class AdvancedCorpora:
         self.corpora = {}
         self.recent_queries = {}
         self.files = {}
-        self.models = {}
         for corpus in os.listdir(os.path.join(root_path, "corpora")):
             config_file = os.path.join(root_path, "corpora", corpus, "tronco.json")
             recent_queries_file = os.path.join(root_path, "corpora", corpus, "recent_queries.json")

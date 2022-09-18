@@ -943,7 +943,7 @@ function updateToolbar(){
 
     list_media = $('#mainText').val().matchAll(/tronco\/(\S+)(\s|$|\n)/gi)
     for (media of list_media) {
-        if (media[1].match(/.*\.(png|jpe?g|bmp|gif|ico)$/)) {
+        if (media[1].match(/.*\.(png|jpe?g|jfif|bmp|gif|ico)$/)) {
             images.push([media[1], "/media/" + media[1], media[1]])
         } else {
             files.push([media[1], "/media/" + media[1]])
@@ -969,7 +969,7 @@ function updateToolbar(){
     shared_n = shared_n.replace(/<troncolb>/g, "\n\n")
     list_links = shared_n.matchAll(/(^|\n)([^\n]*?)(https?:\/\/(www\.)?([^\s\n]*?))(\s|\n|$)/gi)
     for (link of list_links) {
-        if (link[3].match(/\.(png|jpe?g|bmp|gif|ico)$/i)) {
+        if (link[3].match(/\.(png|jpe?g|jfif|bmp|gif|ico)$/i)) {
             images.push([link[5], link[3], link[2].trim().replace(/\[x?\]/g, "")])
         } else {
             links.push([link[5], link[3], link[2].trim().replace(/\[x?\]/g, "")])
