@@ -13,11 +13,11 @@ idna==2.10
 IMAPClient==2.1.0
 itsdangerous==1.1.0
 Jinja2==2.11.2
-lxml==4.6.2
+lxml
 MarkupSafe==1.1.1
 olefile==0.46
 pdfminer.six==20181108
-Pillow==8.0.1
+Pillow
 psutil==5.7.3
 pycryptodome==3.9.9
 python-pptx==0.6.18
@@ -29,7 +29,7 @@ soupsieve==2.0.1
 SpeechRecognition==3.8.1
 textract==1.6.3
 tzlocal==1.5.1
-ufal.udpipe==1.2.0.3
+#ufal.udpipe==1.2.0.3
 urllib3==1.25.11
 Werkzeug==1.0.1
 whichcraft==0.6.1
